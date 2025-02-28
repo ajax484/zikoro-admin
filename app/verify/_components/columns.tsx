@@ -31,6 +31,18 @@ export const columns: ColumnDef<OrganizationVerification>[] = [
     },
   },
   {
+    accessorKey: "workspace.eventPhoneNumber",
+    header: "Phone Number",
+    cell: ({ getValue }) => {
+      const phoneNumber = getValue() as string;
+      return (
+        <div className="flex items-center gap-2">
+          <span>{phoneNumber}</span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "address",
     header: "Address",
     cell: ({ getValue }) => {
