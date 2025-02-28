@@ -45,7 +45,7 @@ export const columns = (
     },
   },
   {
-    accessorKey: "email",
+    accessorKey: "workspace.eventContactEmail",
     header: "Email",
     cell: ({ getValue }) => {
       const email = getValue() as string;
