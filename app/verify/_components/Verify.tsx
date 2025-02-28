@@ -38,7 +38,7 @@ const Verify = () => {
     <section className="space-y-4 py-8 px-16">
       <h1 className="text-3xl font-bold">Verifications</h1>
       <DataTable<OrganizationVerification>
-        columns={columns}
+        columns={columns(getData)}
         data={organizationVerifications}
         currentPage={pagination.page}
         setCurrentPage={updatePage}

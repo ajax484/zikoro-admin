@@ -17,7 +17,9 @@ import { OrganizationVerification } from "@/typings/organization";
 import Image from "next/image";
 import Link from "next/link";
 
-export const columns: ColumnDef<OrganizationVerification>[] = [
+export const columns = (
+  getData: () => Promise<OrganizationVerification | undefined>
+): ColumnDef<OrganizationVerification>[] => [
   {
     accessorKey: "workspace.organizationName",
     header: "Organization Name",
@@ -38,6 +40,18 @@ export const columns: ColumnDef<OrganizationVerification>[] = [
       return (
         <div className="flex items-center gap-2">
           <span>{phoneNumber}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ getValue }) => {
+      const email = getValue() as string;
+      return (
+        <div className="flex items-center gap-2">
+          <span>{email}</span>
         </div>
       );
     },
@@ -135,12 +149,13 @@ export const columns: ColumnDef<OrganizationVerification>[] = [
         `/workspaces/verification/${verification.workspaceAlias}`
       );
 
-      const updateVerificationFn = (status: string) => {
-        updateData({
+      const updateVerificationFn = async (status: string) => {
+        await updateData({
           payload: {
             status,
           },
         });
+        await getData();
       };
 
       return (
