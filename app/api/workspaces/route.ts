@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
         .order("created_at", { ascending: false })
         .range(from, to);
 
-      if (search) query.ilike("organizationName", `%${search.trim()}%`);
+      if (search !== "") query.ilike("organizationName", `%${search.trim()}%`);
 
       const { data, error, count } = await query;
 
