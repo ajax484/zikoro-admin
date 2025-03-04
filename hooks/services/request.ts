@@ -52,7 +52,8 @@ type UseGetPaginatedResult<TData> = {
 export const useGetPaginatedData = <TData>(
   endpoint: string,
   searchParams: URLSearchParams = new URLSearchParams(),
-  initialPagination: Pagination = { page: 1, limit: 10 }
+  initialPagination: Pagination = { page: 1, limit: 10 },
+  search: string = ""
 ): UseGetPaginatedResult<TData> => {
   const [data, setData] = useState<TData[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -73,7 +74,7 @@ export const useGetPaginatedData = <TData>(
       const { data: responseData, status } = await getRequest<
         PaginationResponse<TData[]>
       >({
-        endpoint: `${endpoint}?${params.toString()}`,
+        endpoint: `${endpoint}?${params.toString()}${search ? `&search=${search}` : ""}`,
       });
 
       if (status !== 200) {
@@ -93,7 +94,7 @@ export const useGetPaginatedData = <TData>(
 
   useEffect(() => {
     getData();
-  }, [endpoint, pagination]);
+  }, [endpoint, pagination, search]);
 
   return {
     data,
