@@ -17,7 +17,6 @@
     "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-<<<<<<< HEAD
     "date-fns": "^4.1.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.468.0",
@@ -26,31 +25,13 @@
     "prettier": "^3.3.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-=======
-    "lucide-react": "^0.477.0",
-    "next": "^14.2.15",
-    "react": "^18",
-    "react-datepicker": "^8.1.0",
-    "react-dom": "^18",
->>>>>>> 21c72ccba0333085066c2b18cab664c24e1efd6c
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.5.2",
     "react-quill": "^2.0.0",
     "react-toastify": "^11.0.5",
-<<<<<<< HEAD
     "recharts": "^2.15.1",
     "zeptomail": "^6.1.0",
     "zod": "^3.24.2"
-=======
-    "react-verification-input": "^4.2.2",
-    "styled-icons": "^10.47.1",
-    "swiper": "^11.2.4",
-    "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7",
-    "zeptomail": "^6.1.0",
-    "zod": "^3.24.2",
-    "zustand": "^5.0.3"
->>>>>>> 21c72ccba0333085066c2b18cab664c24e1efd6c
   },
   "devDependencies": {
     "@types/node": "^20",
