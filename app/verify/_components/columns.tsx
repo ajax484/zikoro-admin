@@ -145,13 +145,14 @@ export const columns = (
       const verification = row.original as OrganizationVerification;
 
       const { updateData, isLoading } = useUpdateData(
-        `/workspaces/verification/${verification.workspaceAlias}`
+        `/workspaces/verification`
       );
 
       const updateVerificationFn = async (status: string) => {
         await updateData({
           payload: {
             status,
+            workspaceAlias: verification.workspaceAlias,
           },
         });
         await getData();
