@@ -105,4 +105,44 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PATCH(req: NextRequest) {
+  const supabase = createRouteHandlerClient({ cookies });
+
+  if (req.method !== "PATCH") {
+    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  }
+
+  try {
+    const bodyParams = await req.json();
+
+    const { data, error } = await supabase
+      .from("organizationVerification")
+      .update(bodyParams)
+      .eq("workspaceAlias", bodyParams.workspaceAlias)
+      .select("*, workspace:organization!inner(*)")
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return NextResponse.json(
+      {
+        data,
+      },
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.error("Error processing the request:", error);
+    return NextResponse.json(
+      {
+        error: "An error occurred while processing the request.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
 export const dynamic = "force-dynamic";
