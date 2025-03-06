@@ -21,7 +21,6 @@ export default function RootLayout({
       <body className={`${montserrat.className}`}>
         <main className={`relative w-full h-full bg-[#F9FAFF]`}>
           <AdminSideBar />
-
           <div className="lg:w-[calc(100%-250px)]  min-[1024px]:float-right  pb-12  ">
             {children}
           </div>

@@ -13,7 +13,7 @@ export default function RootLayout({
   const links = [
     {
       name: "Dashboard",
-      href: "/admin/blog/dashboard",
+      href: "/blog/dashboard",
     },
     // {
     //   name: "Categories",
@@ -21,15 +21,15 @@ export default function RootLayout({
     // },
     {
       name: "Create New Post",
-      href: "/admin/blog/create",
+      href: "/blog/create",
     },
     {
       name: "Draft",
-      href: "/admin/blog/draft",
+      href: "/blog/draft",
     },
     {
       name: "Scheduled",
-      href: "/admin/blog/scheduled",
+      href: "/blog/scheduled",
     },
   ];
 

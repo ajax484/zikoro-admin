@@ -1,5 +1,5 @@
 "use client";
-import { Form, FormField, Input, Button } from "@/components";
+// import { Form, FormField, Input, Button } from "@/components/ui";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,9 @@ import {
   useFetchBlogTags,
   useCreateBlogTag,
 } from "@/hooks/services/post";
+import { Form, FormField } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/custom_ui/Button";
 
 type FormValue = {
   name: string;
