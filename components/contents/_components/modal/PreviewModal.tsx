@@ -1,0 +1,182 @@
+"use client";
+
+import { CloseOutline } from "styled-icons/evaicons-outline";
+import {
+  Form,
+  FormField,
+  Input,
+  FormControl,
+  FormItem,
+  FormLabel,
+  Button,
+} from "@/components";
+import QRCode from "react-qr-code";
+import { useForm } from "react-hook-form";
+import copy from "copy-to-clipboard";
+import { ExternalLinkOutline } from "styled-icons/evaicons-outline";
+import { Copy } from "styled-icons/feather";
+import Link from "next/link";
+import { useState } from "react";
+import { TriangleDown } from "styled-icons/entypo";
+import { Event } from "@/types";
+import { cn } from "@/lib";
+
+function CopyLink({ link }: { link: string }) {
+  const [isCopy, setCopy] = useState(false);
+
+  function copied() {
+    copy(link);
+    setCopy(true);
+
+    setTimeout(() => {
+      setCopy(false);
+    }, 2000);
+  }
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        copied();
+      }}
+    >
+      <Copy size={16} />
+      {isCopy && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="absolute shadow-lg rounded-lg border top-[-2rem] flex items-center justify-center w-fit px-4 py-2 px- -right-3 bg-basePrimary"
+        >
+          <p className="text-gray-50 text-sm">Copied</p>
+
+          <div className="absolute right-[38%] bottom-[-13px]">
+            <TriangleDown size={18} className=" text-basePrimary" />
+          </div>
+        </div>
+      )}
+    </button>
+  );
+}
+
+export function PreviewModal({
+  close,
+  type,
+  title,
+  url,
+  isAfterPublished,
+}: {
+  type: string;
+  title: string;
+  close: () => void;
+  url: string;
+  isAfterPublished?: boolean;
+}) {
+  const form = useForm({});
+
+  // rating numbers
+
+  return (
+    <div
+      role="button"
+      onClick={close}
+      className="w-full h-full fixed z-[100] inset-0 bg-black/50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        role="button"
+        className={cn(
+          "w-[95%] sm:w-[500px] box-animation h-fit max-h-[500px] rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4",
+          isAfterPublished && " bg-success-confetti"
+        )}
+      >
+        <div className="absolute bg-white/90 inset-0 rounded-lg w-full h-full z-20"></div>
+        <div className="w-full relative z-50 flex flex-col gap-y-6">
+          <div className="w-full flex items-center justify-between">
+            <h2 className="font-medium text-lg sm:text-xl">{type}</h2>
+            <Button onClick={close} className="px-1 h-fit w-fit">
+              <CloseOutline size={22} />
+            </Button>
+          </div>
+          <Form {...form}>
+            <form className="flex items-start w-full flex-col gap-y-6">
+              <div className="w-full">
+                <p
+                  className={cn(
+                    "text-mobile sm:text-sm",
+                    isAfterPublished &&
+                      "text-center w-full font-semibold text-base sm:text-lg"
+                  )}
+                >
+                  {isAfterPublished
+                    ? `Congratulations! Your Event is Now Live!`
+                    : `Open link to view ${title || ""}`}
+                </p>
+                <p className="text-center w-full text-mobile sm:text-sm mt-2">
+                  Share this link or QR code with attendees to register for {" "}
+                  <span className="font-semibold capitalize">{title}</span>
+                </p>
+              </div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="relative w-full h-fit">
+                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
+                      Link
+                    </FormLabel>
+                    <div className="flex absolute top-2 z-10 bg-white justify-center h-[60%] right-2 items-center gap-x-2">
+                      <CopyLink link={`${window.location.origin}${url}`} />
+                      <Link target="_blank" href={url}>
+                        <ExternalLinkOutline size={16} />
+                      </Link>
+                    </div>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder=""
+                        defaultValue={`${window.location.origin}${url}`}
+                        readOnly
+                        className=" placeholder:text-sm h-12 border border-gray-300 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div
+                className={cn(
+                  "w-full flex mt-6 items-center justify-between",
+                  isAfterPublished && "justify-center"
+                )}
+              >
+                {!isAfterPublished && (
+                  <p className="text-xs sm:text-sm flex flex-col items-start ">
+                    <span>Scan QRCode to view</span>
+                    <span className="font-semibold capitalize">{title}</span>
+                  </p>
+                )}
+                <QRCode
+                  size={isAfterPublished ? 180 : 150}
+                  value={`${window.location.origin}${url}`}
+                />
+              </div>
+
+              {!isAfterPublished && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    close();
+                  }}
+                  className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
+                >
+                  <span>Done</span>
+                </Button>
+              )}
+            </form>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+}

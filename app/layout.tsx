@@ -18,8 +18,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="text-mobile sm:text-desktop">
-      <head></head>
-
       <body className={`${montserrat.className}`}>
         <main className={`relative w-full h-full bg-[#F9FAFF]`}>
           <AdminSideBar />
