@@ -115,7 +115,7 @@ export default function BlogCreate() {
       }
     } catch (error) {
       toast.error(`Error uploading image: ${error}`);
-      throw error; // Rethrow the error to be caught by the caller
+      throw error;
     }
   };
 
@@ -403,7 +403,9 @@ export default function BlogCreate() {
                             minDate={new Date()}
                             placeholderText="Schedule for later"
                             className="text-indigo-600 w-full outline-none cursor-pointer"
-                            onFocus={(e) => ((e.target as HTMLInputElement).readOnly = true)}
+                            onFocus={(e) =>
+                              ((e.target as HTMLInputElement).readOnly = true)
+                            }
                             onCalendarClose={() => setIsOpen(true)}
                             onCalendarOpen={() => setIsOpen(false)}
                           />
