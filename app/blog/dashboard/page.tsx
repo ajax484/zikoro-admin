@@ -227,7 +227,7 @@ export default function Create() {
               icon={<AdminBlogCalendarIcon />}
               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
               placeholderText="Select Your Date "
-              onFocus={(e) => (e.target.readOnly = true)}
+              onFocus={(e) => ((e.target as HTMLInputElement).readOnly = true)}
               dateFormat="MMMM d, yyyy h:mm aa"
             />
           </div>
@@ -296,7 +296,7 @@ export default function Create() {
                 shares={blogPost.shares}
                 tags={blogPost.tags}
                 headerImageUrl={blogPost.headerImageUrl}
-                fetchBlogPost ={fetchBlogPost}
+                fetchBlogPost={fetchBlogPost}
               />
             ))}
           </>
