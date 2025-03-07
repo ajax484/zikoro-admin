@@ -10,7 +10,7 @@ import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PlusCircleIcon } from "@/constants";
-// import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/TextEditor";
 
 type BlogData = {
   title: string;
@@ -456,12 +456,12 @@ export default function BlogCreate() {
               style={{ padding: "20px" }}
               className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 "
             >
-              {/* <TextEditor
+              <TextEditor
                 defaultValue={content}
                 placeholder="Type your blog content..."
                 onChange={setMessage}
                 isBlog
-              /> */}
+              />
             </div>
           </form>
         </section>

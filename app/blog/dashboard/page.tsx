@@ -226,7 +226,7 @@ export default function Create() {
               popperPlacement="top-start"
               icon={<AdminBlogCalendarIcon />}
               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
-              placeholderText="Select Your Dates "
+              placeholderText="Select Your Date "
               onFocus={(e) => (e.target.readOnly = true)}
               dateFormat="MMMM d, yyyy h:mm aa"
             />
