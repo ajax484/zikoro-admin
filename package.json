@@ -59,7 +59,8 @@
     "slick-carousel": "^1.8.1",
     "styled-icons": "^10.47.1",
     "zeptomail": "^6.1.0",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "22.10.2",

@@ -1,4 +1,6 @@
-import React from "react";
+"use client"
+
+import React, { useEffect } from "react";
 import type { Metadata } from "next";
 import { montserrat } from "@/constants/fonts";
 import "./globals.css";
@@ -6,16 +8,28 @@ import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
 import { TOASTER_PROPS } from "@/lib";
 import { AdminSideBar } from "@/components/admin/AdminSideBar/AdminSideBar";
+import useUserStore from "@/store/globalUserStore";
+import { useRouter, usePathname } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Admin Zikoro",
-};
+// export const metadata: Metadata = {
+//   title: "Admin Zikoro",
+// };
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useUserStore();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
+    }
+  }, []);
+
   return (
     <html lang="en" className="text-mobile sm:text-desktop">
       <body className={`${montserrat.className}`}>

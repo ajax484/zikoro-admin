@@ -3,7 +3,7 @@ import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
-import { getCookie } from "@/hooks";
+// import { getCookie } from "@/hooks/services/auth";
 import { UseGetResult, usePostResult } from "@/types/request";
 import useUserStore from "@/store/globalUserStore";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";

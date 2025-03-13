@@ -269,7 +269,7 @@ export default function Create() {
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] bg-white">
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] bg-white">
         {blogData && (
           <>
             {/* Filter blog posts based on selected date */}
