@@ -1,10 +1,15 @@
 "use client";
 import { TOrganization } from "@/types/organization";
+import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { getCookie } from "@/hooks";
 import { UseGetResult, usePostResult } from "@/types/request";
 import useUserStore from "@/store/globalUserStore";
-import { toast } from "../use-toast";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+
+const supabase = createClientComponentClient();
 
 export const useGetOrganizations = (): UseGetResult<
   TOrganization[],
@@ -66,7 +71,7 @@ export const useGetUserTeamOrganizations = ({
 
     try {
       const { data, status } = await getRequest<TOrganization[]>({
-        endpoint: `workspaces/user/${userEmail}`,
+        endpoint: `organization/user/${userEmail}`,
       });
 
       console.log(data);
@@ -108,7 +113,7 @@ export const useGetOrganization = ({
 
     try {
       const { data, status } = await getRequest<TOrganization>({
-        endpoint: `workspaces/${organizationId}`,
+        endpoint: `organization/${organizationId}`,
       });
 
       if (status === 200) {
@@ -137,6 +142,7 @@ export const useGetOrganization = ({
   };
 };
 
+
 export const useUpdateOrganization = ({
   organizationId,
 }: {
@@ -156,7 +162,7 @@ export const useUpdateOrganization = ({
     });
     try {
       const { data, status } = await postRequest({
-        endpoint: `workspaces/${organizationId}`,
+        endpoint: `organization/${organizationId}`,
         payload,
       });
 
@@ -209,5 +215,48 @@ export function useGetUserOrganizations() {
   return {
     organizations: userOrganizations,
     getOrganizations,
+  };
+}
+
+
+export function useGetUserOrganization(alias: string) {
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setLoading] = useState(false);
+
+  async function getUserOrganisation(): Promise<TOrganization | null> {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("organization")
+        .select("*")
+        .eq("organizationAlias", alias);
+  
+      if (error) {
+        toast({
+          description: `${error.message}`,
+          variant: "destructive",
+        });
+        return null;
+      }
+  
+      if (data && data.length > 0) {
+        setData(data[0] as TOrganization);
+        return data[0] as TOrganization;
+      }
+  
+      return null;
+    } catch (error) {
+      console.error("Error fetching organization:", error);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+
+  return {
+    data,
+    getUserOrganisation,
+    isLoading,
   };
 }
