@@ -123,7 +123,7 @@ export default function BlogDraft() {
               icon={<AdminBlogCalendarIcon />}
               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
               placeholderText="Select Your Dates "
-              onFocus={(e) => (e.target.readOnly = true)}
+              onFocus={(e) => ((e.target as HTMLInputElement).readOnly = true)}
             />
           </div>
 
@@ -185,6 +185,7 @@ export default function BlogDraft() {
                   shares={blogPost.shares}
                   tags={blogPost.tags}
                   headerImageUrl={blogPost.headerImageUrl}
+                  fetchBlogPost={fetchDraftPost}
                 />
               )
             )}

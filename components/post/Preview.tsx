@@ -23,7 +23,7 @@ type BlogPreviewData = {
   created_at: number;
 };
 
-export default function Preview(): JSX.Element {
+export default function Preview() {
   const [data, setData] = useState<BlogPreviewData | null>(null); // Initialize data as null
   const [loading, setLoading] = useState(true); // Add loading state
 
@@ -33,22 +33,22 @@ export default function Preview(): JSX.Element {
 
   //getting the data from local storage
   useEffect(() => {
-if (typeof window !== "undefined") {
-  const blogDataString = localStorage.getItem("blogPreviewData");
+    if (typeof window !== "undefined") {
+      const blogDataString = localStorage.getItem("blogPreviewData");
 
-  if (blogDataString) {
-    try {
-      const parsedBlogData: BlogPreviewData = JSON.parse(blogDataString);
-      setData(parsedBlogData);
-      // Optionally, clear the local storage
-      localStorage.removeItem("blogPreviewData");
-    } catch (error) {
-      console.error("Error parsing blog preview data:", error);
+      if (blogDataString) {
+        try {
+          const parsedBlogData: BlogPreviewData = JSON.parse(blogDataString);
+          setData(parsedBlogData);
+          // Optionally, clear the local storage
+          localStorage.removeItem("blogPreviewData");
+        } catch (error) {
+          console.error("Error parsing blog preview data:", error);
+        }
+      } else {
+        console.error("No preview data found");
+      }
     }
-  } else {
-    console.error("No preview data found");
-  }
-}
   }, []);
 
   // Render error state if data couldn't be loaded
@@ -158,40 +158,12 @@ if (typeof window !== "undefined") {
                 {/* Share Buttons */}
                 <div className="mt-8">
                   <p className="text-xl font-medium">Share This Article</p>
-                  {/* <div className="flex gap-x-[14px] mt-4">
-                    <div
-                      className="cursor-pointer"
-                      onClick={handleShareOnTwitter}
-                    >
-                      <X />
-                    </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={handleShareOnFacebook}
-                    >
-                      <Facebook />
-                    </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={handleShareOnInstagram}
-                    >
-                      <Instagram />
-                    </div>
-                    <div
-                      className="cursor-pointer"
-                      onClick={handleShareOnLinkedin}
-                    >
-                      <Linkedin />
-                    </div>
-                  </div> */}
                 </div>
               </div>
 
               <div
                 ref={contentRef}
-                className={` w-full  flex-col  pb-0 lg:pb-[50px] ${
-                  "" ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto" : "lg:w-9/12"
-                }`}
+                className={` w-full  flex-col  pb-0 lg:pb-[50px] ${"lg:w-9/12"}`}
                 id="right"
               >
                 <div

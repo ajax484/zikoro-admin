@@ -24,11 +24,11 @@ export default function RootLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
+  //   }
+  // }, []);
 
   return (
     <html lang="en" className="text-mobile sm:text-desktop">

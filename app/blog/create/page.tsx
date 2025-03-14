@@ -185,7 +185,7 @@ export default function BlogCreate() {
           );
           if (status == "draft") {
           } else {
-            window.open("/admin/blog/dashboard", "_self");
+            window.open("/blog/dashboard", "_self");
           }
         } else {
           throw new Error("Post Not Published ");
@@ -229,7 +229,7 @@ export default function BlogCreate() {
       .then((response) => {
         if (response.ok) {
           toast.success("Post scheduled successfully");
-          window.open("/admin/blog/scheduled", "_self");
+          window.open("/blog/scheduled", "_self");
         } else {
           throw new Error("Failed to schedule post");
         }

@@ -47,7 +47,7 @@ type DBBlogPost = {
   headerImageUrl: string;
 };
 
-export default function FullPost({ postId }: { postId: string }): JSX.Element {
+export default function FullPost({ postId }: { postId: string }){
   const {
     data,
     refetch,
@@ -171,6 +171,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   }, [router]);
 
   const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
+  const isWideScreen = window.innerWidth >= 1024;
+
 
   useEffect(() => {
     const fetchSimilarPosts = async () => {
@@ -331,10 +333,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
                 <div
                   ref={contentRef}
-                  className={` w-full min-h-[50%]  flex-col  pb-0 lg:pb-[50px] blogPost ${
-                    ""
-                      ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto"
-                      : "lg:w-9/12"
+                  className={` w-full min-h-[50%]  flex-col  pb-0 lg:pb-[50px] blogPost ${                   
+                      "lg:w-9/12"
                   }`}
                   id="right"
                 >
