@@ -171,7 +171,6 @@ export default function FullPost({ postId }: { postId: string }){
   }, [router]);
 
   const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
-  const isWideScreen = window.innerWidth >= 1024;
 
 
   useEffect(() => {
