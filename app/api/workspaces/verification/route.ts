@@ -1,9 +1,9 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
+const supabase = createClient();
 
   if (req.method === "GET") {
     try {
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
+const supabase = createClient();
 
   if (req.method !== "POST") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
+const supabase = createClient();
 
   if (req.method !== "PATCH") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });

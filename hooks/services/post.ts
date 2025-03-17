@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
+
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-const supabase = createClientComponentClient();
+const supabase = createClient();
 
 type DBBlogPost = {
   id: number;

@@ -1,4 +1,4 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,8 +13,9 @@ type DraftRequestBody = {
   status: string;
 };
 
+const supabase = createClient();
+
 export async function GET(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
     try {
@@ -51,8 +52,6 @@ export async function GET(req: NextRequest) {
 
 //UPDATE Funtionality
 export async function PUT(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
-
   if (req.method === "PUT") {
     const body = (await req.json()) as DraftRequestBody | null;
 

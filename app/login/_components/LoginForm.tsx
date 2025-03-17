@@ -109,12 +109,12 @@ export default function Page({
             <span>Sign In</span>
           </Button>
 
-          <div className="w-full flex items-center gap-x-1 justify-center">
+          {/* <div className="w-full flex items-center gap-x-1 justify-center">
             <p>Don't have an account yet?</p>
             <Link href="/register" className="text-basePrimary font-medium">
               Create an account
             </Link>
-          </div>
+          </div> */}
         </form>
       </Form>
     </AuthLayout>

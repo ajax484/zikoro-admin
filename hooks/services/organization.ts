@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 // import { getCookie } from "@/hooks/services/auth";
 import { UseGetResult, usePostResult } from "@/types/request";
 import useUserStore from "@/store/globalUserStore";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 
 
-const supabase = createClientComponentClient();
+const supabase = createClient();
 
 export const useGetOrganizations = (): UseGetResult<
   TOrganization[],
