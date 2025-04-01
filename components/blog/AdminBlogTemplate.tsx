@@ -34,7 +34,7 @@ type BlogPostProps = {
   scheduled: boolean;
   headerImageUrl: string;
   tags: string[];
-  fetchBlogPost: () => Promise<void>;
+  fetchBlogPost: () => Promise<any>;
 };
 
 export default function AdminBlogTemplate({

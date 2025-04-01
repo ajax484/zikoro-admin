@@ -3,13 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 
 const includedPaths: string[] = [
-  '/blog/:path*',
-  '/events/:path*',
-  '/payout/:path*',
-  '/transaction/:path*',
-  '/affiliate/:path*',
-  '/contact/:path*',
-  '/certificate/:path*',
+
 ]
 
 export const updateSession = async (request: NextRequest) => {
@@ -64,22 +58,12 @@ export const updateSession = async (request: NextRequest) => {
       return NextResponse.redirect(redirectUrl);
     }
 
-    if (path.startsWith("/events") && !user) {
-      const redirectUrl = new URL("/login", request.url);
-      redirectUrl.searchParams.set("redirectedFrom", path);
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    if (path.startsWith("/affiliate") && !user) {
-      const redirectUrl = new URL("/login", request.url);
-      redirectUrl.searchParams.set("redirectedFrom", path);
-      return NextResponse.redirect(redirectUrl);
-    }
-    // if (path.startsWith("/") && !user) {
+    // if (path.startsWith("/events") && !user) {
     //   const redirectUrl = new URL("/login", request.url);
     //   redirectUrl.searchParams.set("redirectedFrom", path);
     //   return NextResponse.redirect(redirectUrl);
     // }
+
 
     if (isIncludedPath && !user) {
       // If user is not authenticated and path is included, redirect to the login page

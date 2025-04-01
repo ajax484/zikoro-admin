@@ -36,7 +36,7 @@ interface Category {
   value: string;
 }
 
-export default function Create() {
+export default function AdminDashboard() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalShares, setTotalShares] = useState<number>(0);
