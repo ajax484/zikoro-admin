@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   AdminBlogPostIcon,
@@ -15,6 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useFetchBlogPosts } from "@/hooks/services/blog"; // Create a utility function for fetching
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 type DBBlogAll = {
   id: number;
@@ -37,7 +40,7 @@ interface Category {
 }
 
 export default function AdminDashboard() {
-  const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
+  const [blogData, setBlogData] = useState<any | undefined>(undefined);
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalShares, setTotalShares] = useState<number>(0);
   const [totalPosts, setTotalPosts] = useState<number>(0);
@@ -45,6 +48,11 @@ export default function AdminDashboard() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [checkedItems, setCheckedItems] = useState<Category[]>([]);
+  const { blogPosts, loading, fetchBlogPosts } = useFetchBlogPosts();
+
+  useEffect(() => {
+    setBlogData(blogPosts);
+  }, [blogPosts]);
 
   //handle checkbox selection
   const handleCheckboxChange = (
@@ -74,17 +82,7 @@ export default function AdminDashboard() {
   };
 
   //fetch blog posts
-  async function fetchBlogPost() {
-    fetch("/api/blog/published", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setBlogData(data.data))
-      .catch((error) => console.error("Error:", error));
-  }
+  // const blogData: DBBlogAll[] = fetchBlogPosts;
 
   // Function to filter blog posts based on selected date
   const filterBlogPosts = (
@@ -122,10 +120,10 @@ export default function AdminDashboard() {
     return filteredPosts;
   };
 
-  //fetching blog Post
-  useEffect(() => {
-    fetchBlogPost();
-  }, []);
+  // //fetching blog Post
+  // useEffect(() => {
+  //   fetchBlogPost();
+  // }, []);
 
   //filter use Effect
   useEffect(() => {
@@ -269,8 +267,8 @@ export default function AdminDashboard() {
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] bg-white">
-        {blogData && (
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] ">
+        {blogData ? (
           <>
             {/* Filter blog posts based on selected date */}
             {filterBlogPosts(
@@ -296,10 +294,14 @@ export default function AdminDashboard() {
                 shares={blogPost.shares}
                 tags={blogPost.tags}
                 headerImageUrl={blogPost.headerImageUrl}
-                fetchBlogPost={fetchBlogPost}
+                fetchBlogPost={fetchBlogPosts}
               />
             ))}
           </>
+        ) : (
+          <div className="h-fit items-center justify-center flex">
+           <LoaderAlt size={40} className="animate-spin text-basePrimary" />
+          </div>
         )}
       </section>
     </div>

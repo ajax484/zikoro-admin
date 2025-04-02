@@ -144,3 +144,8 @@ input[type="number"] {
   outline: 2px solid #6d28d9;
   /* Purple outline on focus */
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
