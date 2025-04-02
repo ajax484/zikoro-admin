@@ -52,11 +52,11 @@ export const updateSession = async (request: NextRequest) => {
     );
 
     // Check if the request path starts with /workspace
-    if (path.startsWith("/blog") && !user) {
-      const redirectUrl = new URL("/login", request.url);
-      redirectUrl.searchParams.set("redirectedFrom", path);
-      return NextResponse.redirect(redirectUrl);
-    }
+    // if (path.startsWith("/blog") && !user) {
+    //   const redirectUrl = new URL("/login", request.url);
+    //   redirectUrl.searchParams.set("redirectedFrom", path);
+    //   return NextResponse.redirect(redirectUrl);
+    // }
 
     // if (path.startsWith("/events") && !user) {
     //   const redirectUrl = new URL("/login", request.url);

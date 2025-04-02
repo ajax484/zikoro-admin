@@ -268,7 +268,7 @@ export default function AdminDashboard() {
 
       {/* section 2 */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] ">
-        {blogData ? (
+        {blogData && (
           <>
             {/* Filter blog posts based on selected date */}
             {filterBlogPosts(
@@ -298,10 +298,6 @@ export default function AdminDashboard() {
               />
             ))}
           </>
-        ) : (
-          <div className="h-fit items-center justify-center flex">
-           <LoaderAlt size={40} className="animate-spin text-basePrimary" />
-          </div>
         )}
       </section>
     </div>
