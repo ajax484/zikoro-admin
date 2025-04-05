@@ -78,7 +78,7 @@ export function EventTopNav({
                   "text-basePrimary pb-2 border-b-2 border-basePrimary font-medium"
               )}
             >
-              <Link href={`/admin/events?e=${q}`}>{name}</Link>
+              <Link href={`/events?e=${q}`}>{name}</Link>
             </li>
           );
         })}

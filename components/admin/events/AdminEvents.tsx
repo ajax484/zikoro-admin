@@ -3,7 +3,7 @@
 import { useGetAdminEvents } from "@/hooks";
 import { EventLayout } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { Button } from "@/components";
+import { Button } from "@/components/custom_ui/Button";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
 import { CalendarDateFill } from "styled-icons/bootstrap";
 import { TimeFive } from "styled-icons/boxicons-solid";
@@ -357,10 +357,4 @@ function EventCard({
   );
 }
 
-//  function AdminEvents() {
-// return (
-//   <Suspense>
-//     <AdminEventsComp />
-//   </Suspense>
-// )
-// }
+
