@@ -1,3 +1,5 @@
+import { TOrganization } from "@/typings/organization";
+
 export interface TGiftRegistry {
     title: string;
     description?: string;
@@ -15,6 +17,7 @@ export interface TGiftRegistry {
     settings: {
       isAddLink?: boolean;
     };
+    organization: TOrganization;
   }
 
   export interface TRecievedGift {

@@ -12,6 +12,10 @@ const PAYOUT_TABS = [
   { label: "Paid", value: "payout-received" },
 ];
 
+
+
+
+
 function TableRow({ item }: { item: TRecievedGiftWithRegistry }) {
   const [isPayout, setIsPayout] = useState(false);
 

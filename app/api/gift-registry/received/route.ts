@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("giftRegistryReceived")
-        .select("*, giftRegistry(*)");
+        .select("*, giftRegistry(*, organization(*))");
 
       if (error) throw error;
 
