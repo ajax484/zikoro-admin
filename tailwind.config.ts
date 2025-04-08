@@ -91,6 +91,8 @@ const config: Config = {
       backgroundImage: {
         basePrimary: "linear-gradient(to right, #001FCC 0%, #9D00FF 100%)",
         baseLight: "linear-gradient(to right, #E2E8F0 0%, #D8B4FE 100%)",
+        "basePrimary-200":
+        "linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%)",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -102,13 +102,6 @@ export default function AdminTransactions({
     to,
   });
 
-  // const { ref: infiniteScrollRef } = useInfiniteScrollPagination(
-  //   hasReachedLastPage,
-  //   setFrom,
-  //   setTo,
-  //   setInitialLoading
-  // );
-
   useEffect(() => {
     if (Array.isArray(transactions)) {
       const filtered = transactions.filter((transaction) => {
@@ -212,6 +205,7 @@ export default function AdminTransactions({
     setFrom(n * 50 - 50);
     setTo(n * 50);
   }
+
   return (
     <div className="w-full pt-12 sm:pt-16">
       <RouteHeader

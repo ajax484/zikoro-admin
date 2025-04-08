@@ -606,6 +606,11 @@ export const adminLinks: AdminNavLinkType[] = [
     href: "payout",
   },
   {
+    name: "Gift Payout",
+    image: "/images/a_payout.svg",
+    href: "gift-payout",
+  },
+  {
     name: "Transactions",
     image: "/images/a_event.svg",
     href: "transactions",
