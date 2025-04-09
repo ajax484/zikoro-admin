@@ -162,8 +162,9 @@ export default function EditPost({ postId }: { postId: string }){
           `${status === "draft" ? "Saved to draft" : "Post Published"}`
         );
         if (status !== "draft" && status !== "schedule") {
-          router.push("blog/dashboard");
+          router.push("/blog/dashboard");
         }
+       
       } else {
         throw new Error("Post Not Saved");
       }
