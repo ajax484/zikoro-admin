@@ -133,7 +133,7 @@ export function AuthorizeGiftPayoutModal({
               onClick={onAuthorizePayOut}
             >
               {loading && <Loader2Icon size={20} />}
-              Authorize Payout
+              Confirm Payout
             </Button>
           </div>
         </div>

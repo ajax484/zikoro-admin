@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
                     <img src=${"/zikoro.png"} alt="Company Logo" style="max-width: 150px;">
                 </div>
                 <div style="margin: 20px 0;">
-                    <h1 style="margin-bottom: 20px;">Payout Requested</h1>
+                    <h1 style="margin-bottom: 20px;">Payout Completed</h1>
                     <p>Hello there,</p>
                     <p>Here's information on your requested payout: <span style="color: #001FCC; font-weight: bold;">NGN${amount}</span>.</p>
                     <p>Transaction Details:</p>
