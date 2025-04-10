@@ -58,13 +58,14 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
               const currentHref = href.includes("?")
                 ? href?.split("?")[0]
                 : href;
+                const path = pathname.split("/")[1]
               return (
                 <li key={name} className="w-full">
                   <Link
                     href={`/${href}`}
                     className={cn(
                       "p-3 pr-4 pl-4 flex  items-center gap-x-2  w-full",
-                      pathname.includes(currentHref) &&
+                      path === currentHref &&
                         "text-basePrimary pl-2 pr-4  bg-[#001fcc]/10 border-l-4 border-basePrimary bg-opacity-10  "
                     )}
                   >

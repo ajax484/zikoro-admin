@@ -1,29 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const supabase = createClient();
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     try {
-      const { data, error, status } = await supabase
+      const params = await req.json();
+
+      const { error } = await supabase
         .from("giftRegistryReceived")
-        .select("*, users!giftRegistryReceived_payoutRequestBy_fkey(*), giftRegistry(*, organization(*, organizationTeamMembers(*)))");
+        .upsert(params);
+
+      if (error) {
+        return NextResponse.json(
+          { error: error.message },
+          {
+            status: 400,
+          }
+        );
+      }
 
       if (error) throw error;
 
-      console.log(data);
 
       return NextResponse.json(
-        { data },
+        { msg: "Gift Recieved created successfully" },
         {
-          status: 200,
+          status: 201,
         }
       );
     } catch (error) {
       console.error(error);
       return NextResponse.json(
         {
-          error: "An error occurred while making the request.",
+          error: error,
         },
         {
           status: 500,

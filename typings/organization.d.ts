@@ -25,11 +25,10 @@ export interface TOrganization {
   facebook: string;
   subDomain: string;
   certificateAsset: TCertificateAsset;
-  teamMembers: TOrganizationTeamMember[];
+  organizationTeamMembers: TOrganizationTeamMember[];
   subscriptionExpiryDate: string;
-  socialLinks: { title: string; url: string }[];
-  verification: OrganizationVerification[];
 }
+
 
 export interface IPayoutAccountDetails {
   bankCountry: string;
@@ -40,10 +39,12 @@ export interface IPayoutAccountDetails {
   bankCode: string;
 }
 
-type TOrganizationTeamMember = {
+export type TOrganizationTeamMember = {
   userId: string;
   userEmail: string;
   userRole: string;
+  workspaceAlias: string;
+  id: number;
 };
 export interface TCertificateAsset {
   elements: string[];
