@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   AdminBlogPostIcon,
   AdminBlogShareIcon,
@@ -41,9 +41,9 @@ interface Category {
 
 export default function AdminDashboard() {
   const [blogData, setBlogData] = useState<any | undefined>(undefined);
-  const [totalViews, setTotalViews] = useState<number>(0);
-  const [totalShares, setTotalShares] = useState<number>(0);
-  const [totalPosts, setTotalPosts] = useState<number>(0);
+  // const [totalViews, setTotalViews] = useState<number>(0);
+  // const [totalShares, setTotalShares] = useState<number>(0);
+  // const [totalPosts, setTotalPosts] = useState<number>(0);
   const [blogName, setBlogName] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -126,37 +126,55 @@ export default function AdminDashboard() {
   // }, []);
 
   //filter use Effect
-  useEffect(() => {
-    if (blogData) {
-      // Filter blog posts based on selected date, category, and blog name
-      const filteredPosts = filterBlogPosts(
-        blogData,
-        startDate,
-        endDate,
-        checkedItems,
-        blogName
-      );
+  // useEffect(() => {
+  //   if (blogData) {
+  //     // Filter blog posts based on selected date, category, and blog name
+  //     const filteredPosts = filterBlogPosts(
+  //       blogData,
+  //       startDate,
+  //       endDate,
+  //       checkedItems,
+  //       blogName
+  //     );
 
-      // Calculate total views
-      const totalViews = filteredPosts.reduce(
-        (acc, post) => acc + post.views,
-        0
-      );
-      setTotalViews(totalViews);
+  //     // Calculate total views
+  //     const totalViews = filteredPosts.reduce(
+  //       (acc, post) => acc + post.views,
+  //       0
+  //     );
+  //     setTotalViews(totalViews);
 
-      // Calculate total shares
-      const totalShares = filteredPosts.reduce(
-        (acc, post) => acc + post.shares,
-        0
-      );
-      setTotalShares(totalShares);
+  //     // Calculate total shares
+  //     const totalShares = filteredPosts.reduce(
+  //       (acc, post) => acc + post.shares,
+  //       0
+  //     );
+  //     setTotalShares(totalShares);
 
-      // Total number of blog posts
-      const totalPosts = filteredPosts.length;
-      setTotalPosts(totalPosts);
-    }
-  }, [blogData, startDate, endDate, blogName]);
+  //     // Total number of blog posts
+  //     const totalPosts = filteredPosts.length;
+  //     setTotalPosts(totalPosts);
+  //   }
+  // }, [blogData, startDate, endDate, blogName]);
 
+  const filteredPosts = useMemo(() => {
+    return blogData
+      ? filterBlogPosts(blogData, startDate, endDate, checkedItems, blogName)
+      : [];
+  }, [blogData, startDate, endDate, checkedItems, blogName]);
+  
+  const totalViews = useMemo(
+    () => filteredPosts.reduce((acc, post) => acc + post.views, 0),
+    [filteredPosts]
+  );
+  
+  const totalShares = useMemo(
+    () => filteredPosts.reduce((acc, post) => acc + post.shares, 0),
+    [filteredPosts]
+  );
+  
+  const totalPosts = filteredPosts.length;
+  
   return (
     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
       {/* Header */}
