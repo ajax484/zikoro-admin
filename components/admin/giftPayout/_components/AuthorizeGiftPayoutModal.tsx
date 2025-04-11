@@ -7,6 +7,7 @@ import { usePostRequest } from "@/hooks/services/request";
 import { useState } from "react";
 import { TRecievedGift } from "@/types/gift-registry";
 import { Loader2Icon } from "lucide-react";
+import toast from "react-hot-toast";
 
 export function AuthorizeGiftPayoutModal({
   close,
@@ -40,20 +41,30 @@ export function AuthorizeGiftPayoutModal({
             paidByAdminDateTime: new Date().toISOString(),
           };
 
-          await postData({ payload });
+          await postData({ payload })
+            .then( async () => {
+              toast.success("Payout Successful");
+              await sendPayoutMail({
+                payload: {
+                  members: organization?.organizationTeamMembers,
+                  payoutRef: reference,
+                  amount: amount,
+                },
+              });      
+              await refetch();
+            })
+            .catch((e) => {
+              toast.error("Something is wrong. Try again later.");
+
+              return;
+            });
         })
       );
 
-      await sendPayoutMail({
-        payload: {
-          members: organization?.organizationTeamMembers,
-          payoutRef: reference,
-          amount: amount,
-        },
-      });
+  
 
       setLoading(false);
-      await refetch();
+
       close();
     } catch (error) {
       console.log(error);

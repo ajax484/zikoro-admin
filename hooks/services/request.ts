@@ -257,6 +257,8 @@ export const usePostRequest = <T>(endpoint: string) => {
       toast.success("Creation Attempt Successful");
       return data;
     } catch (error: any) {
+
+      throw error;
       //
       // toast({
       //   description: error?.response?.data?.error,
