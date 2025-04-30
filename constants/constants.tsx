@@ -636,4 +636,9 @@ export const adminLinks: AdminNavLinkType[] = [
     image: "/images/a_certificate.svg",
     href: "certificates",
   },
+  {
+    name: "Help Center",
+    image: "/images/a_help.svg",
+    href: "help",
+  },
 ];
