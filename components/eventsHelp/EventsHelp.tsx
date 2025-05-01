@@ -10,6 +10,21 @@ import {
 } from "@/constants";
 import Link from "next/link";
 import { GreaterThan } from "styled-icons/fa-solid";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function EventsHelp() {
   const datas = [
@@ -99,10 +114,33 @@ export default function EventsHelp() {
             </div>
             {/* right */}
             <div className="flex justify-between gap-x-1 w-full lg:w-[50%] items-center ">
-              <HelpFilter />
+              <Popover>
+                <PopoverTrigger>
+                  {" "}
+                  <HelpFilter />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p className="text-[14px] font-semibold">Sort by</p>
+                  <RadioGroup defaultValue="option-one" className="mt-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-one" id="option-one" />
+                      <Label htmlFor="option-one">Recently Updated</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-two" id="option-two" />
+                      <Label htmlFor="option-two">Highest Reads</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="option-three" id="option-three" />
+                      <Label htmlFor="option-three">Lowest Reads</Label>
+                    </div>
+                  </RadioGroup>
+                </PopoverContent>
+              </Popover>
+
               <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center">
                 {" "}
-                Write an article <HelpPencil />
+                Write An Article <HelpPencil />
               </button>
             </div>
           </div>
@@ -113,12 +151,49 @@ export default function EventsHelp() {
 
           {/* bottom */}
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            <div className="flex flex-col items-center justify-center w-full  gap-2 py-[36px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[10px] cursor-pointer ">
-              <HelpWhiteFileIcon />
-              <p className="text-base font-semibold text-white">
-                Create a new category
-              </p>
-            </div>
+            <Dialog>
+              <DialogTrigger>
+                {" "}
+                <div className="flex flex-col items-center justify-center w-full  gap-2 py-[36px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[10px] cursor-pointer ">
+                  <HelpWhiteFileIcon />
+                  <p className="text-base font-semibold text-white">
+                    Create a new category
+                  </p>
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create Category</DialogTitle>
+                  <DialogDescription>
+                    <form action="" className="mt-8">
+                      {/* 1st form */}
+                      <div>
+                        <p className="text-[12px] font-semibold">Category Name</p>
+                        <div className="w-full mt-3 ">
+                          <input
+                            type="text"
+                            placeholder="Enter Category Name"
+                            className="pl-3 py-2 w-full bg-transparent text-[14px] rounded-[10px] border-[1px] outline-none border-[#EAEAEA]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 2nd form */}
+                      <div className="mt-8">
+                        <p className="text-[12px] font-semibold">Description</p>
+                        <div className="w-full mt-3 ">
+                          <input
+                            type="text"
+                            placeholder="Enter Description"
+                            className="pl-3 py-2 w-full bg-transparent text-[14px] rounded-[10px] border-[1px] outline-none border-[#EAEAEA]"
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
 
             {datas.map((data, index) => (
               <div className=" bg-white rounded-[10px] p-3">

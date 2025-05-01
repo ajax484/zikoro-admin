@@ -4,11 +4,10 @@ import {
   HelpArticle,
   HelpEyeIcon,
   HelpFilter,
-  HelpFolder,
   HelpPencil,
-  HelpWhiteFileIcon,
 } from "@/constants";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
 
 export default function EventsCategories() {
@@ -51,6 +50,8 @@ export default function EventsCategories() {
     },
   ];
 
+  const router = useRouter();
+
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
@@ -68,9 +69,12 @@ export default function EventsCategories() {
         </div>
         {/* right */}
         <div className=" w-full h-10 items-center flex justify-end ">
-          <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center h-full">
+          <button
+            className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center h-full"
+            onClick={() => router.push("/help/create")}
+          >
             {" "}
-            Write an article <HelpPencil />
+            Write In This Categories <HelpPencil />
           </button>
         </div>
       </div>
@@ -132,32 +136,30 @@ export default function EventsCategories() {
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {datas.map((data, index) => (
               <div className=" bg-white rounded-[10px] p-3">
-                <Link href="/help/events/categories">
-                  <div className="flex justify-between items-center">
-                    <p className="text-base font-semibold"> {data.title} </p>
-                    <Help3dotsIcon />
-                  </div>
-                  <p className="text-[12px] font-medium mt-1">
-                    Last Updated: {data.date}
-                  </p>
-                  <div className="flex gap-x-5 mt-[47px]">
-                    <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                      <HelpArticle />
-                      <div className="flex gap-x-1">
-                        {data.articleNo}
-                        <p>Articles</p>
-                      </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-base font-semibold"> {data.title} </p>
+                  <Help3dotsIcon />
+                </div>
+                <p className="text-[12px] font-medium mt-1">
+                  Last Updated: {data.date}
+                </p>
+                <div className="flex gap-x-5 mt-[47px]">
+                  <div className="flex gap-x-1 items-center text-[12px] font-medium">
+                    <HelpArticle />
+                    <div className="flex gap-x-1">
+                      {data.articleNo}
+                      <p>Articles</p>
                     </div>
+                  </div>
 
-                    <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                      <HelpEyeIcon />
-                      <div className="flex gap-x-1">
-                        {data.viewNo}
-                        <p>Articles</p>
-                      </div>
+                  <div className="flex gap-x-1 items-center text-[12px] font-medium">
+                    <HelpEyeIcon />
+                    <div className="flex gap-x-1">
+                      {data.viewNo}
+                      <p>Articles</p>
                     </div>
                   </div>
-                </Link>
+                </div>
               </div>
             ))}
           </div>
