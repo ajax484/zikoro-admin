@@ -11,19 +11,17 @@ export const metadata: Metadata = {
   title: "Admin Zikoro",
 };
 
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en" className="text-mobile sm:text-desktop">
       <body className={`${montserrat.className}`}>
         <main className={`relative w-full h-full bg-[#F9FAFF]`}>
           <AdminSideBar />
-          <div className="lg:w-[calc(100%-250px)]  min-[1024px]:float-right  pb-12">
+          <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right bg-[#F7F8FF]  pb-12">
             {children}
           </div>
         </main>

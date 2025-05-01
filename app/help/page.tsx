@@ -8,6 +8,7 @@ import {
   HelpArticle,
   HelpCredential,
 } from "@/constants";
+import Link from "next/link";
 
 export default function Help() {
   const categories = [
@@ -16,29 +17,33 @@ export default function Help() {
       title: "Zikoro Events",
       categoriesNo: 6,
       articlesNo: 120,
+      link: "/help/events",
     },
     {
       icon: <HelpEng />,
       title: "Zikoro Engagements",
       categoriesNo: 6,
       articlesNo: 120,
+      link: "/help/engagements",
     },
     {
       icon: <HelpCredential />,
       title: "Zikoro Credentials",
       categoriesNo: 6,
       articlesNo: 120,
+      link: "/help/credentials",
     },
     {
       icon: <HelpBookings />,
       title: "Zikoro Bookings",
       categoriesNo: 6,
       articlesNo: 120,
+      link: "/help/bookings",
     },
   ];
   return (
-    <div className="bg-[#F7F8FF]">
-      <div className="flex items-center justify-center mx-auto h-full lg:h-screen  text-center text-[#31353B]">
+    <div className="bg-[#F7F8FF] min-h-screen">
+      <div className="flex justify-center mx-auto text-center pt-10 text-[#31353B]">
         <div>
           {/* top */}
           <div>
@@ -54,31 +59,33 @@ export default function Help() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="bg-white rounded-[10px] w-full px-4 lg:px-[30px] py-[31px]"
+                className="bg-white rounded-[10px] w-full px-[30px] py-[31px]"
               >
-                <div className="flex justify-center mx-auto">
-                  <>{category.icon}</>
-                </div>
-                <p className="text-center text-[20px] font-semibold mtt-2">
-                  {category.title}
-                </p>
-                <div className="flex gap-x-5 mt-1">
-                  <div className="flex gap-x-1">
-                    <HelpFolder />
-                    <div className="flex gap-x-1">
-                      {category.categoriesNo}
-                      <p>Categories</p>
+                <Link href={category.link}>
+                  <div className="flex justify-center mx-auto">
+                    <>{category.icon}</>
+                  </div>
+                  <p className="text-center text-[20px] font-semibold mt-2">
+                    {category.title}
+                  </p>
+                  <div className="flex gap-x-5 mt-1">
+                    <div className="flex gap-x-1 items-center text-[12px] font-medium">
+                      <HelpFolder />
+                      <div className="flex gap-x-1">
+                        {category.categoriesNo}
+                        <p>Categories</p>
+                      </div>
+                    </div>
+                    |{" "}
+                    <div className="flex gap-x-1 items-center text-[12px] font-medium">
+                      <HelpArticle />
+                      <div className="flex gap-x-1">
+                        {category.articlesNo}
+                        <p>Articles</p>
+                      </div>
                     </div>
                   </div>
-                  |{" "}
-                  <div className="flex gap-x-1">
-                    <HelpArticle />
-                    <div className="flex gap-x-1">
-                      {category.articlesNo}
-                      <p>Articles</p>
-                    </div>
-                  </div>
-                </div>
+                </Link>
               </div>
             ))}
           </div>
