@@ -27,7 +27,7 @@ import {
 import { useRouter } from "next/navigation";
 
 
-export default function EventsHelp() {
+export default function CredentialHelp() {
   const datas = [
     {
       title: "Category",
@@ -70,7 +70,7 @@ const router = useRouter()
         </p>
         <p className="text-[#555555] font-semibold text-[14px] text-opacity-100">
           {" "}
-          Zikoro Events
+          Zikoro Credentials
         </p>
       </div>
 
@@ -81,7 +81,7 @@ const router = useRouter()
           <div className="flex justify-center mx-auto">
             <div className="">
               <p className="text-center font-semibold text-[20px]">
-                Zikoro Events
+                Zikoro Credentials
               </p>
               <div className="flex gap-x-4">
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">
@@ -139,7 +139,7 @@ const router = useRouter()
                 </PopoverContent>
               </Popover>
 
-              <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center" onClick={() => router.push('/help/events/categories')}>
+              <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center" onClick={() => router.push('/help/credentials/categories')}>
                 {" "}
                 Write An Article <HelpPencil />
               </button>

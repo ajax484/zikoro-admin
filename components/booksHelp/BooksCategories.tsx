@@ -25,7 +25,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-export default function EventsCategories() {
+export default function BooksCategories() {
   const datas = [
     {
       title: "Title",
@@ -74,7 +74,7 @@ export default function EventsCategories() {
         {/* left */}
         <div className=" w-full flex items-center gap-x-1 ">
           <p className="text-[#555555] font-semibold text-opacity-50 text-[14px]">
-            Help center <GreaterThan size={14} /> Zikoro Events{" "}
+            Help center <GreaterThan size={14} /> Zikoro Bookings{" "}
             <GreaterThan size={14} />
           </p>
           <p className="text-[#555555] font-semibold text-[14px] text-opacity-100">
