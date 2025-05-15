@@ -7,9 +7,7 @@ import {
   EventsAudience,
   EventsAnalytics,
   EventsTickets,
-  EventsTrouble,
   EventsFaq,
-  HelpRightArrow,
   HelpNote,
 } from "@/constants";
 import { GreaterThan } from "styled-icons/fa-solid";
@@ -94,7 +92,7 @@ export default function EventsHelp() {
                   </div>
                 </div>
                 <div className="flex gap-x-1 text-[14px] font-medium items-center">
-                  <HelpFolder />
+                  <HelpNote />
 
                   <div className="flex gap-x-1">
                     <p>6</p>

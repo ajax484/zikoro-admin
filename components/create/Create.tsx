@@ -81,7 +81,7 @@ export default function Create() {
                   value=""
                   name="title"
                   placeholder="Title"
-                  className="outline-none text-2xl text-gray-600  bg-transparent h-[44px] w-full placeholder-black"
+                  className="outline-none text-2xl text-[#31353B] font-semibold  bg-transparent h-[44px] w-full placeholder-black"
                   required
                 />
               </div>
