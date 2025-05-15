@@ -1,77 +1,79 @@
 "use client";
 import {
-  Help3dotsIcon,
-  HelpArticle,
-  HelpEyeIcon,
-  HelpFilter,
   HelpFolder,
-  HelpPencil,
-  HelpWhiteFileIcon,
+  EventsCreate,
+  EventsPromotion,
+  EventsLive,
+  EventsAudience,
+  EventsAnalytics,
+  EventsTickets,
+  EventsTrouble,
+  EventsFaq,
+  HelpRightArrow,
+  HelpNote,
 } from "@/constants";
 import { GreaterThan } from "styled-icons/fa-solid";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
 
 export default function EventsHelp() {
-  const datas = [
+  const categories = [
     {
-      title: "Category",
-      date: "1/11/2025",
-      articleNo: 120,
-      viewNo: 120,
+      icon: <EventsCreate />,
+      title: "Creating an Event",
+      articlesNo: 6,
+      link: "/help/events/create",
     },
     {
-      title: "Category",
-      date: "1/11/2025",
-      articleNo: 120,
-      viewNo: 120,
+      icon: <EventsPromotion />,
+      title: "Event Promotion and Registration",
+      articlesNo: 6,
+      link: "/help/events/promotion",
     },
     {
-      title: "Category",
-      date: "1/11/2025",
-      articleNo: 120,
-      viewNo: 120,
+      icon: <EventsLive />,
+      title: "Live Event Tools",
+      articlesNo: 6,
+      link: "/help/events/live",
     },
     {
-      title: "Category",
-      date: "1/11/2025",
-      articleNo: 120,
-      viewNo: 120,
+      icon: <EventsAudience />,
+      title: "Engaging Your Audience",
+      articlesNo: 6,
+      link: "/help/events/engage",
     },
+
     {
-      title: "Category",
-      date: "1/11/2025",
-      articleNo: 120,
-      viewNo: 120,
+      icon: <EventsAnalytics />,
+      title: "Post-Event Analytics",
+      articlesNo: 6,
+      link: "/help/events/analytics",
+    },
+
+    {
+      icon: <EventsTickets />,
+      title: "Ticketing and Payments",
+      articlesNo: 6,
+      link: "/help/events/tickets",
+    },
+
+    {
+      icon: <EventsFaq />,
+      title: "FAQs",
+      articlesNo: 6,
+      link: "/help/events/faq",
     },
   ];
-const router = useRouter()
+  const router = useRouter();
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
       <div className=" flex items-center gap-x-1 ">
-        <p className="text-[#555555] font-semibold text-opacity-50 text-[14px]">
-          Help center <GreaterThan size={14} />
-        </p>
-        <p className="text-[#555555] font-semibold text-[14px] text-opacity-100">
-          {" "}
-          Zikoro Events
-        </p>
+        <Link href="/help">
+          <p className="text-[#555555] font-medium capitalize flex items-center gap-x-1 text-[14px]">
+            Help center <GreaterThan size={14} />
+          </p>
+        </Link>
       </div>
 
       {/* mid */}
@@ -83,154 +85,54 @@ const router = useRouter()
               <p className="text-center font-semibold text-[20px]">
                 Zikoro Events
               </p>
-              <div className="flex gap-x-4">
-                <div className="flex gap-x-1 text-[12px] font-medium items-center">
+              <div className="flex gap-x-6 mt-2">
+                <div className="flex gap-x-1 text-[14px] font-medium items-center">
                   <HelpFolder />
                   <div className="flex gap-x-1">
-                    <p>100</p>
+                    <p>7</p>
                     <p>Categories</p>
                   </div>
                 </div>
-                <div className="flex gap-x-1 text-[12px] font-medium items-center">
-                  <HelpEyeIcon />
+                <div className="flex gap-x-1 text-[14px] font-medium items-center">
+                  <HelpFolder />
 
                   <div className="flex gap-x-1">
-                    <p>120</p>
+                    <p>6</p>
                     <p>Articles</p>
                   </div>
                 </div>
               </div>
+              <p className="text-center text-[#31353B] font-semibold text-base mt-8">
+                Select a Category{" "}
+              </p>
             </div>
           </div>
-
-          {/* 2nd section */}
-          <div className="h-[33px] flex flex-col lg:flex-row items-center gap-6 mt-4">
-            {/* left */}
-            <div className="w-full lg:w-[50%] ">
-              <input
-                type="text"
-                placeholder="Search"
-                className="pl-3 py-2 w-full bg-transparent text-[14px] border-b-[1px] outline-none border-[#EAEAEA]"
-              />
-            </div>
-            {/* right */}
-            <div className="flex justify-between gap-x-1 w-full lg:w-[50%] items-center ">
-              <Popover>
-                <PopoverTrigger>
-                  {" "}
-                  <HelpFilter />
-                </PopoverTrigger>
-                <PopoverContent>
-                  <p className="text-[14px] font-semibold">Sort by</p>
-                  <RadioGroup defaultValue="option-one" className="mt-4">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-one" id="option-one" />
-                      <Label htmlFor="option-one">Recently Updated</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-two" id="option-two" />
-                      <Label htmlFor="option-two">Highest Reads</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-three" id="option-three" />
-                      <Label htmlFor="option-three">Lowest Reads</Label>
-                    </div>
-                  </RadioGroup>
-                </PopoverContent>
-              </Popover>
-
-              <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center" onClick={() => router.push('/help/events/categories')}>
-                {" "}
-                Write An Article <HelpPencil />
-              </button>
-            </div>
-          </div>
-
-          <p className="mt-24 lg:mt-8 text-[#31353B] text-center text-base font-medium">
-            Group related articles with category{" "}
-          </p>
 
           {/* bottom */}
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            <Dialog>
-              <DialogTrigger>
-                {" "}
-                <div className="flex flex-col items-center justify-center w-full  gap-2 py-[36px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[10px] cursor-pointer ">
-                  <HelpWhiteFileIcon />
-                  <p className="text-base font-semibold text-white">
-                    Create a new category
-                  </p>
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create Category</DialogTitle>
-                  <DialogDescription>
-                    <form action="" className="mt-8">
-                      {/* 1st form */}
-                      <div>
-                        <p className="text-[12px] font-semibold">
-                          Category Name
-                        </p>
-                        <div className="w-full mt-3 ">
-                          <input
-                            type="text"
-                            placeholder="Enter Category Name"
-                            className="pl-3 py-2 w-full bg-transparent text-[14px] rounded-[10px] border-[1px] outline-none border-[#EAEAEA]"
-                          />
-                        </div>
-                      </div>
-
-                      {/* 2nd form */}
-                      <div className="mt-8">
-                        <p className="text-[12px] font-semibold">Description</p>
-                        <div className="w-full mt-3 ">
-                          <input
-                            type="text"
-                            placeholder="Enter Description"
-                            className="pl-3 py-2 w-full bg-transparent text-[14px] rounded-[10px] border-[1px] outline-none border-[#EAEAEA]"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end mt-8 ">
-                        <button className=" text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-4 rounded-[10px] flex text-base font-semibold ">
-                          {" "}
-                          Create
-                        </button>
-                      </div>
-                    </form>
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-
-            {datas.map((data, index) => (
-              <div className=" bg-white rounded-[10px] p-3">
-                  <div className="flex justify-between items-center">
-                    <p className="text-base font-semibold"> {data.title} </p>
-                    <Help3dotsIcon />
+          <div className="grid grid-cols-1  lg:grid-cols-2 max-w-full lg:max-w-[744px] mx-auto gap-6 mt-6">
+            {categories.map((category, index) => (
+              <div
+                key={index}
+                className=" bg-white rounded-[10px] w-full lg:w-[360px] flex justify-center py-[34px] border-[1px] border-[#EAEAEA]"
+              >
+                <Link href={category.link}>
+                  <div className="flex justify-center mx-auto">
+                    <>{category.icon}</>
                   </div>
-                  <p className="text-[12px] font-medium mt-1">
-                    Last Updated: {data.date}
+                  <p className="text-center text-[20px] px-[2px] font-semibold mt-4">
+                    {category.title}
                   </p>
-                  <div className="flex gap-x-5 mt-[47px]">
-                    <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                      <HelpArticle />
-                      <div className="flex gap-x-1">
-                        {data.articleNo}
-                        <p>Articles</p>
-                      </div>
-                    </div>
 
+                  <div className="flex justify-center gap-x-5 mt-[46px]">
                     <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                      <HelpEyeIcon />
+                      <HelpNote />
                       <div className="flex gap-x-1">
-                        {data.viewNo}
+                        {category.articlesNo}
                         <p>Articles</p>
                       </div>
                     </div>
                   </div>
+                </Link>
               </div>
             ))}
           </div>

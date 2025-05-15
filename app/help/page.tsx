@@ -15,29 +15,48 @@ export default function Help() {
     {
       icon: <HelpEvent />,
       title: "Zikoro Events",
+      desc: "Hosting and managing your events",
       categoriesNo: 6,
-      articlesNo: 120,
+      articlesNo: 6,
       link: "/help/events",
     },
     {
       icon: <HelpEng />,
       title: "Zikoro Engagements",
+      desc: "Issuing certificates and badges",
       categoriesNo: 6,
-      articlesNo: 120,
+      articlesNo: 6,
       link: "/help/engagements",
     },
     {
       icon: <HelpCredential />,
       title: "Zikoro Credentials",
+      desc: "Polls, quizzes & audience interaction",
       categoriesNo: 6,
-      articlesNo: 120,
+      articlesNo: 6,
       link: "/help/credentials",
     },
     {
       icon: <HelpBookings />,
       title: "Zikoro Bookings",
+      desc: "Scheduling and managing appointments",
       categoriesNo: 6,
-      articlesNo: 120,
+      articlesNo: 6,
+      link: "/help/bookings",
+    },
+    {
+      icon: <HelpBookings />,
+      title: "Billing & Subscription",
+      categoriesNo: 6,
+      articlesNo: 6,
+      link: "/help/bookings",
+    },
+
+    {
+      icon: <HelpBookings />,
+      title: "Account & Settings",
+      categoriesNo: 6,
+      articlesNo: 6,
       link: "/help/bookings",
     },
   ];
@@ -47,10 +66,10 @@ export default function Help() {
         <div>
           {/* top */}
           <div>
-            <p className="text-xl font-semibold">
+            <p className="text-[32px] font-semibold">
               Zikoro Help Center Dashboard
             </p>
-            <p className="mt-[80px] text-base font-medium text-[#31353B]">
+            <p className="mt-[65px] text-base font-semibold text-[#31353B]">
               Select A Product to proceed
             </p>
           </div>
@@ -65,10 +84,13 @@ export default function Help() {
                   <div className="flex justify-center mx-auto">
                     <>{category.icon}</>
                   </div>
-                  <p className="text-center text-[20px] font-semibold mt-2">
+                  <p className="text-center text-[20px] font-semibold mt-4">
                     {category.title}
                   </p>
-                  <div className="flex gap-x-5 mt-1">
+                  <p className="text-center text-[16px] text-[#555555] font-medium mt-2">
+                    {category.desc}
+                  </p>
+                  <div className="flex gap-x-5 justify-center mt-[18px]">
                     <div className="flex gap-x-1 items-center text-[12px] font-medium">
                       <HelpFolder />
                       <div className="flex gap-x-1">
@@ -76,7 +98,6 @@ export default function Help() {
                         <p>Categories</p>
                       </div>
                     </div>
-                    |{" "}
                     <div className="flex gap-x-1 items-center text-[12px] font-medium">
                       <HelpArticle />
                       <div className="flex gap-x-1">
