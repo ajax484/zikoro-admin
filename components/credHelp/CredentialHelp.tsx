@@ -57,13 +57,6 @@ export default function CredentialHelp() {
     },
 
     {
-      icon: <CredentialTroubleshoot />,
-      title: "Troubleshooting",
-      articlesNo: 6,
-      link: "/credentials/troubleshooting",
-    },
-
-    {
       icon: <CredentialFaq />,
       title: "FAQs",
       articlesNo: 6,

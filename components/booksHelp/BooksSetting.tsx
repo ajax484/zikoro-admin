@@ -17,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-export default function EventsCreate() {
+export default function BooksSetting() {
   const datas = [
     {
       title: "Title",
@@ -84,9 +84,7 @@ export default function EventsCreate() {
           {/* 1st section */}
           <div className="flex justify-center mx-auto">
             <div className="">
-              <p className="text-center font-semibold text-[18px]">
-                Creating an Event
-              </p>
+              <p className="text-center font-semibold text-[18px]">Setting Up Booking Pages </p>
 
               <div className="flex gap-x-4 justify-center mt-2">
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">

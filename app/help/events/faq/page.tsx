@@ -1,10 +1,10 @@
 "use client";
-import EventsCreate from "@/components/eventsHelp/EventsCreate";
+import EngFaq from "@/components/engHelp/EngFaq";
 
 export default function page() {
   return (
     <div className="bg-[#F7F8FF] min-h-screen ">
-      <EventsCreate />
+      <EngFaq />
     </div>
   );
 }

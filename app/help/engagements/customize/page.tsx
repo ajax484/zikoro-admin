@@ -1,10 +1,10 @@
 "use client";
-import EventsTickets from "@/components/eventsHelp/EventsTickets";
+import EngCustomize from "@/components/engHelp/EngCustomize";
 
 export default function page() {
   return (
     <div className="bg-[#F7F8FF] min-h-screen ">
-      <EventsTickets />
+      <EngCustomize />
     </div>
   );
 }

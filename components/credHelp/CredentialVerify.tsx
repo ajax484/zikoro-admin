@@ -17,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-export default function EventsCreate() {
+export default function CredentialVerify() {
   const datas = [
     {
       title: "Title",
@@ -85,7 +85,7 @@ export default function EventsCreate() {
           <div className="flex justify-center mx-auto">
             <div className="">
               <p className="text-center font-semibold text-[18px]">
-                Creating an Event
+                Verifying Credentials{" "}
               </p>
 
               <div className="flex gap-x-4 justify-center mt-2">

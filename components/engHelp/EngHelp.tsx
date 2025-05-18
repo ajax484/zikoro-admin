@@ -33,9 +33,9 @@ export default function EngagementHelp() {
     },
     {
       icon: <EngIssues />,
-      title: "Common Issues and Fixes",
+      title: "FAQs",
       articlesNo: 6,
-      link: "/engagements/issues",
+      link: "/engagements/faqs",
     },
   ];
   const router = useRouter();

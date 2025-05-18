@@ -7,7 +7,6 @@ import {
   BooksManage,
   HelpNote,
   HelpFolder,
-  
 } from "@/constants/icons";
 import { GreaterThan } from "styled-icons/fa-solid";
 import { useRouter } from "next/navigation";
@@ -19,33 +18,34 @@ export default function BooksHelp() {
       icon: <BooksSettings />,
       title: "Setting Up Booking Pages",
       articlesNo: 6,
-      link: "/bookings/setting",
+      link: "/bookings/settings",
     },
     {
       icon: <BooksManage />,
       title: "Managing Appointments",
       articlesNo: 6,
-      link: "/engagements/managing",
+      link: "/bookings/managing",
     },
     {
       icon: <BooksCustomize />,
       title: "Customizing Availability",
       articlesNo: 6,
-      link: "/engagements/customizing",
+      link: "/bookings/customizing",
     },
     {
       icon: <BooksNotice />,
       title: "Notifications and Reminders",
       articlesNo: 6,
-      link: "/engagements/notification",
+      link: "/bookings/notification",
     },
     {
       icon: <BooksIntegrate />,
-      title: "Booking Integration Issues",
+      title: "FAQs",
       articlesNo: 6,
-      link: "/bookings/integration",
+      link: "/bookings/faqs",
     },
-  ];  const router = useRouter();
+  ];
+  const router = useRouter();
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
