@@ -21,46 +21,46 @@ export default function CredentialHelp() {
       icon: <CredentialGetStarted />,
       title: "Getting Started with Credentials",
       articlesNo: 6,
-      link: "/credentials/start",
+      link: "/help/credentials/start",
     },
     {
       icon: <CredentialDesign />,
       title: "Designing Certificates & Badges",
       articlesNo: 6,
-      link: "/credentials/design",
+      link: "/help/credentials/design",
     },
     {
       icon: <CredentialShare />,
       title: "Issuing and Sharing Credentials",
       articlesNo: 6,
-      link: "/credentials/sharing",
+      link: "/help/credentials/sharing",
     },
     {
       icon: <CredentialSettings />,
       title: "Credential Settings",
       articlesNo: 6,
-      link: "/credentials/settings",
+      link: "/help/credentials/settings",
     },
 
     {
       icon: <CredentialTeam />,
       title: "Team and Role Management",
       articlesNo: 6,
-      link: "/credentials/team",
+      link: "/help/credentials/team",
     },
 
     {
       icon: <CredentialVerify />,
       title: "Verifying Credentials",
       articlesNo: 6,
-      link: "/credentials/verify",
+      link: "/help/credentials/verify",
     },
 
     {
       icon: <CredentialFaq />,
       title: "FAQs",
       articlesNo: 6,
-      link: "/credentials/faq",
+      link: "/help/credentials/faq",
     },
   ];
   const router = useRouter();

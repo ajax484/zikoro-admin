@@ -17,25 +17,25 @@ export default function EngagementHelp() {
       icon: <EngLive />,
       title: "Creating Live Interactions",
       articlesNo: 6,
-      link: "/engagements/live",
+      link: "/help/engagements/live",
     },
     {
       icon: <EngCustomize />,
       title: "Customizing Your Engagement",
       articlesNo: 6,
-      link: "/engagements/customize",
+      link: "/help/engagements/customize",
     },
     {
       icon: <EngManage />,
       title: "Managing Live Sessions",
       articlesNo: 6,
-      link: "/engagements/manage",
+      link: "/help/engagements/manage",
     },
     {
       icon: <EngIssues />,
       title: "FAQs",
       articlesNo: 6,
-      link: "/engagements/faqs",
+      link: "/help/engagements/faqs",
     },
   ];
   const router = useRouter();

@@ -18,31 +18,31 @@ export default function BooksHelp() {
       icon: <BooksSettings />,
       title: "Setting Up Booking Pages",
       articlesNo: 6,
-      link: "/bookings/settings",
+      link: "/help/bookings/settings",
     },
     {
       icon: <BooksManage />,
       title: "Managing Appointments",
       articlesNo: 6,
-      link: "/bookings/managing",
+      link: "/help/bookings/managing",
     },
     {
       icon: <BooksCustomize />,
       title: "Customizing Availability",
       articlesNo: 6,
-      link: "/bookings/customizing",
+      link: "/help/bookings/customizing",
     },
     {
       icon: <BooksNotice />,
       title: "Notifications and Reminders",
       articlesNo: 6,
-      link: "/bookings/notification",
+      link: "/help/bookings/notification",
     },
     {
       icon: <BooksIntegrate />,
       title: "FAQs",
       articlesNo: 6,
-      link: "/bookings/faqs",
+      link: "/help/bookings/faqs",
     },
   ];
   const router = useRouter();

@@ -66,7 +66,7 @@ export default function Help() {
         <div>
           {/* top */}
           <div>
-            <p className="text-[32px] font-semibold">
+            <p className="text-[32px] text-xl font-semibold">
               Zikoro Help Center Dashboard
             </p>
             <p className="mt-[65px] text-base font-semibold text-[#31353B]">
