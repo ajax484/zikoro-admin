@@ -41,9 +41,6 @@ interface Category {
 
 export default function AdminDashboard() {
   const [blogData, setBlogData] = useState<any | undefined>(undefined);
-  // const [totalViews, setTotalViews] = useState<number>(0);
-  // const [totalShares, setTotalShares] = useState<number>(0);
-  // const [totalPosts, setTotalPosts] = useState<number>(0);
   const [blogName, setBlogName] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

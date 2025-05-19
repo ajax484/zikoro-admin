@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
                     title: title,
                     productCategory: category,
                     Details: content,
-                    lastEditedDate: Date.now()
+                    lastEditedDate: new Date().toISOString()
                 },
             ]);
 
