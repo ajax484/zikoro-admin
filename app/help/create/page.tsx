@@ -1,6 +1,6 @@
 "use client";
 
-import Create from "@/components/create/Create";
+import Create from "@/components/helpCreate/HelpCreate";
 
 export default function page() {
   return (

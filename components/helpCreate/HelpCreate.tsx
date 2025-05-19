@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
 import { TextEditor } from "../TextEditor";
+import { useState } from "react";
 
 export default function Create() {
   const router = useRouter();
@@ -27,13 +28,45 @@ export default function Create() {
 
   const content = watch("content");
 
+  //categories list
   const categories = [
-    { name: "Select A Category", value: "" },
-    // { name: "Event tips", value: "Event" },
-    // { name: "Product Updates", value: "Product" },
-    // { name: "Guides and Tutorial", value: "Guide" },
-    // { name: "Case Study", value: "Case" },
+    { name: "Select a category", value: "" },
+    { name: "Creating an event", value: "createEvent" },
+    { name: "Event promotion and registration", value: "promoteEvent" },
+    { name: "Live event tools", value: "liveEvent" },
+    { name: "Engage your audience", value: "engageEvent" },
+    { name: "Post event analytics", value: "analyseEvent" },
+    { name: "Events tickets and payments", value: "payEvent" },
+    { name: "FAQs - Events", value: "faqEvent" },
+    { name: "Getting started with credentials", value: "startCredential" },
+    { name: "Designing certificates & badges", value: "designCredential" },
+    { name: "Issuing and sharing credentials", value: "issueCredential" },
+    { name: "Credential settings", value: "setCredential" },
+    { name: "Team and role management", value: "teamCredential" },
+    { name: "Verify credential", value: "verifyCredential" },
+    { name: "FAQs - Credential", value: "faqCredential" },
+    { name: "Creating live", value: "liveEng" },
+    { name: "Managing live sessions", value: "manageEng" },
+    { name: "Customizing your engagement", value: "customizeEng" },
+    { name: "FAQs - Engagements", value: "faqEng" },
+    { name: "Setting up booking pages", value: "setBookings" },
+    { name: "Managing appointments", value: "manageBookings" },
+    { name: "Customizing availability", value: "customizeBookings" },
+    { name: "Notifications and reminders", value: "notifyBookings" },
+    { name: "FAQs - Bookings", value: "faqBookings" },
   ];
+
+  //form data
+  const [formData, setFormData] = useState<any>({
+    title: "",
+    category: "",
+    content: [],
+  });
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
