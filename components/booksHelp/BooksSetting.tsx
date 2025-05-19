@@ -70,9 +70,12 @@ export default function BooksSetting() {
             >
               Help center <GreaterThan size={14} />{" "}
             </span>{" "}
-            <span className="cursor-pointer flex gap-x-1 items-center">
+            <span
+              className="cursor-pointer flex gap-x-1 items-center"
+              onClick={() => router.push("/help/bookings")}
+            >
               {" "}
-              Zikoro Events <GreaterThan size={14} />
+              Zikoro Bookings <GreaterThan size={14} />
             </span>
           </p>
         </div>
@@ -84,7 +87,9 @@ export default function BooksSetting() {
           {/* 1st section */}
           <div className="flex justify-center mx-auto">
             <div className="">
-              <p className="text-center font-semibold text-[18px]">Setting Up Booking Pages </p>
+              <p className="text-center font-semibold text-[18px]">
+                Setting Up Booking Pages{" "}
+              </p>
 
               <div className="flex gap-x-4 justify-center mt-2">
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">

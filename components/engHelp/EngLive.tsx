@@ -70,9 +70,12 @@ export default function EngLive() {
             >
               Help center <GreaterThan size={14} />{" "}
             </span>{" "}
-            <span className="cursor-pointer flex gap-x-1 items-center">
+            <span
+              className="cursor-pointer flex gap-x-1 items-center"
+              onClick={() => router.push("/help/engagements")}
+            >
               {" "}
-              Zikoro Events <GreaterThan size={14} />
+              Zikoro Engagements <GreaterThan size={14} />
             </span>
           </p>
         </div>
@@ -84,7 +87,9 @@ export default function EngLive() {
           {/* 1st section */}
           <div className="flex justify-center mx-auto">
             <div className="">
-              <p className="text-center font-semibold text-[18px]">Creating Live Interactions</p>
+              <p className="text-center font-semibold text-[18px]">
+                Creating Live Interactions
+              </p>
 
               <div className="flex gap-x-4 justify-center mt-2">
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">

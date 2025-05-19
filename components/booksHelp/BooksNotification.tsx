@@ -70,9 +70,12 @@ export default function BooksNotifications() {
             >
               Help center <GreaterThan size={14} />{" "}
             </span>{" "}
-            <span className="cursor-pointer flex gap-x-1 items-center">
+            <span
+              className="cursor-pointer flex gap-x-1 items-center"
+              onClick={() => router.push("/help/bookings")}
+            >
               {" "}
-              Zikoro Events <GreaterThan size={14} />
+              Zikoro Bookings <GreaterThan size={14} />
             </span>
           </p>
         </div>

@@ -70,9 +70,12 @@ export default function EngManage() {
             >
               Help center <GreaterThan size={14} />{" "}
             </span>{" "}
-            <span className="cursor-pointer flex gap-x-1 items-center">
+            <span
+              className="cursor-pointer flex gap-x-1 items-center"
+              onClick={() => router.push("/help/engagements")}
+            >
               {" "}
-              Zikoro Events <GreaterThan size={14} />
+              Zikoro Engagements <GreaterThan size={14} />
             </span>
           </p>
         </div>
