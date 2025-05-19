@@ -13,55 +13,72 @@ import {
 import { GreaterThan } from "styled-icons/fa-solid";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useFetchHelpArticles } from "@/hooks/services/help";
 
 export default function EventsHelp() {
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
   const categories = [
     {
+      key: "createEvent",
       icon: <EventsCreate />,
       title: "Creating an Event",
-      articlesNo: 6,
       link: "/help/events/create",
     },
     {
+      key: "promoteEvent",
       icon: <EventsPromotion />,
       title: "Event Promotion and Registration",
-      articlesNo: 6,
       link: "/help/events/promotion",
     },
     {
+      key: "liveEvent",
       icon: <EventsLive />,
       title: "Live Event Tools",
-      articlesNo: 6,
       link: "/help/events/live",
     },
     {
+      key: "engageEvent",
       icon: <EventsAudience />,
       title: "Engaging Your Audience",
-      articlesNo: 6,
       link: "/help/events/engage",
     },
-
     {
+      key: "analyseEvent",
       icon: <EventsAnalytics />,
       title: "Post-Event Analytics",
-      articlesNo: 6,
       link: "/help/events/analytics",
     },
-
     {
+      key: "payEvent",
       icon: <EventsTickets />,
       title: "Ticketing and Payments",
-      articlesNo: 6,
       link: "/help/events/tickets",
     },
-
     {
+      key: "faqEvent",
       icon: <EventsFaq />,
       title: "FAQs",
-      articlesNo: 6,
       link: "/help/events/faq",
     },
   ];
+
+  //Get only Event-related articles:
+  const eventArticles =
+    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+
+  //Attach the article count dynamically
+  const eventCategories = categories.map((category) => {
+    const articlesNo = eventArticles.filter(
+      (a) => a.productCategory === category.key
+    ).length;
+
+    return { ...category, articlesNo };
+  });
+
   const router = useRouter();
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
@@ -108,7 +125,7 @@ export default function EventsHelp() {
 
           {/* bottom */}
           <div className="grid grid-cols-1  lg:grid-cols-2 max-w-full lg:max-w-[744px] mx-auto gap-6 mt-6">
-            {categories.map((category, index) => (
+            {eventCategories.map((category, index) => (
               <div
                 key={index}
                 className=" bg-white rounded-[10px] w-full lg:w-[360px] flex justify-center py-[34px] border-[1px] border-[#EAEAEA]"
