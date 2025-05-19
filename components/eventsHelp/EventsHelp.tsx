@@ -21,6 +21,8 @@ export default function EventsHelp() {
     loading: helpLoading,
     fetchHelpArticles,
   } = useFetchHelpArticles();
+
+  //categories list
   const categories = [
     {
       key: "createEvent",
@@ -80,6 +82,7 @@ export default function EventsHelp() {
   });
 
   const router = useRouter();
+  
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
@@ -112,7 +115,7 @@ export default function EventsHelp() {
                   <HelpNote />
 
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{eventArticles.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
