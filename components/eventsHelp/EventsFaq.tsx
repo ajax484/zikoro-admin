@@ -26,7 +26,7 @@ export default function EventsFaq() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "faqEvent"
+    (article) => article.productCategory.trim() === "faqEvent"
   );
   const router = useRouter();
 
