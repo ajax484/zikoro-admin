@@ -16,44 +16,18 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useFetchHelpArticles } from "@/hooks/services/help";
 
 export default function BooksManaging() {
-  const datas = [
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
 
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-  ];
+  const filteredData = articles.filter(
+    (article) => article.productCategory.trim() === "manageBookings"
+  );
 
   const router = useRouter();
 
@@ -68,7 +42,7 @@ export default function BooksManaging() {
               className="cursor-pointer flex gap-x-1 items-center"
               onClick={() => router.push("/help")}
             >
-              Help center <GreaterThan size={14} />{" "}
+              Help Center <GreaterThan size={14} />{" "}
             </span>{" "}
             <span
               className="cursor-pointer flex gap-x-1 items-center"
@@ -95,7 +69,7 @@ export default function BooksManaging() {
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">
                   <HelpArticle />
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{filteredData.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
@@ -151,7 +125,7 @@ export default function BooksManaging() {
 
           {/* bottom */}
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            {datas.map((data, index) => (
+            {filteredData.map((data, index) => (
               <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
                 {/* left */}
                 <div className="w-[5%] mt-1">

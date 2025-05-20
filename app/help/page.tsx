@@ -7,6 +7,8 @@ import {
   HelpFolder,
   HelpArticle,
   HelpCredential,
+  HelpBilings,
+  HelpSettings,
 } from "@/constants";
 import Link from "next/link";
 // Create a utility function for fetching articles
@@ -75,6 +77,8 @@ export default function Help() {
   const { event, engagement, credentials, bookings } =
     getProductCategoryStats();
 
+    console.log(articles);
+
   //categories list
   const categories = [
     {
@@ -110,7 +114,7 @@ export default function Help() {
       link: "/help/bookings",
     },
     {
-      icon: <HelpBookings />,
+      icon: <HelpBilings />,
       title: "Billing & Subscription",
       categoriesNo: 0,
       articlesNo: 0,
@@ -118,7 +122,7 @@ export default function Help() {
     },
 
     {
-      icon: <HelpBookings />,
+      icon: <HelpSettings />,
       title: "Account & Settings",
       categoriesNo: 0,
       articlesNo: 0,

@@ -29,7 +29,7 @@ export default function EventsFaq() {
     (article) => article.productCategory.trim() === "faqEvent"
   );
   const router = useRouter();
-
+ 
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}

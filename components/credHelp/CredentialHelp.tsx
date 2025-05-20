@@ -39,7 +39,7 @@ export default function CredentialHelp() {
     {
       icon: <CredentialShare />,
       title: "Issuing and Sharing Credentials",
-      key: "shareCredential",
+      key: "issueCredential",
       link: "/help/credentials/sharing",
     },
     {

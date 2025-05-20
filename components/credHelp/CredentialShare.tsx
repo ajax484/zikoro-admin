@@ -18,7 +18,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useFetchHelpArticles } from "@/hooks/services/help";
 
-
 export default function CredentialShare() {
   const {
     articles,
@@ -29,7 +28,6 @@ export default function CredentialShare() {
   const filteredEvents = articles.filter(
     (article) => article.productCategory.trim() === "issueCredential"
   );
- 
 
   const router = useRouter();
 
