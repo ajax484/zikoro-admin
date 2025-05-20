@@ -28,7 +28,7 @@ export default function EngLive() {
   const router = useRouter();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "liveEng"
+    (article) => article.productCategory.trim() === "liveEng"
   );
 
   return (

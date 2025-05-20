@@ -27,7 +27,7 @@ export default function CredentialShare() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "issueCredential"
+    (article) => article.productCategory.trim() === "issueCredential"
   );
  
 

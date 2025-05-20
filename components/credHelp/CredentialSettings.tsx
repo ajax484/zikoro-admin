@@ -26,7 +26,7 @@ export default function CredentialSettings() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "setCredential"
+    (article) => article.productCategory.trim() === "setCredential"
   );
 
   const router = useRouter();

@@ -27,7 +27,7 @@ export default function CredentialStart() {
    } = useFetchHelpArticles();
 
    const filteredEvents = articles.filter(
-    (article) => article.productCategory === "startCredential"
+    (article) => article.productCategory.trim() === "startCredential"
   );
 
   const router = useRouter();

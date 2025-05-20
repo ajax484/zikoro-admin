@@ -27,7 +27,7 @@ export default function CredentialTeam() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "teamCredential"
+    (article) => article.productCategory.trim() === "teamCredential"
   );
 
   const router = useRouter();

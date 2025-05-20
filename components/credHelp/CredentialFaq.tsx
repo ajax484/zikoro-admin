@@ -26,7 +26,7 @@ export default function CredentialFaq() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "faqCredential"
+    (article) => article.productCategory.trim() === "faqCredential"
   );
 
   const router = useRouter();

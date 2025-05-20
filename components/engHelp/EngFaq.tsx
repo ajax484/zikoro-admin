@@ -28,7 +28,7 @@ export default function EngFaq() {
   const router = useRouter();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "faqEng"
+    (article) => article.productCategory.trim() === "faqEng"
   );
 
   return (

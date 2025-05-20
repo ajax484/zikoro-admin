@@ -25,7 +25,7 @@ export default function CredentialDesign() {
   } = useFetchHelpArticles();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "designCredential"
+    (article) => article.productCategory.trim() === "designCredential"
   );
 
   const router = useRouter();

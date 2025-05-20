@@ -27,7 +27,7 @@ export default function EngCustomize() {
 
   const router = useRouter();
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "customizeEng"
+    (article) => article.productCategory.trim() === "customizeEng"
   );
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">

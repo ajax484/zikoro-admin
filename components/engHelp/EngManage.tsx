@@ -28,7 +28,7 @@ export default function EngManage() {
   const router = useRouter();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory === "manageEng"
+    (article) => article.productCategory.trim() === "manageEng"
   );
 
   return (
