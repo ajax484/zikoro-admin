@@ -55,7 +55,7 @@ export default function BooksHelp() {
 
   //Get only Bookings-related articles:
   const bookingsArticles =
-    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+    articles?.filter((a) => a.productCategory.trim()?.includes("Bookings")) || [];
 
   //Attach the article count dynamically
   const bookingsCategories = categories.map((category) => {

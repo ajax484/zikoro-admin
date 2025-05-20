@@ -70,7 +70,7 @@ export default function EventsHelp() {
 
   //Get only Event-related articles:
   const eventArticles =
-    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+    articles?.filter((a) => a.productCategory.trim()?.includes("Event"));
 
   //Attach the article count dynamically
   const eventCategories = categories.map((category) => {

@@ -48,7 +48,7 @@ export default function EngagementHelp() {
 
   //Get only Engagement-related articles:
   const engagementsArticles =
-    articles?.filter((a) => a.productCategory?.includes("Eng")) || [];
+    articles?.filter((a) => a.productCategory.trim()?.includes("Eng"));
 
   //Attach the article count dynamically
   const engagementsCategories = categories.map((category) => {

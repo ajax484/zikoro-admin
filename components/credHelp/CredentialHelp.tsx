@@ -73,7 +73,7 @@ export default function CredentialHelp() {
 
   //Get only Credential-related articles:
   const credentialArticles =
-    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+    articles?.filter((a) => a.productCategory.trim()?.includes("Credential"));
 
   //Attach the article count dynamically
   const credentialCategories = categories.map((category) => {
