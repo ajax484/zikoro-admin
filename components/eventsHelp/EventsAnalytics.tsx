@@ -41,7 +41,7 @@ export default function EventsAnalytics() {
               className="cursor-pointer flex gap-x-1 items-center"
               onClick={() => router.push("/help")}
             >
-              Help center <GreaterThan size={14} />{" "}
+              Help Center <GreaterThan size={14} />{" "}
             </span>{" "}
             <span
               className="cursor-pointer flex gap-x-1 items-center"

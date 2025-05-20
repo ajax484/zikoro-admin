@@ -89,7 +89,7 @@ export default function EventsHelp() {
       <div className=" flex items-center gap-x-1 ">
         <Link href="/help">
           <p className="text-[#555555] font-medium capitalize flex items-center gap-x-1 text-[14px]">
-            Help center <GreaterThan size={14} />
+            Help Center <GreaterThan size={14} />
           </p>
         </Link>
       </div>

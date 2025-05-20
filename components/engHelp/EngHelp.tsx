@@ -65,7 +65,7 @@ export default function EngagementHelp() {
       <div className=" flex items-center gap-x-1 ">
         <Link href="/help">
           <p className="text-[#555555] font-medium capitalize flex items-center gap-x-1 text-[14px]">
-            Help center <GreaterThan size={14} />
+            Help Center <GreaterThan size={14} />
           </p>
         </Link>
       </div>
@@ -83,7 +83,7 @@ export default function EngagementHelp() {
                 <div className="flex gap-x-1 text-[14px] font-medium items-center">
                   <HelpFolder />
                   <div className="flex gap-x-1">
-                    <p>7</p>
+                    <p>4</p>
                     <p>Categories</p>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export default function EngagementHelp() {
                   <HelpNote />
 
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{eventArticles.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
