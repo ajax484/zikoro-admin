@@ -18,19 +18,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useFetchHelpArticles } from "@/hooks/services/help";
 
-
 export default function EventsCreate() {
-   const {
-     articles,
-     loading: helpLoading,
-     fetchHelpArticles,
-   } = useFetchHelpArticles();
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
 
   const router = useRouter();
 
   const filteredEvents = articles.filter(
-  article => article.productCategory === "createEvent"
-);
+    (article) => article.productCategory === "createEvent"
+  );
 
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">

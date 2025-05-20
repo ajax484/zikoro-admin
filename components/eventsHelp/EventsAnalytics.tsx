@@ -16,47 +16,20 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useFetchHelpArticles } from "@/hooks/services/help";
 
 export default function EventsAnalytics() {
-  const datas = [
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-
-    {
-      title: "Title",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
-      articleNo: 120,
-      viewNo: 120,
-    },
-  ];
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
 
   const router = useRouter();
 
+  const filteredEvents = articles.filter(
+    (article) => article.productCategory === "analyseEvent"
+  );
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
@@ -151,7 +124,7 @@ export default function EventsAnalytics() {
 
           {/* bottom */}
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            {datas.map((data, index) => (
+            {filteredEvents.map((data, index) => (
               <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
                 {/* left */}
                 <div className="w-[5%] mt-1">
