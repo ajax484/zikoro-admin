@@ -11,41 +11,63 @@ import {
 import { GreaterThan } from "styled-icons/fa-solid";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useFetchHelpArticles } from "@/hooks/services/help";
 
 export default function BooksHelp() {
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
+
   const categories = [
     {
       icon: <BooksSettings />,
       title: "Setting Up Booking Pages",
-      articlesNo: 6,
+      key: "setBookings",
       link: "/help/bookings/settings",
     },
     {
       icon: <BooksManage />,
       title: "Managing Appointments",
-      articlesNo: 6,
+      key: "manageBookings",
       link: "/help/bookings/managing",
     },
     {
       icon: <BooksCustomize />,
       title: "Customizing Availability",
-      articlesNo: 6,
+      key: "customizeBookings",
       link: "/help/bookings/customizing",
     },
     {
       icon: <BooksNotice />,
       title: "Notifications and Reminders",
-      articlesNo: 6,
+      key: "notifyBookings",
       link: "/help/bookings/notification",
     },
     {
       icon: <BooksIntegrate />,
       title: "FAQs",
-      articlesNo: 6,
+      key: "faqBookings",
       link: "/help/bookings/faqs",
     },
   ];
+
+  //Get only Bookings-related articles:
+  const bookingsArticles =
+    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+
+  //Attach the article count dynamically
+  const bookingsCategories = categories.map((category) => {
+    const articlesNo = bookingsArticles.filter(
+      (a) => a.productCategory === category.key
+    ).length;
+
+    return { ...category, articlesNo };
+  });
+
   const router = useRouter();
+
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
@@ -70,7 +92,7 @@ export default function BooksHelp() {
                 <div className="flex gap-x-1 text-[14px] font-medium items-center">
                   <HelpFolder />
                   <div className="flex gap-x-1">
-                    <p>7</p>
+                    <p>5</p>
                     <p>Categories</p>
                   </div>
                 </div>
@@ -78,7 +100,7 @@ export default function BooksHelp() {
                   <HelpNote />
 
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{bookingsArticles.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
@@ -91,7 +113,7 @@ export default function BooksHelp() {
 
           {/* bottom */}
           <div className="grid grid-cols-1  lg:grid-cols-2 max-w-full lg:max-w-[744px] mx-auto gap-6 mt-6">
-            {categories.map((category, index) => (
+            {bookingsCategories.map((category, index) => (
               <div
                 key={index}
                 className=" bg-white rounded-[10px] w-full lg:w-[360px] flex justify-center py-[34px] border-[1px] border-[#EAEAEA]"

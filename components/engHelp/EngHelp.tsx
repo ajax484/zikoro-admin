@@ -46,13 +46,13 @@ export default function EngagementHelp() {
     },
   ];
 
-  //Get only Ev-related articles:
-  const eventArticles =
-    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+  //Get only Engagement-related articles:
+  const engagementsArticles =
+    articles?.filter((a) => a.productCategory?.includes("Eng")) || [];
 
   //Attach the article count dynamically
-  const eventCategories = categories.map((category) => {
-    const articlesNo = eventArticles.filter(
+  const engagementsCategories = categories.map((category) => {
+    const articlesNo = engagementsArticles.filter(
       (a) => a.productCategory === category.key
     ).length;
 
@@ -91,7 +91,7 @@ export default function EngagementHelp() {
                   <HelpNote />
 
                   <div className="flex gap-x-1">
-                    <p>{eventArticles.length}</p>
+                    <p>{engagementsArticles.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
@@ -104,7 +104,7 @@ export default function EngagementHelp() {
 
           {/* bottom */}
           <div className="grid grid-cols-1  lg:grid-cols-2 max-w-full lg:max-w-[744px] mx-auto gap-6 mt-6">
-            {eventCategories.map((category, index) => (
+            {engagementsCategories.map((category, index) => (
               <div
                 key={index}
                 className=" bg-white rounded-[10px] w-full lg:w-[360px] flex justify-center py-[34px] border-[1px] border-[#EAEAEA]"

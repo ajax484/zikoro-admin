@@ -14,55 +14,76 @@ import {
 import { GreaterThan } from "styled-icons/fa-solid";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useFetchHelpArticles } from "@/hooks/services/help";
 
 export default function CredentialHelp() {
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
+
   const categories = [
     {
       icon: <CredentialGetStarted />,
       title: "Getting Started with Credentials",
-      articlesNo: 6,
+      key: "startCredential",
       link: "/help/credentials/start",
     },
     {
       icon: <CredentialDesign />,
       title: "Designing Certificates & Badges",
-      articlesNo: 6,
+      key: "designCredential",
       link: "/help/credentials/design",
     },
     {
       icon: <CredentialShare />,
       title: "Issuing and Sharing Credentials",
-      articlesNo: 6,
+      key: "shareCredential",
       link: "/help/credentials/sharing",
     },
     {
       icon: <CredentialSettings />,
       title: "Credential Settings",
-      articlesNo: 6,
+      key: "setCredential",
       link: "/help/credentials/settings",
     },
 
     {
       icon: <CredentialTeam />,
       title: "Team and Role Management",
-      articlesNo: 6,
+      key: "teamCredential",
       link: "/help/credentials/team",
     },
 
     {
       icon: <CredentialVerify />,
       title: "Verifying Credentials",
-      articlesNo: 6,
+      key: "verifyCredential",
       link: "/help/credentials/verify",
     },
 
     {
       icon: <CredentialFaq />,
       title: "FAQs",
-      articlesNo: 6,
+      key: "faqCredential",
       link: "/help/credentials/faq",
     },
   ];
+
+  //Get only Credential-related articles:
+  const credentialArticles =
+    articles?.filter((a) => a.productCategory?.includes("Event")) || [];
+
+  //Attach the article count dynamically
+  const credentialCategories = categories.map((category) => {
+    const articlesNo = credentialArticles.filter(
+      (a) => a.productCategory === category.key
+    ).length;
+
+    return { ...category, articlesNo };
+  });
+
   const router = useRouter();
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
@@ -70,7 +91,7 @@ export default function CredentialHelp() {
       <div className=" flex items-center gap-x-1 ">
         <Link href="/help">
           <p className="text-[#555555] font-medium capitalize flex items-center gap-x-1 text-[14px]">
-            Help center <GreaterThan size={14} />
+            Help Center <GreaterThan size={14} />
           </p>
         </Link>
       </div>
@@ -96,7 +117,7 @@ export default function CredentialHelp() {
                   <HelpNote />
 
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{credentialArticles.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
@@ -109,7 +130,7 @@ export default function CredentialHelp() {
 
           {/* bottom */}
           <div className="grid grid-cols-1  lg:grid-cols-2 max-w-full lg:max-w-[744px] mx-auto gap-6 mt-6">
-            {categories.map((category, index) => (
+            {credentialCategories.map((category, index) => (
               <div
                 key={index}
                 className=" bg-white rounded-[10px] w-full lg:w-[360px] flex justify-center py-[34px] border-[1px] border-[#EAEAEA]"

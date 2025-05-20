@@ -67,7 +67,7 @@ export default function EngCustomize() {
                 <div className="flex gap-x-1 text-[12px] font-medium items-center">
                   <HelpArticle />
                   <div className="flex gap-x-1">
-                    <p>6</p>
+                    <p>{filteredEvents.length}</p>
                     <p>Articles</p>
                   </div>
                 </div>
