@@ -127,7 +127,7 @@ export default function BooksCustomize() {
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {filteredData.map((data, index) => (
               <div
-                onClick={() => window.open(`/article/${data.id}`, "_blank")}
+                onClick={() => window.open(`https://help.zikoro.com/article/${data.id} `, "_blank")}
                 className=" bg-white rounded-[10px] p-3 flex gap-x-2 "
               >
                 {/* left */}
