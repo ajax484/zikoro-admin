@@ -26,6 +26,7 @@ export default function EngCustomize() {
   } = useFetchHelpArticles();
 
   const router = useRouter();
+  
   const filteredEvents = articles.filter(
     (article) => article.productCategory.trim() === "customizeEng"
   );
