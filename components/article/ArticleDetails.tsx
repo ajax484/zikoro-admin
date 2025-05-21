@@ -110,7 +110,7 @@ export default function FullPost({ articleId }: { articleId: number }) {
     <>
       {data && (
         <div>
-          <div className="mt-[50px] lg:mt-[64px] px-3 lg:px-0 ">
+          <div className="mt-[50px] lg:mt-[64px] px-3 lg:px-0 bg-white min-h-screen ">
             {/* header section */}
 
             <div className="max-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
