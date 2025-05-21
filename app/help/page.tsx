@@ -77,8 +77,6 @@ export default function Help() {
   const { event, engagement, credentials, bookings } =
     getProductCategoryStats();
 
-    console.log(articles);
-
   //categories list
   const categories = [
     {
