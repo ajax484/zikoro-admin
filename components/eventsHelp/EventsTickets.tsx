@@ -30,6 +30,7 @@ export default function EventsTickets() {
   const filteredEvents = articles.filter(
     (article) => article.productCategory.trim() === "payEvent"
   );
+  
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}

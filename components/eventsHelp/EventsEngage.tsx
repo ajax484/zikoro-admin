@@ -24,6 +24,7 @@ export default function EventsEngage() {
     loading: helpLoading,
     fetchHelpArticles,
   } = useFetchHelpArticles();
+  
   const filteredEvents = articles.filter(
     (article) => article.productCategory === "engageEvent"
   );

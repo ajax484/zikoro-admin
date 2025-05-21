@@ -28,6 +28,7 @@ export default function EventsFaq() {
   const filteredEvents = articles.filter(
     (article) => article.productCategory.trim() === "faqEvent"
   );
+  
   const router = useRouter();
  
   return (
