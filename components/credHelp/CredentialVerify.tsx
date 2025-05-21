@@ -28,7 +28,7 @@ export default function CredentialVerify() {
   const router = useRouter();
 
   const filteredEvents = articles.filter(
-    (article) => article.productCategory.trim() === "createEvent"
+    (article) => article.productCategory.trim() === "verifyCredential"
   );
   return (
     <div className="pt-[40px] px-3 lg:px-[56px]">

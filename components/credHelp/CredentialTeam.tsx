@@ -18,7 +18,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useFetchHelpArticles } from "@/hooks/services/help";
 
-
 export default function CredentialTeam() {
   const {
     articles,
