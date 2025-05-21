@@ -126,7 +126,10 @@ export default function EventsCreate() {
           {/* bottom */}
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {filteredEvents.map((data, index) => (
-              <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
+              <div
+                onClick={() => window.open(`/article/${data.id}`, "_blank")}
+                className=" bg-white rounded-[10px] p-3 flex gap-x-2 "
+              >
                 {/* left */}
                 <div className="w-[5%] mt-1">
                   <HelpArticle />

@@ -18,15 +18,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useFetchHelpArticles } from "@/hooks/services/help";
 
-
 export default function CredentialStart() {
-   const {
-     articles,
-     loading: helpLoading,
-     fetchHelpArticles,
-   } = useFetchHelpArticles();
+  const {
+    articles,
+    loading: helpLoading,
+    fetchHelpArticles,
+  } = useFetchHelpArticles();
 
-   const filteredEvents = articles.filter(
+  const filteredEvents = articles.filter(
     (article) => article.productCategory.trim() === "startCredential"
   );
 
@@ -127,7 +126,10 @@ export default function CredentialStart() {
           {/* bottom */}
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {filteredEvents.map((data, index) => (
-              <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
+              <div
+                onClick={() => window.open(`/article/${data.id}`, "_blank")}
+                className=" bg-white rounded-[10px] p-3 flex gap-x-2 "
+              >
                 {/* left */}
                 <div className="w-[5%] mt-1">
                   <HelpArticle />
