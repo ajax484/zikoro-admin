@@ -117,61 +117,24 @@ export default function AdminDashboard() {
     return filteredPosts;
   };
 
-  // //fetching blog Post
-  // useEffect(() => {
-  //   fetchBlogPost();
-  // }, []);
-
-  //filter use Effect
-  // useEffect(() => {
-  //   if (blogData) {
-  //     // Filter blog posts based on selected date, category, and blog name
-  //     const filteredPosts = filterBlogPosts(
-  //       blogData,
-  //       startDate,
-  //       endDate,
-  //       checkedItems,
-  //       blogName
-  //     );
-
-  //     // Calculate total views
-  //     const totalViews = filteredPosts.reduce(
-  //       (acc, post) => acc + post.views,
-  //       0
-  //     );
-  //     setTotalViews(totalViews);
-
-  //     // Calculate total shares
-  //     const totalShares = filteredPosts.reduce(
-  //       (acc, post) => acc + post.shares,
-  //       0
-  //     );
-  //     setTotalShares(totalShares);
-
-  //     // Total number of blog posts
-  //     const totalPosts = filteredPosts.length;
-  //     setTotalPosts(totalPosts);
-  //   }
-  // }, [blogData, startDate, endDate, blogName]);
-
   const filteredPosts = useMemo(() => {
     return blogData
       ? filterBlogPosts(blogData, startDate, endDate, checkedItems, blogName)
       : [];
   }, [blogData, startDate, endDate, checkedItems, blogName]);
-  
+
   const totalViews = useMemo(
     () => filteredPosts.reduce((acc, post) => acc + post.views, 0),
     [filteredPosts]
   );
-  
+
   const totalShares = useMemo(
     () => filteredPosts.reduce((acc, post) => acc + post.shares, 0),
     [filteredPosts]
   );
-  
+
   const totalPosts = filteredPosts.length;
-  
+
   return (
     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
       {/* Header */}

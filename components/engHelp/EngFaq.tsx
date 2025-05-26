@@ -17,6 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useFetchHelpArticles } from "@/hooks/services/help";
+import Article from "../article/Article";
 
 export default function EngFaq() {
   const {
@@ -124,57 +125,13 @@ export default function EngFaq() {
           {/* bottom */}
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {filteredEvents.map((data, index) => (
-              <div
-                onClick={() =>
-                  window.open(
-                    `https://help.zikoro.com/article/${data.id} `,
-                    "_blank"
-                  )
-                }
-                className=" bg-white rounded-[10px] p-3 flex gap-x-2 "
-              >
-                {/* left */}
-                <div className="w-[5%] mt-1">
-                  <HelpArticle />
-                </div>
-                {/* right */}
-                <div className="w-[95%]">
-                  <div>
-                    <div className="flex justify-between items-center">
-                      <p className="text-base font-semibold"> {data.title} </p>
-                      <div className="flex justify-between gap-x-1 items-center">
-                        <Popover>
-                          <PopoverTrigger>
-                            {" "}
-                            <Help3dotsIcon />
-                          </PopoverTrigger>
-                          <PopoverContent className="text-[14px] font-medium flex flex-col gap-4 mr-3 w-[121px] rounded-[10px]">
-                            <p>Open</p>
-                            <p>Edit</p>
-                            <p className="text-red-500">Delete</p>
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    </div>
-                    <p className="text-[14px] w-full text-[#555555] truncate font-medium mt-2">
-                      {data.desc}
-                    </p>
-                    <div className="flex justify-between items-center text-[#555555] mt-[8px]">
-                      <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                        <p>Added 2 days ago</p>
-                      </div>
-
-                      <div className="flex gap-x-1 items-center text-[12px] font-medium">
-                        <HelpEyeIcon />
-                        <div className="flex gap-x-1">
-                          {data.viewNo}
-                          <p>Total Reads</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Article
+                id={data.id}
+                title={data.title}
+                desc={data.desc}
+                views={0}
+                createdAt={data.created_at}
+              />
             ))}
           </div>
         </div>

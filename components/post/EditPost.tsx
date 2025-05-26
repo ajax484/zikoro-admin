@@ -9,7 +9,7 @@ import { useFetchBlogPost } from "@/hooks/services/post";
 import Image from "next/image";
 import { TextEditor } from "@/components/TextEditor";
 
-export default function EditPost({ postId }: { postId: string }){
+export default function EditPost({ postId }: { postId: string }) {
   const { data, refetch } = useFetchBlogPost(postId);
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
@@ -164,7 +164,6 @@ export default function EditPost({ postId }: { postId: string }){
         if (status !== "draft" && status !== "schedule") {
           router.push("/blog/dashboard");
         }
-       
       } else {
         throw new Error("Post Not Saved");
       }
