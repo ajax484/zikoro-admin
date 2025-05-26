@@ -177,7 +177,7 @@ export default function Create() {
       <section className="mt-4 lg:mt-6 ">
         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
           <div className="w-full flex items-center justify-between">
-            <div className="px-3 bg-transparent flex items-center ">
+            <div className="px-3 bg-transparent flex items-center w-full lg:w-10/12">
               <input
                 type="text"
                 value={formData.title}
