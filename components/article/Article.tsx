@@ -65,9 +65,10 @@ export default function Article({
 
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
+    
     return `${diffDays} days ago`;
   }
-  
+
   return (
     <div>
       <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
