@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
 .gradient-text {
   background-clip: text;
   -webkit-background-clip: text;
@@ -64,6 +66,9 @@
     --chart-5: 340 75% 55%;
   }
 }
+.ql-editor {
+  font-family: "Montserrat", sans-serif;
+}
 
 .quill {
   width: 100%;
@@ -75,7 +80,7 @@
   height: 100%;
 }
 
-.quill>.ql-container>.ql-editor.ql-blank::before {
+.quill > .ql-container > .ql-editor.ql-blank::before {
   color: #d4d4d4;
 }
 

@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import toast from "react-hot-toast";
 import { useFetchHelpArticles } from "@/hooks/services/help";
+import { useRouter } from "next/navigation";
 
 type ArticleProps = {
   id: number;
@@ -24,8 +25,7 @@ export default function Article({
 }: ArticleProps) {
   //function that delete post
 
-  const { fetchHelpArticles } = useFetchHelpArticles();
-
+  const router = useRouter();
   const deletePost = async (id: number) => {
     try {
       const response = await fetch("/api/help/delete", {
@@ -37,7 +37,7 @@ export default function Article({
       });
       if (response.ok) {
         toast.success("Post Deleted");
-        fetchHelpArticles();
+        router.push("/help");
       } else {
         throw new Error("Failed to delete post");
       }
@@ -65,7 +65,7 @@ export default function Article({
 
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
-    
+
     return `${diffDays} days ago`;
   }
 

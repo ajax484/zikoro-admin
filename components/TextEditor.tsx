@@ -1,8 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import "@/lib/CustomVideoBlot";
+import React, { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import Quill from "quill";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
+
+// Register Montserrat font
+const Font = Quill.import("formats/font") as any;
+Font.whitelist = ["montserrat"];
+Quill.register(Font, true);
 
 export function TextEditor({
   onChange,
@@ -17,7 +24,6 @@ export function TextEditor({
   error?: string;
   isBlog?: boolean;
 }) {
-
   const CustomUndo = () => (
     <svg viewBox="0 0 18 18">
       <polygon className="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10" />
@@ -39,6 +45,27 @@ export function TextEditor({
     </svg>
   );
 
+  const quillRef = useRef<any | null>(null);
+
+  const handleVideoEmbed = () => {
+    const url = prompt("Enter YouTube URL");
+    if (!url) return;
+
+    const match = url.match(
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu.be\/)([^\s&]+)/
+    );
+
+    if (match && match[1]) {
+      const embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+      const quill = quillRef.current?.getEditor();
+      const range = quill?.getSelection(true);
+      quill?.insertEmbed(range?.index || 0, "video", embedUrl);
+      quill?.setSelection((range?.index || 0) + 1);
+    } else {
+      alert("Please enter a valid YouTube URL");
+    }
+  };
+
   const quillModules = {
     toolbar: {
       container: [
@@ -51,13 +78,16 @@ export function TextEditor({
         [{ color: [] }, { background: [] }],
         [
           {
-            font: [],
+            font: ["montserrat"],
           },
         ],
         ["link"], //  "video"
         ["clean"],
         ["undo", "redo"],
       ],
+      handlers: {
+        video: handleVideoEmbed,
+      },
     },
     history: {
       delay: 500,
@@ -83,7 +113,7 @@ export function TextEditor({
           },
         ],
         //  [{ align: [] }],
-        ["link", "image"], //  "video"
+        ["link", "image", "video"], //  "video"
         ["clean"],
         ["undo", "redo"],
 
@@ -132,8 +162,9 @@ export function TextEditor({
   };
 
   return (
-    <div className="w-full interaction-input">
+    <div className="w-full interaction-input" ref={quillRef}>
       <QuillEditor
+        style={{ fontFamily: "Montserrat, sans-serif" }}
         onBlur={() => setIsFocused(true)}
         onFocus={() => setIsFocused(false)}
         value={content}
