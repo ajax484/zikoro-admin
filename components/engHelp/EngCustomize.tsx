@@ -124,16 +124,16 @@ export default function EngCustomize() {
           </div>
 
           {/* bottom */}
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-              {filteredEvents.map((data, index) => (
-                          <Article
-                            id={data.id}
-                            title={data.title}
-                            desc={data.desc}
-                            views={0}
-                            createdAt={data.created_at}
-                          />
-                        ))}
+          <div className="mt-6 grid grid-cols-1 gap-4 w-full">
+            {filteredEvents.map((data, index) => (
+              <Article
+                id={data.id}
+                title={data.title}
+                desc={data.desc}
+                views={data.views}
+                createdAt={data.created_at}
+              />
+            ))}
           </div>
         </div>
       </div>

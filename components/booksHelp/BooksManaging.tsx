@@ -125,13 +125,13 @@ export default function BooksManaging() {
           </div>
 
           {/* bottom */}
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+          <div className="mt-6 grid grid-cols-1 gap-4 w-full">
             {filteredData.map((data, index) => (
               <Article
                 id={data.id}
                 title={data.title}
                 desc={data.desc}
-                views={0}
+                views={data.views}
                 createdAt={data.created_at}
               />
             ))}
