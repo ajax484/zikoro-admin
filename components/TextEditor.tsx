@@ -5,11 +5,6 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
-// Register Montserrat font
-// const Font = Quill.import("formats/font") as any;
-// Font.whitelist = ["montserrat"];
-// Quill.register(Font, true);
-
 export function TextEditor({
   onChange,
   defaultValue,
@@ -180,4 +175,3 @@ export function TextEditor({
     </div>
   );
 }
-
