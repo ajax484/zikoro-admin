@@ -3,13 +3,12 @@ import "@/lib/CustomVideoBlot";
 import React, { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import Quill from "quill";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
 // Register Montserrat font
-const Font = Quill.import("formats/font") as any;
-Font.whitelist = ["montserrat"];
-Quill.register(Font, true);
+// const Font = Quill.import("formats/font") as any;
+// Font.whitelist = ["montserrat"];
+// Quill.register(Font, true);
 
 export function TextEditor({
   onChange,
@@ -181,3 +180,4 @@ export function TextEditor({
     </div>
   );
 }
+
