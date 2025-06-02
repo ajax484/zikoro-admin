@@ -69,6 +69,9 @@ export default function Article({
     return `${diffDays} days ago`;
   }
 
+
+  console.log(views, createdAt)
+
   return (
     <div>
       <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
