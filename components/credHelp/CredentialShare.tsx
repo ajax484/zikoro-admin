@@ -125,7 +125,7 @@ export default function CredentialShare() {
           </div>
 
           {/* bottom */}
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
+          <div className="mt-6 grid grid-cols-1 gap-4 w-full">
             {filteredEvents.map((data, index) => (
               <Article
                 id={data.id}
