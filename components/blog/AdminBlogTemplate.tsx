@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 type BlogPostProps = {
   id: number;
@@ -35,7 +36,6 @@ type BlogPostProps = {
   scheduled: boolean;
   headerImageUrl: string;
   tags: string[];
-  fetchBlogPost: () => Promise<any>;
 };
 
 export default function AdminBlogTemplate({
@@ -53,7 +53,6 @@ export default function AdminBlogTemplate({
   scheduled,
   headerImageUrl,
   tags,
-  fetchBlogPost,
 }: BlogPostProps) {
   const [date, setDate] = useState<string | null>(null);
 
@@ -103,6 +102,8 @@ export default function AdminBlogTemplate({
     setDate(extractedDate);
   }, []);
 
+  const router = useRouter();
+
   //function that shows the blog post
   function goToPost() {
     window.open(`/post/${id}`, "_blank");
@@ -120,7 +121,7 @@ export default function AdminBlogTemplate({
       });
       if (response.ok) {
         toast.success("Post Deleted");
-        fetchBlogPost();
+        router.refresh();
       } else {
         throw new Error("Failed to delete post");
       }

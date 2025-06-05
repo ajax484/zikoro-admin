@@ -272,7 +272,6 @@ export default function AdminDashboard() {
                 shares={blogPost.shares}
                 tags={blogPost.tags}
                 headerImageUrl={blogPost.headerImageUrl}
-                fetchBlogPost={fetchBlogPosts}
               />
             ))}
           </>
