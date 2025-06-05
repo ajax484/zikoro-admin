@@ -219,9 +219,6 @@
 //   );
 // }
 
-
-
-
 export const dynamic = "force-dynamic"; // Important for dynamic data
 
 import React from "react";
@@ -237,7 +234,9 @@ const supabase = createClient(
 async function fetchBlogPosts(): Promise<any> {
   const { data, error } = await supabase
     .from("blog")
-    .select("id, title, created_at, category, headerImageUrl, readingDuration, status, statusDetails, content, views, shares, tags")
+    .select(
+      "id, title, created_at, category, headerImageUrl, readingDuration, status, statusDetails, content, views, shares, tags"
+    )
     .eq("status", "draft")
     .order("created_at", { ascending: false });
 
@@ -255,11 +254,10 @@ export default async function BlogDraft() {
   return (
     <div className="pl-3 lg:pl-10 pr-3 lg:pr-28 pt-16 lg:pt-20 pb-7 lg:pb-10">
       {/* Section 1 - Placeholder UI */}
-      <section className="mt-6">
+      {/* <section className="mt-6">
         <div className="flex cursor-pointer p-[10px] gap-x-2 border border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px]">
-          {/* Add filter/date UI here if needed */}
         </div>
-      </section>
+      </section> */}
 
       {/* Section 2 - Blog List */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px] lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white">
