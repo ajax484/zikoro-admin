@@ -260,7 +260,7 @@ export default async function BlogDraft() {
       </section> */}
 
       {/* Section 2 - Blog List */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px] lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white">
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px] lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] min-h-[30vh]">
         {blogData.length > 0 &&
           blogData.map((blogPost: any) => (
             <AdminPublishedBlog

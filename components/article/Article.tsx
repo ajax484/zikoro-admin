@@ -36,12 +36,12 @@ export default function Article({
         body: JSON.stringify({ id }),
       });
       if (response.ok) {
-        toast.success("Post Deleted");
-        router.push("/help");
+        toast.error("Post Deleted");
+        window.location.reload()
       } else {
         throw new Error("Failed to delete post");
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   function daysAgoText(timestamp: string | Date): string {
@@ -68,9 +68,6 @@ export default function Article({
 
     return `${diffDays} days ago`;
   }
-
-
-  console.log(views, createdAt)
 
   return (
     <div>

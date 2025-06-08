@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Toaster } from "react-hot-toast"; // ✅ Import
+
 
 export default function RootLayout({
   children,
@@ -36,6 +38,8 @@ export default function RootLayout({
   return (
     <>
       <main className={``}>
+        <Toaster position="top-right" toastOptions={{ style: { zIndex: 9999 } }} />
+
         {/* Nav */}
         <nav className="w-full fixed top-0 ">
           <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 pt-5  h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar ">
@@ -44,11 +48,10 @@ export default function RootLayout({
                 return (
                   <li
                     key={index}
-                    className={`text-[12px] lg:text-sm whitespace-nowrap pr-3 lg:pr-0 ${
-                      pathname === href
-                        ? "text-basePrimary pb-5 border-b-2 border-basePrimary font-medium "
-                        : ""
-                    }`}
+                    className={`text-[12px] lg:text-sm whitespace-nowrap pr-3 lg:pr-0 ${pathname === href
+                      ? "text-basePrimary pb-5 border-b-2 border-basePrimary font-medium "
+                      : ""
+                      }`}
                   >
                     <Link href={href}>{name}</Link>
                   </li>

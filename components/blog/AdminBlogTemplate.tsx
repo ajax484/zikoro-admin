@@ -121,7 +121,7 @@ export default function AdminBlogTemplate({
       });
       if (response.ok) {
         toast.success("Post Deleted");
-        router.refresh();
+        window.location.reload()
       } else {
         throw new Error("Failed to delete post");
       }

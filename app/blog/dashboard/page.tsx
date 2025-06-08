@@ -1,145 +1,334 @@
-"use client";
+// "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+// import React, { useEffect, useMemo, useState } from "react";
+// import {
+//   AdminBlogPostIcon,
+//   AdminBlogShareIcon,
+//   AdminBlogViewIcon,
+//   SearchIcon,
+//   AdminBlogCalendarIcon,
+// } from "@/constants/icons";
+// import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import { useFetchBlogPosts } from "@/hooks/services/blog"; // Create a utility function for fetching
+// import { LoaderAlt } from "styled-icons/boxicons-regular";
+
+// type DBBlogAll = {
+//   id: number;
+//   title: string;
+//   created_at: string;
+//   category: string;
+//   status: string;
+//   statusDetails: JSON;
+//   readingDuration: number;
+//   content: JSON;
+//   views: number;
+//   shares: number;
+//   tags: [];
+//   headerImageUrl: string;
+// };
+
+// interface Category {
+//   name: string;
+//   value: string;
+// }
+
+// export default function AdminDashboard() {
+//   const [blogData, setBlogData] = useState<any | undefined>(undefined);
+//   const [blogName, setBlogName] = useState<string>("");
+//   const [startDate, setStartDate] = useState<Date | null>(null);
+//   const [endDate, setEndDate] = useState<Date | null>(null);
+//   const [checkedItems, setCheckedItems] = useState<Category[]>([]);
+//   const { blogPosts, loading, fetchBlogPosts } = useFetchBlogPosts();
+
+//   useEffect(() => {
+//     setBlogData(blogPosts);
+//   }, [blogPosts]);
+
+//   //handle checkbox selection
+//   const handleCheckboxChange = (
+//     event: React.ChangeEvent<HTMLInputElement>,
+//     category: Category
+//   ) => {
+//     const isChecked = event.target.checked;
+//     if (isChecked) {
+//       setCheckedItems((prevCheckedItems) => [...prevCheckedItems, category]);
+//     } else {
+//       setCheckedItems((prevCheckedItems) =>
+//         prevCheckedItems.filter((item) => item.value !== category.value)
+//       );
+//     }
+//   };
+
+//   // Event handler for blog name input change
+//   const handleBlogNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setBlogName(e.target.value);
+//   };
+
+//   //handle date selection
+//   const handleDateChange = (dates: any) => {
+//     const [start, end] = dates;
+//     setStartDate(start);
+//     setEndDate(end);
+//   };
+
+//   //fetch blog posts
+//   // const blogData: DBBlogAll[] = fetchBlogPosts;
+
+//   // Function to filter blog posts based on selected date
+//   const filterBlogPosts = (
+//     posts: DBBlogAll[],
+//     startDate: Date | null,
+//     endDate: Date | null,
+//     checkedItems: Category[] | null,
+//     blogName: string | null
+//   ) => {
+//     let filteredPosts = posts;
+
+//     if (checkedItems) {
+//       const selectedCategories = checkedItems.map((item) => item.value);
+//       if (selectedCategories.length > 0) {
+//         filteredPosts = filteredPosts.filter((post) =>
+//           selectedCategories.includes(post.category)
+//         );
+//       }
+//     }
+
+//     if (blogName) {
+//       const lowerCaseBlogName = blogName.toLowerCase();
+//       filteredPosts = filteredPosts.filter((post) =>
+//         post.title.toLowerCase().includes(lowerCaseBlogName)
+//       );
+//     }
+
+//     if (startDate && endDate) {
+//       filteredPosts = filteredPosts.filter((post) => {
+//         const postDate = new Date(post.created_at);
+//         return postDate >= startDate && postDate <= endDate;
+//       });
+//     }
+
+//     return filteredPosts;
+//   };
+
+//   const filteredPosts = useMemo(() => {
+//     return blogData
+//       ? filterBlogPosts(blogData, startDate, endDate, checkedItems, blogName)
+//       : [];
+//   }, [blogData, startDate, endDate, checkedItems, blogName]);
+
+//   const totalViews = useMemo(
+//     () => filteredPosts.reduce((acc, post) => acc + post.views, 0),
+//     [filteredPosts]
+//   );
+
+//   const totalShares = useMemo(
+//     () => filteredPosts.reduce((acc, post) => acc + post.shares, 0),
+//     [filteredPosts]
+//   );
+
+//   const totalPosts = filteredPosts.length;
+
+//   return (
+//     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
+//       {/* Header */}
+//       <div className="flex pt-28 pb-[44px] gap-x-10 overflow-x-auto lg:overflow-x-hidden no-scrollbar">
+//         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+//           <AdminBlogPostIcon />
+//           <div className="flex flex-col">
+//             <p className="text-2xl font-semibold">{totalPosts}</p>
+//             <p className="text-base font-normal">Blog Posts</p>
+//           </div>
+//         </div>
+
+//         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+//           <AdminBlogViewIcon />
+//           <div className="flex flex-col">
+//             <p className="text-2xl font-semibold">{totalViews}</p>
+//             <p className="text-base font-normal">Total Visits</p>
+//           </div>
+//         </div>
+
+//         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+//           <AdminBlogShareIcon />
+//           <div className="flex flex-col">
+//             <p className="text-2xl font-semibold">{totalShares}</p>
+//             <p className="text-base font-normal">Share</p>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Section1 */}
+//       <section className="mt-4 lg:mt-10 ">
+//         <p className="font-semibold text-2xl lg:text-3xl text-center lg:text-left gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end">
+//           Published Blog Post
+//         </p>
+//         <p className="font-normal text-sm lg:text-xl text-center lg:text-left mt-2">
+//           View all published blog posts, filter by name, date published and
+//           category{" "}
+//         </p>
+
+//         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between gap-x-0 lg:gap-x-10 mt-6">
+//           <div className=" p-1 border-[1px] border-indigo-600 rounded-xl w-full lg:w-8/12  ">
+//             <div className="px-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl flex items-center h-[34px] ">
+//               <SearchIcon />
+//               <input
+//                 type="text"
+//                 value={blogName}
+//                 name="searchInput"
+//                 id=""
+//                 onChange={handleBlogNameChange}
+//                 placeholder="search by blog post title"
+//                 className="pl-4 outline-none text-base text-gray-600 bg-transparent h-full w-full"
+//               />
+//             </div>
+//           </div>
+
+//           <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px]">
+//             <DatePicker
+//               selected={startDate}
+//               onChange={handleDateChange}
+//               startDate={startDate}
+//               endDate={endDate}
+//               selectsRange
+//               isClearable
+//               showPopperArrow={false}
+//               popperPlacement="top-start"
+//               icon={<AdminBlogCalendarIcon />}
+//               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
+//               placeholderText="Select Your Date "
+//               onFocus={(e) => ((e.target as HTMLInputElement).readOnly = true)}
+//               dateFormat="MMMM d, yyyy h:mm aa"
+//             />
+//           </div>
+
+//           <Popover>
+//             <PopoverTrigger className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none">
+//               Select Category
+//             </PopoverTrigger>
+//             <PopoverContent className="p-3 bg-white shadow-lg rounded-lg">
+//               <form>
+//                 {[
+//                   { name: "Event tips", value: "Event" },
+//                   { name: "Product Updates", value: "Product" },
+//                   { name: "Guides and Tutorial", value: "guide" },
+//                   { name: "Case Study", value: "Case" },
+//                 ].map((category, index) => (
+//                   <div className="flex items-center mb-2" key={index}>
+//                     <input
+//                       id={`checkbox${index + 1}`}
+//                       type="checkbox"
+//                       className="mr-2"
+//                       checked={checkedItems.some(
+//                         (item) => item.value === category.value
+//                       )}
+//                       onChange={(e) => handleCheckboxChange(e, category)}
+//                     />
+//                     <label
+//                       htmlFor={`checkbox${index + 1}`}
+//                       className="text-[15px]"
+//                     >
+//                       {category.name}
+//                     </label>
+//                   </div>
+//                 ))}
+//               </form>
+//             </PopoverContent>
+//           </Popover>
+//         </div>
+//       </section>
+
+//       {/* section 2 */}
+//       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] ">
+//         {blogData && (
+//           <>
+//             {/* Filter blog posts based on selected date */}
+//             {filterBlogPosts(
+//               blogData,
+//               startDate,
+//               endDate,
+//               checkedItems,
+//               blogName
+//             )?.map((blogPost, index) => (
+//               <AdminPublishedBlog
+//                 scheduled={false}
+//                 draft={false}
+//                 key={blogPost.id}
+//                 id={blogPost.id}
+//                 title={blogPost.title}
+//                 createdAt={blogPost.created_at}
+//                 category={blogPost.category}
+//                 status={blogPost.status}
+//                 statusDetails={blogPost.statusDetails}
+//                 readingDuration={blogPost.readingDuration}
+//                 content={blogPost.content}
+//                 views={blogPost.views}
+//                 shares={blogPost.shares}
+//                 tags={blogPost.tags}
+//                 headerImageUrl={blogPost.headerImageUrl}
+//               />
+//             ))}
+//           </>
+//         )}
+//       </section>
+//     </div>
+//   );
+// }
+
+
+
+export const dynamic = "force-dynamic"; // Important for dynamic data
+
+import React from "react";
+import { createClient } from "@supabase/supabase-js";
+import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
 import {
   AdminBlogPostIcon,
   AdminBlogShareIcon,
   AdminBlogViewIcon,
-  SearchIcon,
-  AdminBlogCalendarIcon,
 } from "@/constants/icons";
-import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useFetchBlogPosts } from "@/hooks/services/blog"; // Create a utility function for fetching
-import { LoaderAlt } from "styled-icons/boxicons-regular";
 
-type DBBlogAll = {
-  id: number;
-  title: string;
-  created_at: string;
-  category: string;
-  status: string;
-  statusDetails: JSON;
-  readingDuration: number;
-  content: JSON;
-  views: number;
-  shares: number;
-  tags: [];
-  headerImageUrl: string;
-};
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-interface Category {
-  name: string;
-  value: string;
+async function fetchPublishedBlogPosts() {
+  const { data, error } = await supabase
+    .from("blog")
+    .select(
+      "id, title, created_at, category, headerImageUrl, readingDuration, status, statusDetails, content, views, shares, tags"
+    )
+    .eq("status", "publish")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching blog posts:", error.message);
+    return [];
+  }
+
+  return data ?? [];
 }
 
-export default function AdminDashboard() {
-  const [blogData, setBlogData] = useState<any | undefined>(undefined);
-  const [blogName, setBlogName] = useState<string>("");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [checkedItems, setCheckedItems] = useState<Category[]>([]);
-  const { blogPosts, loading, fetchBlogPosts } = useFetchBlogPosts();
+export default async function AdminDashboard() {
+  const blogData = await fetchPublishedBlogPosts();
 
-  useEffect(() => {
-    setBlogData(blogPosts);
-  }, [blogPosts]);
-
-  //handle checkbox selection
-  const handleCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    category: Category
-  ) => {
-    const isChecked = event.target.checked;
-    if (isChecked) {
-      setCheckedItems((prevCheckedItems) => [...prevCheckedItems, category]);
-    } else {
-      setCheckedItems((prevCheckedItems) =>
-        prevCheckedItems.filter((item) => item.value !== category.value)
-      );
-    }
-  };
-
-  // Event handler for blog name input change
-  const handleBlogNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBlogName(e.target.value);
-  };
-
-  //handle date selection
-  const handleDateChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-
-  //fetch blog posts
-  // const blogData: DBBlogAll[] = fetchBlogPosts;
-
-  // Function to filter blog posts based on selected date
-  const filterBlogPosts = (
-    posts: DBBlogAll[],
-    startDate: Date | null,
-    endDate: Date | null,
-    checkedItems: Category[] | null,
-    blogName: string | null
-  ) => {
-    let filteredPosts = posts;
-
-    if (checkedItems) {
-      const selectedCategories = checkedItems.map((item) => item.value);
-      if (selectedCategories.length > 0) {
-        filteredPosts = filteredPosts.filter((post) =>
-          selectedCategories.includes(post.category)
-        );
-      }
-    }
-
-    if (blogName) {
-      const lowerCaseBlogName = blogName.toLowerCase();
-      filteredPosts = filteredPosts.filter((post) =>
-        post.title.toLowerCase().includes(lowerCaseBlogName)
-      );
-    }
-
-    if (startDate && endDate) {
-      filteredPosts = filteredPosts.filter((post) => {
-        const postDate = new Date(post.created_at);
-        return postDate >= startDate && postDate <= endDate;
-      });
-    }
-
-    return filteredPosts;
-  };
-
-  const filteredPosts = useMemo(() => {
-    return blogData
-      ? filterBlogPosts(blogData, startDate, endDate, checkedItems, blogName)
-      : [];
-  }, [blogData, startDate, endDate, checkedItems, blogName]);
-
-  const totalViews = useMemo(
-    () => filteredPosts.reduce((acc, post) => acc + post.views, 0),
-    [filteredPosts]
-  );
-
-  const totalShares = useMemo(
-    () => filteredPosts.reduce((acc, post) => acc + post.shares, 0),
-    [filteredPosts]
-  );
-
-  const totalPosts = filteredPosts.length;
+  const totalViews = blogData.reduce((acc, post) => acc + post.views, 0);
+  const totalShares = blogData.reduce((acc, post) => acc + post.shares, 0);
+  const totalPosts = blogData.length;
 
   return (
-    <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
+    <div className="pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 pb-7 lg:pb-10">
       {/* Header */}
-      <div className="flex pt-28 pb-[44px] gap-x-10 overflow-x-auto lg:overflow-x-hidden no-scrollbar">
-        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+      <div className="flex pb-[44px] gap-x-10 overflow-x-auto lg:overflow-x-hidden no-scrollbar">
+        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg">
           <AdminBlogPostIcon />
           <div className="flex flex-col">
             <p className="text-2xl font-semibold">{totalPosts}</p>
@@ -147,7 +336,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg">
           <AdminBlogViewIcon />
           <div className="flex flex-col">
             <p className="text-2xl font-semibold">{totalViews}</p>
@@ -155,128 +344,53 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
+        <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg">
           <AdminBlogShareIcon />
           <div className="flex flex-col">
             <p className="text-2xl font-semibold">{totalShares}</p>
-            <p className="text-base font-normal">Share</p>
+            <p className="text-base font-normal">Shares</p>
           </div>
         </div>
       </div>
 
-      {/* Section1 */}
-      <section className="mt-4 lg:mt-10 ">
+      {/* Section Title */}
+      <section className="mt-4 lg:mt-10">
         <p className="font-semibold text-2xl lg:text-3xl text-center lg:text-left gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end">
           Published Blog Post
         </p>
         <p className="font-normal text-sm lg:text-xl text-center lg:text-left mt-2">
-          View all published blog posts, filter by name, date published and
-          category{" "}
+          View all published blog posts
         </p>
-
-        <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between gap-x-0 lg:gap-x-10 mt-6">
-          <div className=" p-1 border-[1px] border-indigo-600 rounded-xl w-full lg:w-8/12  ">
-            <div className="px-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl flex items-center h-[34px] ">
-              <SearchIcon />
-              <input
-                type="text"
-                value={blogName}
-                name="searchInput"
-                id=""
-                onChange={handleBlogNameChange}
-                placeholder="search by blog post title"
-                className="pl-4 outline-none text-base text-gray-600 bg-transparent h-full w-full"
-              />
-            </div>
-          </div>
-
-          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px]">
-            <DatePicker
-              selected={startDate}
-              onChange={handleDateChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange
-              isClearable
-              showPopperArrow={false}
-              popperPlacement="top-start"
-              icon={<AdminBlogCalendarIcon />}
-              className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
-              placeholderText="Select Your Date "
-              onFocus={(e) => ((e.target as HTMLInputElement).readOnly = true)}
-              dateFormat="MMMM d, yyyy h:mm aa"
-            />
-          </div>
-
-          <Popover>
-            <PopoverTrigger className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none">
-              Select Category
-            </PopoverTrigger>
-            <PopoverContent className="p-3 bg-white shadow-lg rounded-lg">
-              <form>
-                {[
-                  { name: "Event tips", value: "Event" },
-                  { name: "Product Updates", value: "Product" },
-                  { name: "Guides and Tutorial", value: "guide" },
-                  { name: "Case Study", value: "Case" },
-                ].map((category, index) => (
-                  <div className="flex items-center mb-2" key={index}>
-                    <input
-                      id={`checkbox${index + 1}`}
-                      type="checkbox"
-                      className="mr-2"
-                      checked={checkedItems.some(
-                        (item) => item.value === category.value
-                      )}
-                      onChange={(e) => handleCheckboxChange(e, category)}
-                    />
-                    <label
-                      htmlFor={`checkbox${index + 1}`}
-                      className="text-[15px]"
-                    >
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
-              </form>
-            </PopoverContent>
-          </Popover>
-        </div>
       </section>
 
-      {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] min-h-[30vh] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] ">
-        {blogData && (
-          <>
-            {/* Filter blog posts based on selected date */}
-            {filterBlogPosts(
-              blogData,
-              startDate,
-              endDate,
-              checkedItems,
-              blogName
-            )?.map((blogPost, index) => (
-              <AdminPublishedBlog
-                scheduled={false}
-                draft={false}
-                key={blogPost.id}
-                id={blogPost.id}
-                title={blogPost.title}
-                createdAt={blogPost.created_at}
-                category={blogPost.category}
-                status={blogPost.status}
-                statusDetails={blogPost.statusDetails}
-                readingDuration={blogPost.readingDuration}
-                content={blogPost.content}
-                views={blogPost.views}
-                shares={blogPost.shares}
-                tags={blogPost.tags}
-                headerImageUrl={blogPost.headerImageUrl}
-              />
-            ))}
-          </>
+      {/* Blog List */}
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px] lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px] min-h-[30vh]">
+        {blogData.length > 0 ? (
+          blogData.map((blogPost: any) => (
+            <AdminPublishedBlog
+              key={blogPost.id}
+              scheduled={false}
+              draft={false}
+              id={blogPost.id}
+              title={blogPost.title}
+              createdAt={blogPost.created_at}
+              category={blogPost.category}
+              status={blogPost.status}
+              statusDetails={blogPost.statusDetails}
+              readingDuration={blogPost.readingDuration}
+              content={blogPost.content}
+              views={blogPost.views}
+              shares={blogPost.shares}
+              tags={blogPost.tags}
+              headerImageUrl={blogPost.headerImageUrl}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 mt-10">No published blog posts yet.</p>
         )}
       </section>
     </div>
   );
 }
+
+
