@@ -615,6 +615,16 @@ export const adminLinks: AdminNavLinkType[] = [
     image: "/images/a_event.svg",
     href: "transactions",
   },
+  {
+    name: "Workspaces",
+    image: "/images/a_event.svg",
+    href: "workspaces",
+  },
+  {
+    name: "Verify",
+    image: "/images/a_event.svg",
+    href: "verify",
+  },
 
   {
     name: "Affliliate",
