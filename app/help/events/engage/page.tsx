@@ -1,0 +1,10 @@
+"use client";
+import EventsEngage from "@/components/eventsHelp/EventsEngage";
+
+export default function page() {
+  return (
+    <div className="bg-[#F7F8FF] min-h-screen ">
+      <EventsEngage />
+    </div>
+  );
+}

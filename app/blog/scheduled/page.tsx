@@ -182,7 +182,6 @@ export default function BlogSchedule() {
                   shares={blogPost.shares}
                   tags={blogPost.tags}
                   headerImageUrl={blogPost.headerImageUrl}
-                  fetchBlogPost={fetchBlogPost}
                 />
               )
             )}
