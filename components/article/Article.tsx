@@ -5,8 +5,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import toast from "react-hot-toast";
-import { useFetchHelpArticles } from "@/hooks/services/help";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { useState } from "react";
+
 
 type ArticleProps = {
   id: number;
@@ -69,6 +80,9 @@ export default function Article({
     return `${diffDays} days ago`;
   }
 
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+
+
   return (
     <div>
       <div className=" bg-white rounded-[10px] p-3 flex gap-x-2 ">
@@ -82,39 +96,59 @@ export default function Article({
             <div className="flex justify-between items-center">
               <p className="text-base font-semibold"> {title} </p>
               <div className="flex justify-between gap-x-1 items-center">
-                <Popover>
-                  <PopoverTrigger>
-                    {" "}
-                    <Help3dotsIcon />
-                  </PopoverTrigger>
-                  <PopoverContent className="text-[14px] font-medium flex flex-col gap-4 mr-3 w-[121px] rounded-[10px]">
-                    <p
-                      className="cursor-pointer"
-                      onClick={() =>
-                        window.open(
-                          `https://help.zikoro.com/article/${id} `,
-                          "_blank"
-                        )
-                      }
-                    >
-                      Open
-                    </p>
-                    <p
-                      onClick={() =>
-                        window.open(`/article/${id}/edit `, "_blank")
-                      }
-                      className="cursor-pointer"
-                    >
-                      Edit
-                    </p>
-                    <p
-                      className="text-red-500 cursor-pointer"
-                      onClick={() => deletePost(id)}
-                    >
-                      Delete
-                    </p>
-                  </PopoverContent>
-                </Popover>
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <Popover>
+                    <PopoverTrigger>
+                      <Help3dotsIcon />
+                    </PopoverTrigger>
+
+                    <PopoverContent className="text-[14px] font-medium flex flex-col gap-4 mr-3 w-[121px] rounded-[10px]">
+                      <p
+                        className="cursor-pointer"
+                        onClick={() =>
+                          window.open(`https://help.zikoro.com/article/${id}`, "_blank")
+                        }
+                      >
+                        Open
+                      </p>
+                      <p
+                        onClick={() => window.open(`/article/${id}/edit`, "_blank")}
+                        className="cursor-pointer"
+                      >
+                        Edit
+                      </p>
+
+                      {/* Trigger the dialog */}
+                      <DialogTrigger asChild>
+                        <p className="text-red-500 cursor-pointer">Delete</p>
+                      </DialogTrigger>
+                    </PopoverContent>
+                  </Popover>
+
+                  {/* Delete confirmation dialog */}
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Confirm Deletion</DialogTitle>
+                    </DialogHeader>
+                    <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="purple"
+                        onClick={() => {
+                          deletePost(id)
+                          setDialogOpen(false)
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+     
               </div>
             </div>
             <p className="text-[14px] w-full text-[#555555] truncate font-medium mt-2">

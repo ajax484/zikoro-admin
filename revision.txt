@@ -1,0 +1,5 @@
+dialog for delett function
+category default value for edit post
+preview func for create page
+speak to bilal
+global search for search functional

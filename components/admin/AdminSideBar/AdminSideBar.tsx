@@ -53,7 +53,9 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
             className="w-[150px] h-[40px] mx-4"
           />
           {/**nav links */}
-          <ul className="flex flex-col gap-y-1 items-start  pb-24  no-scrollbar overflow-y-auto  justify-start w-full">
+        
+          <ul className="flex flex-col gap-y-1 items-start overflow-y-auto no-scrollbar justify-start w-full h-[calc(100vh-180px)] px-2 pb-36">
+
             {adminLinks.map(({ href, name, image }) => {
               const currentHref = href.includes("?")
                 ? href?.split("?")[0]
