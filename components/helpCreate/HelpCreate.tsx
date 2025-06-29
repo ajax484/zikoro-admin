@@ -124,7 +124,7 @@ export default function Create() {
         </div>
         {/* right */}
         <div className=" w-full h-10 gap-x-3 items-center flex justify-end ">
-          <button
+          {/* <button
             className=" text-indigo-600 bg-transparent  py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center h-full border-[1px] border-indigo-500"
             onClick={(e) => {
               e.preventDefault();
@@ -135,7 +135,7 @@ export default function Create() {
             {" "}
             Preview
             <HelpEyeColorIcon />
-          </button>
+          </button> */}
 
           {/* <Dialog>
             <DialogTrigger
