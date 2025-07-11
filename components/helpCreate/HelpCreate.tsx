@@ -257,7 +257,6 @@ export default function Create() {
             defaultValue={content}
             placeholder="Type your blog content..."
             onChange={setMessage}
-            isBlog
           />
         </div>
       </section>

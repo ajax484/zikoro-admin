@@ -141,7 +141,6 @@ export default function EditArticle({ articleId }: { articleId: number }) {
                 <TextEditor
                   defaultValue={data.Details}
                   onChange={setMessage}
-                  isBlog
                 />
               )}
             </div>
