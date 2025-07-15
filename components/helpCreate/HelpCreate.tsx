@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
-import  {TextEditor}  from "../TextEditor";
+import Editor from "@/components/editor/TextEditor";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -102,6 +102,12 @@ export default function Create() {
       });
   };
 
+  const isFormInvalid =
+    !formData.title.trim() ||
+    !formData.category.trim() ||
+    !content || (Array.isArray(content) && content.length === 0)
+
+
   return (
     <form onSubmit={publishArticle} className="pt-[40px] px-3 lg:px-[56px]">
       {/* top */}
@@ -118,7 +124,7 @@ export default function Create() {
         </div>
         {/* right */}
         <div className=" w-full h-10 gap-x-3 items-center flex justify-end ">
-          <button
+          {/* <button
             className=" text-indigo-600 bg-transparent  py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center h-full border-[1px] border-indigo-500"
             onClick={(e) => {
               e.preventDefault();
@@ -129,9 +135,9 @@ export default function Create() {
             {" "}
             Preview
             <HelpEyeColorIcon />
-          </button>
+          </button> */}
 
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger
               disabled={!formData.title || !formData.category || !content}
             >
@@ -168,7 +174,44 @@ export default function Create() {
                 Publish
               </button>
             </DialogContent>
+          </Dialog> */}
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                disabled={isFormInvalid}
+                className={`py-[10px] px-4 rounded-[10px] flex gap-x-1 text-base font-semibold items-center h-full transition-colors
+        ${isFormInvalid
+                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                    : "text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end hover:opacity-90"}`}
+              >
+                Publish
+                <HelpUploadIcon />
+              </button>
+            </DialogTrigger>
+
+            <DialogContent className="py-8 px-3">
+              <p className="text-indigo-600 text-2xl font-bold text-center">
+                Publish article
+              </p>
+              <p className="mt-6 text-center text-base text-[#555555]">
+                Publish{" "}
+                <span className="font-semibold capitalize">{formData.title}</span> to{" "}
+                <span className="font-semibold capitalize">{formData.category}</span>.
+              </p>
+              <button
+                disabled={isFormInvalid}
+                className={`py-[10px] px-4 rounded-[10px] mt-4 text-base font-semibold border-[1px] mx-auto block transition-colors
+        ${isFormInvalid
+                    ? "bg-gray-300 text-gray-600 border-gray-300 cursor-not-allowed"
+                    : "text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-indigo-500 hover:opacity-90"}`}
+                onClick={(e) => publishArticle(e)}
+              >
+                Publish
+              </button>
+            </DialogContent>
           </Dialog>
+
         </div>
       </div>
 
@@ -210,14 +253,17 @@ export default function Create() {
         </div>
 
         <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
-          <TextEditor
-            defaultValue={content}
-            placeholder="Type your blog content..."
-            onChange={setMessage}
-            isBlog
+          <Editor
+            // defaultValue={content}
+            // placeholder="Type your blog content..."
+            // onChange={setMessage}
           />
         </div>
       </section>
     </form>
   );
 }
+
+
+
+

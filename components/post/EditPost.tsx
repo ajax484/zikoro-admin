@@ -7,7 +7,7 @@ import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
 import Image from "next/image";
-import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 export default function EditPost({ postId }: { postId: string }) {
   const { data, refetch } = useFetchBlogPost(postId);

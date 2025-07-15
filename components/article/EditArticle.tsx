@@ -1,15 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useFetchArticle } from "@/hooks/services/help";
-import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 export default function EditArticle({ articleId }: { articleId: number }) {
-  const { data, refetch } = useFetchArticle(articleId);
-  const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const { data } = useFetchArticle(articleId);
   const router = useRouter();
+
   const {
     register,
     watch,
@@ -23,12 +23,6 @@ export default function EditArticle({ articleId }: { articleId: number }) {
   });
 
   const content = watch("content");
-
-  const [formData, setFormData] = useState<any>({
-    title: "",
-    category: "",
-    content: [],
-  });
 
   const categories = [
     { name: "Select a category", value: "" },
@@ -61,14 +55,6 @@ export default function EditArticle({ articleId }: { articleId: number }) {
     setValue("content", content);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData: any) => ({ ...prevData, [name]: value }));
-  };
-
-  // Function to preview the blog post
   const save = async (formData: any) => {
     try {
       const response = await fetch("/api/help/update", {
@@ -99,15 +85,11 @@ export default function EditArticle({ articleId }: { articleId: number }) {
       reset({
         content: data?.content,
         title: data?.title,
-        category: data?.category,
-      });
-      setFormData({
-        title: data?.title,
-        category: data?.category,
-        content: data?.content,
+        category: data?.productCategory,
       });
     }
-  }, [data]);
+  }, [data, reset]);
+
 
   return (
     <div className="lg:max-w-[1180px] mx-auto">
@@ -125,7 +107,6 @@ export default function EditArticle({ articleId }: { articleId: number }) {
                   <input
                     type="text"
                     {...register("title", { required: true })}
-                    onChange={handleChange}
                     placeholder="Enter Blog Title"
                     className="pl-4 outline-none text-2xl text-gray-600 bg-transparent h-[44px] w-full"
                     required
@@ -134,15 +115,14 @@ export default function EditArticle({ articleId }: { articleId: number }) {
               </div>
 
               {/* right */}
-              <div className="flex flex-col lg:flex-row items-center gap-1 w-full lg:w-4/12 ">
+              <div className="flex flex-col lg:flex-row items-center gap-x-1 gap-y-2 w-full lg:w-4/12">
                 <select
                   {...register("category", { required: true })}
-                  onChange={handleChange}
                   required
                   className="w-full h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer text-indigo-700 font-medium"
                 >
                   {categories.map((category, index) => (
-                    <option key={index} value={category.value} className="">
+                    <option key={index} value={category.value}>
                       {category.name}
                     </option>
                   ))}
@@ -161,7 +141,6 @@ export default function EditArticle({ articleId }: { articleId: number }) {
                 <TextEditor
                   defaultValue={data.Details}
                   onChange={setMessage}
-                  isBlog
                 />
               )}
             </div>

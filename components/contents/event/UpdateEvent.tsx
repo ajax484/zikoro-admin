@@ -7,7 +7,7 @@ import { Check2 } from "styled-icons/bootstrap";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { ImageAdd } from "styled-icons/boxicons-regular";
 import { COUNTRY_CODE } from "@/utils";
-import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/editor/TextEditor";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
 import * as z from "zod";
