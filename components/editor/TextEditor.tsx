@@ -176,55 +176,58 @@
 //   );
 // }
 
+"use client";
 
-import React, { useEffect } from 'react';
-import { $getRoot, $getSelection, type EditorState } from 'lexical';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import Toolbar from './Toolbar'; // <-- Import it here
+import React from "react";
+import { $getRoot, type EditorState } from "lexical";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import Toolbar from "./Toolbar";
+import ImagesPlugin from "./ImagePlugin";
 
-const theme = {};
+// ✅ Import extra nodes
+import { ListNode, ListItemNode } from "@lexical/list";
+import { LinkNode } from "@lexical/link";
+import { ImageNode } from "./ImageNode"; // adjust path if needed
 
-function onError(error: unknown) {
-  throw error;
-}
+type EditorProps = {
+  onChange?: (content: string) => void;
+};
 
-function onChange(editorState: EditorState) {
-  editorState.read(() => {
-    const root = $getRoot();
-    const selection = $getSelection();
-    console.log(root, selection);
-  });
-}
+export default function Editor({ onChange }: EditorProps) {
+  const theme = {};
 
-function MyCustomAutoFocusPlugin() {
-  const [editor] = useLexicalComposerContext();
+  function onError(error: unknown) {
+    throw error;
+  }
 
-  useEffect(() => {
-    editor.focus();
-  }, [editor]);
+  function handleChange(editorState: EditorState) {
+    editorState.read(() => {
+      const root = $getRoot();
+      const content = root.getTextContent();
+      if (onChange) {
+        onChange(content);
+      }
+    });
+  }
 
-  return null;
-}
-
-export default function Editor() {
   const initialConfig = {
-    namespace: 'MyEditor',
+    namespace: "MyEditor",
     theme,
     onError,
+    nodes: [ImageNode, ListNode, ListItemNode, LinkNode], // ✅ register all nodes
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <Toolbar /> {/* <-- Add it here */}
+      <Toolbar />
       <RichTextPlugin
         contentEditable={
-          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[150px] outline-none" />
+          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[150px]" />
         }
         placeholder={
           <span className="absolute top-2 left-2 text-gray-400 pointer-events-none">
@@ -233,9 +236,9 @@ export default function Editor() {
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
-      <OnChangePlugin onChange={onChange} />
+      <OnChangePlugin onChange={handleChange} />
       <HistoryPlugin />
-      <MyCustomAutoFocusPlugin />
+      <ImagesPlugin />
     </LexicalComposer>
   );
 }

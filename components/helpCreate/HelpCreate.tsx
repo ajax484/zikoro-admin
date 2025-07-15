@@ -254,9 +254,10 @@ export default function Create() {
 
         <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
           <Editor
-            // defaultValue={content}
-            // placeholder="Type your blog content..."
-            // onChange={setMessage}
+            onChange={setMessage}
+          // defaultValue={content}
+          // placeholder="Type your blog content..."
+          // onChange={setMessage}
           />
         </div>
       </section>
