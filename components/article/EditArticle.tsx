@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useFetchArticle } from "@/hooks/services/help";
-import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 export default function EditArticle({ articleId }: { articleId: number }) {
   const { data } = useFetchArticle(articleId);

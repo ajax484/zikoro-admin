@@ -176,15 +176,17 @@
 //   );
 // }
 
+
 import React, { useEffect } from 'react';
 import { $getRoot, $getSelection, type EditorState } from 'lexical';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import Toolbar from './Toolbar'; // <-- Import it here
 
 const theme = {};
 
@@ -219,13 +221,14 @@ export default function Editor() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <PlainTextPlugin
+      <Toolbar /> {/* <-- Add it here */}
+      <RichTextPlugin
         contentEditable={
-          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[100px]" />
+          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[150px] outline-none" />
         }
         placeholder={
           <span className="absolute top-2 left-2 text-gray-400 pointer-events-none">
-            Enter some text...
+            Enter some rich text...
           </span>
         }
         ErrorBoundary={LexicalErrorBoundary}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
-import Editor from "@/components/TextEditor";
+import Editor from "@/components/editor/TextEditor";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

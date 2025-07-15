@@ -10,7 +10,7 @@ import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PlusCircleIcon } from "@/constants";
-import { TextEditor } from "@/components/TextEditor";
+import { TextEditor } from "@/components/editor/TextEditor";
 
 type BlogData = {
   title: string;
