@@ -1,4 +1,5 @@
-import { TOrganization, TUser } from ".";
+import { TOrganization } from "@/typings/organization";
+import { TUser } from ".";
 import { TAttendee } from "./attendee";
 
 export type TEventTransaction = {
