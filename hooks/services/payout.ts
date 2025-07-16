@@ -127,8 +127,6 @@ export const useFinalizePayOut = (): useFinalizePayOutResult => {
     payload,
   }: {
     payload: {
-      transferCode: string;
-      OTP: number;
       payOutRef: string;
       paidOutBy: number;
       userEmail: string;

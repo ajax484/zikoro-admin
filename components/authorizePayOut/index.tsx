@@ -2,6 +2,7 @@ import { IPayOut, TOrganization, TUser } from "@/types";
 import React, { useState } from "react";
 import IntializePayOut from "./IntializePayOut";
 import TransferOTP from "./transferOTP";
+import AcceptPayout from "./AcceptPayout";
 
 const AuthorizePayOutDialog = ({
   organization,
@@ -23,11 +24,11 @@ const AuthorizePayOutDialog = ({
 
   if (step === 1)
     return (
-      <IntializePayOut
+      <AcceptPayout
         setStep={setStep}
         organization={organization}
         payoutInfo={payoutInfo}
-        setTransferCode={setTransferCode}
+        requestedBy={requestedBy}
       />
     );
 
