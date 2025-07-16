@@ -189,10 +189,14 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import Toolbar from "./Toolbar";
 import ImagesPlugin from "./ImagePlugin";
 
-// ✅ Import extra nodes
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
-import { ImageNode } from "./ImageNode"; // adjust path if needed
+import { ImageNode } from "./ImageNode"; // adjust path
+
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { YouTubeNode } from "./YoutubeNode";
+
 
 type EditorProps = {
   onChange?: (content: string) => void;
@@ -219,7 +223,7 @@ export default function Editor({ onChange }: EditorProps) {
     namespace: "MyEditor",
     theme,
     onError,
-    nodes: [ImageNode, ListNode, ListItemNode, LinkNode], // ✅ register all nodes
+    nodes: [ListNode, ListItemNode, LinkNode, ImageNode, YouTubeNode], // ✅ REGISTERED NODES
   };
 
   return (
@@ -227,7 +231,7 @@ export default function Editor({ onChange }: EditorProps) {
       <Toolbar />
       <RichTextPlugin
         contentEditable={
-          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[150px]" />
+          <ContentEditable className="relative border border-gray-300 rounded p-2 min-h-[150px] h-[50vh] outline-none" />
         }
         placeholder={
           <span className="absolute top-2 left-2 text-gray-400 pointer-events-none">
@@ -239,6 +243,8 @@ export default function Editor({ onChange }: EditorProps) {
       <OnChangePlugin onChange={handleChange} />
       <HistoryPlugin />
       <ImagesPlugin />
+      <ListPlugin />    {/* ✅ enables lists */}
+      <LinkPlugin />    {/* ✅ enables links */}
     </LexicalComposer>
   );
 }
