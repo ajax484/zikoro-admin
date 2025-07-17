@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
-import Editor from "@/components/editor/TextEditor";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Editor2 from "../editor/CustomTextEditor/Editor";
 
 export default function Create() {
   const router = useRouter();
@@ -253,13 +253,7 @@ export default function Create() {
         </div>
 
         <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
-          <Editor
-            onChange={setMessage}
-          // defaultValue={content}
-          // placeholder="Type your blog content..."
-          // onChange={setMessage}
-          />
-        </div>
+          <Editor2 setValue={setMessage} />        </div>
       </section>
     </form>
   );
