@@ -65,7 +65,7 @@ export default function Create() {
     content: [],
   });
 
-   const handleEditorChange = (html: string) => {
+  const handleEditorChange = (html: string) => {
     setValue("content", html); // react-hook-form will track this
   };
 
@@ -107,10 +107,12 @@ export default function Create() {
       });
   };
 
+  const stripHtml = (html: string) =>
+    html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, "").trim();
+
   const isFormInvalid =
     !formData.title.trim() ||
-    !formData.category.trim() ||
-    !content || (Array.isArray(content) && content.length === 0)
+    !formData.category.trim()
 
 
   return (

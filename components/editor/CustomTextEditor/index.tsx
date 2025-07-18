@@ -27,11 +27,11 @@ import PlaygroundNodes from "./nodes/PlaygroundNodes";
 import { TableContext } from "./plugins/TablePlugin";
 import { parseAllowedFontSize } from "./plugins/ToolbarPlugin/fontSize";
 import TypingPerfPlugin from "./plugins/TypingPerfPlugin";
-
 import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 import { parseAllowedColor } from "./ui/ColorPicker";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import React from "react";
+import { $generateNodesFromDOM } from "@lexical/html";
 import Editor2 from "./Editor";
 
 function $prepopulatedRichText() {
@@ -256,6 +256,4 @@ export function CustomTextEditor({
   );
 }
 
-function $generateNodesFromDOM(editor: LexicalEditor, dom: Document) {
-  throw new Error("Function not implemented.");
-}
+

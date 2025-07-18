@@ -60,7 +60,6 @@ const TableCellResizer = dynamic(
   () => import("./plugins/TableCellResizer").then((mod) => mod.default),
   { ssr: false }
 );
-
 import TableHoverActionsPlugin from "./plugins/TableHoverActionsPlugin";
 import TableOfContentsPlugin from "./plugins/TableOfContentsPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
@@ -69,6 +68,8 @@ import TwitterPlugin from "./plugins/TwitterPlugin";
 import YouTubePlugin from "./plugins/YouTubePlugin";
 import ContentEditable from "./ui/ContentEditable";
 import { EditorState, LexicalEditor } from "lexical";
+import { $generateHtmlFromNodes } from "@lexical/html";
+
 
 
 export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
@@ -127,9 +128,9 @@ export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
     };
   }, [isSmallWidthViewport]);
 
-  function $generateHtmlFromNodes(editor: LexicalEditor) {
-    throw new Error("Function not implemented.");
-  }
+  // function $generateHtmlFromNodes(editor: LexicalEditor) {
+  //   throw new Error("Function not implemented.");
+  // }
 
   return (
     <>
@@ -174,7 +175,7 @@ export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
-                  <div className="editor mt-4 pt-0 px-2 bg-transparent border-[1px] rounded-lg border-gray-300 min-h-[50vh]" ref={onRef}>
+                  <div className="editor mt-4 bg-transparent border-[1px] rounded-lg border-gray-300 min-h-[50vh]" ref={onRef}>
                     <ContentEditable placeholder={placeholder} />
                   </div>
                 </div>
