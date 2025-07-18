@@ -10,7 +10,7 @@ import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PlusCircleIcon } from "@/constants";
-import { TextEditor } from "@/components/editor/TextEditor";
+import { CustomTextEditor } from "@/components/editor/CustomTextEditor";
 
 type BlogData = {
   title: string;
@@ -66,11 +66,6 @@ export default function BlogCreate() {
     setValue("content", content);
   };
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleUpdateStatus = (newStatus: string) => {
     setStatus(newStatus);
   };
@@ -82,6 +77,15 @@ export default function BlogCreate() {
   const addNewTags = (tags: string[]) => {
     setFormData({ ...formData, tags });
     setTagModalOpen(false);
+  };
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleEditorChange = (html: string) => {
+    setValue("content", html); // react-hook-form will track this
   };
 
   //Upload Image Function
@@ -454,15 +458,10 @@ export default function BlogCreate() {
               )}
             </div>
 
-            <div
-              style={{ padding: "20px" }}
-              className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 "
-            >
-              <TextEditor
-                defaultValue={content}
-                placeholder="Type your blog content..."
-                onChange={setMessage}
-                isBlog
+            <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
+              <CustomTextEditor
+                value={watch("content") || ""}
+                setValue={handleEditorChange}
               />
             </div>
           </form>

@@ -134,7 +134,7 @@ export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
 
   return (
     <>
-      <div className="sticky top-0 z-10 bg-transparent border-[1px] rounded-lg border-gray-300 px-4 py-2">
+      <div className=" z-10 bg-transparent border-[1px] rounded-lg border-gray-300 px-4 py-2">
         <ToolbarPlugin
           editor={editor}
           activeEditor={activeEditor}

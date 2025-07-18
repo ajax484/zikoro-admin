@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Editor2 from "../editor/CustomTextEditor/Editor";
 import { CustomTextEditor } from "../editor/CustomTextEditor";
 
 export default function Create() {
