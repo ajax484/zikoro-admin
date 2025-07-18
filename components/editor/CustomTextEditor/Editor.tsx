@@ -55,7 +55,7 @@ import ShortcutsPlugin from "./plugins/ShortcutsPlugin";
 import SpecialTextPlugin from "./plugins/SpecialTextPlugin";
 import TabFocusPlugin from "./plugins/TabFocusPlugin";
 import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
-import {OnChangePlugin} from '@lexical/react/LexicalOnChangePlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 const TableCellResizer = dynamic(
   () => import("./plugins/TableCellResizer").then((mod) => mod.default),
   { ssr: false }
@@ -70,7 +70,8 @@ import YouTubePlugin from "./plugins/YouTubePlugin";
 import ContentEditable from "./ui/ContentEditable";
 import { EditorState, LexicalEditor } from "lexical";
 
-export default function Editor2({setValue}:{setValue: any}): JSX.Element {
+
+export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
     settings: {
@@ -132,7 +133,16 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
 
   return (
     <>
- 
+      <div className="sticky top-0 z-10 bg-white border-b px-4 py-2">
+        <ToolbarPlugin
+          editor={editor}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
+          setIsLinkEditMode={setIsLinkEditMode}
+        />
+      </div>
+
+
       {isRichText && (
         <ShortcutsPlugin
           editor={activeEditor}
@@ -140,9 +150,8 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
         />
       )}
       <div
-        className={`editor-container ${showTreeView ? "tree-view" : ""} ${
-          !isRichText ? "plain-text" : ""
-        }`}
+        className={`editor-container ${showTreeView ? "tree-view" : ""} ${!isRichText ? "plain-text" : ""
+          }`}
       >
         {isMaxLength && <MaxLengthPlugin maxLength={30} />}
         <DragDropPaste />
@@ -171,19 +180,19 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
                 </div>
               }
               ErrorBoundary={LexicalErrorBoundary}
-             
+
             />
-             {setValue && (
-                <OnChangePlugin
-                  onChange={(editorState: EditorState) => {
-                    editorState.read(() => {
-                      const html = $generateHtmlFromNodes(editor);
-                      setValue(html);
-                    
-                    });
-                  }}
-                />
-              )}
+            {setValue && (
+              <OnChangePlugin
+                onChange={(editorState: EditorState) => {
+                  editorState.read(() => {
+                    const html = $generateHtmlFromNodes(editor);
+                    setValue(html);
+
+                  });
+                }}
+              />
+            )}
             <MarkdownShortcutPlugin />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
@@ -212,11 +221,11 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
             <LayoutPlugin />
             {floatingAnchorElem && (
               <>
-                <FloatingLinkEditorPlugin
+                {/* <FloatingLinkEditorPlugin
                   anchorElem={floatingAnchorElem}
                   isLinkEditMode={isLinkEditMode}
                   setIsLinkEditMode={setIsLinkEditMode}
-                />
+                /> */}
                 <TableCellActionMenuPlugin
                   anchorElem={floatingAnchorElem}
                   cellMerge={true}
@@ -228,7 +237,7 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
                 <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
                 <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin
+                {/* <FloatingTextFormatToolbarPlugin
                   anchorElem={floatingAnchorElem}
                   setIsLinkEditMode={setIsLinkEditMode}
                   ToolBar={   <ToolbarPlugin
@@ -237,7 +246,7 @@ export default function Editor2({setValue}:{setValue: any}): JSX.Element {
                     setActiveEditor={setActiveEditor}
                     setIsLinkEditMode={setIsLinkEditMode}
                   />}
-                />
+                /> */}
               </>
             )}
           </>

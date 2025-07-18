@@ -33,6 +33,7 @@ import { parseAllowedColor } from "./ui/ColorPicker";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import React from "react";
 import Editor2 from "./Editor";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 
 function $prepopulatedRichText() {
   const root = $getRoot();
@@ -44,7 +45,7 @@ function $prepopulatedRichText() {
     quote.append(
       $createTextNode(
         `In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. ` +
-          `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`
+        `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`
       )
     );
     root.append(quote);
@@ -244,10 +245,10 @@ export function CustomTextEditor({
           <TableContext>
             <ToolbarContext>
               <PrepopulateHtmlPlugin html={value} />
+             
               <div className="editor-shell">
                 <Editor2 setValue={setValue} />
               </div>
-
               {measureTypingPerf ? <TypingPerfPlugin /> : null}
             </ToolbarContext>
           </TableContext>
