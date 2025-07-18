@@ -133,7 +133,7 @@ export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
 
   return (
     <>
-      <div className="sticky top-0 z-10 bg-white border-b px-4 py-2">
+      <div className="sticky top-0 z-10 bg-transparent border-[1px] rounded-lg border-gray-300 px-4 py-2">
         <ToolbarPlugin
           editor={editor}
           activeEditor={activeEditor}
@@ -174,7 +174,7 @@ export default function Editor2({ setValue }: { setValue: any }): JSX.Element {
             <RichTextPlugin
               contentEditable={
                 <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
+                  <div className="editor mt-4 pt-0 px-2 bg-transparent border-[1px] rounded-lg border-gray-300 min-h-[50vh]" ref={onRef}>
                     <ContentEditable placeholder={placeholder} />
                   </div>
                 </div>

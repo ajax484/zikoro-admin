@@ -33,7 +33,6 @@ import { parseAllowedColor } from "./ui/ColorPicker";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import React from "react";
 import Editor2 from "./Editor";
-import ToolbarPlugin from "./plugins/ToolbarPlugin";
 
 function $prepopulatedRichText() {
   const root = $getRoot();
@@ -245,7 +244,6 @@ export function CustomTextEditor({
           <TableContext>
             <ToolbarContext>
               <PrepopulateHtmlPlugin html={value} />
-             
               <div className="editor-shell">
                 <Editor2 setValue={setValue} />
               </div>
