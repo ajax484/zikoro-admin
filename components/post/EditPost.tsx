@@ -7,7 +7,7 @@ import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
 import Image from "next/image";
-import { TextEditor } from "@/components/editor/TextEditor";
+import { CustomTextEditor } from "@/components/editor/CustomTextEditor";
 
 export default function EditPost({ postId }: { postId: string }) {
   const { data, refetch } = useFetchBlogPost(postId);
@@ -192,6 +192,11 @@ export default function EditPost({ postId }: { postId: string }) {
     }
   }, [data]);
 
+
+  const handleEditorChange = (html: string) => {
+    setValue("content", html); // react-hook-form will track this
+  };
+
   return (
     <div className="lg:max-w-[1180px] mx-auto">
       <div className="flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-12 pt-28">
@@ -314,14 +319,13 @@ export default function EditPost({ postId }: { postId: string }) {
               )}
             </div>
 
-            <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10">
-              {data && (
-                <TextEditor
-                  defaultValue={data.content}
-                  onChange={setMessage}
-                  isBlog
+            <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
+              {data &&
+                <CustomTextEditor
+                  value={watch("content") || ""}
+                  setValue={handleEditorChange}
                 />
-              )}
+              }
             </div>
           </form>
         </section>

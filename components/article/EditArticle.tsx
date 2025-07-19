@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useFetchArticle } from "@/hooks/services/help";
-import { TextEditor } from "@/components/editor/TextEditor";
+import { CustomTextEditor } from "@/components/editor/CustomTextEditor";
 
 export default function EditArticle({ articleId }: { articleId: number }) {
   const { data } = useFetchArticle(articleId);
@@ -90,6 +90,10 @@ export default function EditArticle({ articleId }: { articleId: number }) {
     }
   }, [data, reset]);
 
+  const handleEditorChange = (html: string) => {
+    setValue("content", html); // react-hook-form will track this
+  };
+
 
   return (
     <div className="lg:max-w-[1180px] mx-auto">
@@ -136,13 +140,14 @@ export default function EditArticle({ articleId }: { articleId: number }) {
               </div>
             </div>
 
-            <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10">
-              {data && (
-                <TextEditor
-                  defaultValue={data.Details}
-                  onChange={setMessage}
+
+            <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
+              {data &&
+                <CustomTextEditor
+                  value={watch("content") || ""}
+                  setValue={handleEditorChange}
                 />
-              )}
+              }
             </div>
           </form>
         </section>
