@@ -87,8 +87,9 @@ export default function EditArticle({ articleId }: { articleId: number }) {
         title: data?.title,
         category: data?.productCategory,
       });
+       setValue("content", data.content);
     }
-  }, [data, reset]);
+  }, [data, reset, setValue]);
 
   const handleEditorChange = (html: string) => {
     setValue("content", html); // react-hook-form will track this

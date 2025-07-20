@@ -189,6 +189,7 @@ export default function EditPost({ postId }: { postId: string }) {
         statusDetail: data?.statusDetails,
       });
       setStatus(data?.status);
+      setValue("content", data.content);
     }
   }, [data]);
 
