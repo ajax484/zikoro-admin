@@ -69,12 +69,10 @@ import YouTubePlugin from "./plugins/YouTubePlugin";
 import ContentEditable from "./ui/ContentEditable";
 import { EditorState, LexicalEditor } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
-import { $generateNodesFromDOM } from "@lexical/html"; // 
-import { $getRoot } from "lexical";
-import { useCallback } from "react";
 
 
-export default function Editor2({ setValue,  value}: { setValue: any; value?: string; }): JSX.Element {
+
+export default function Editor2({ setValue, value }: { setValue: any; value?: string; }): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
     settings: {
@@ -108,6 +106,7 @@ export default function Editor2({ setValue,  value}: { setValue: any; value?: st
   const [activeEditor, setActiveEditor] = useState(editor);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const htmlRef = React.useRef<string>("");
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -187,7 +186,7 @@ export default function Editor2({ setValue,  value}: { setValue: any; value?: st
               ErrorBoundary={LexicalErrorBoundary}
 
             />
-            {setValue && (
+            {/* {setValue && (
               <OnChangePlugin
                 onChange={(editorState: EditorState) => {
                   editorState.read(() => {
@@ -197,7 +196,18 @@ export default function Editor2({ setValue,  value}: { setValue: any; value?: st
                   });
                 }}
               />
-            )}
+            )} */}
+
+
+            <OnChangePlugin
+              onChange={(editorState: EditorState) => {
+                editorState.read(() => {
+                  const html = $generateHtmlFromNodes(editor);
+                  htmlRef.current = html;
+                });
+              }}
+            />
+
             <MarkdownShortcutPlugin />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
