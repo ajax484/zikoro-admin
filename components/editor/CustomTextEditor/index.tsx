@@ -6,7 +6,7 @@ import type { JSX } from "react";
 
 import { $createLinkNode } from "@lexical/link";
 import { $createListItemNode, $createListNode } from "@lexical/list";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { LexicalComposer, InitialConfigType } from "@lexical/react/LexicalComposer";
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
   $createParagraphNode,
@@ -215,6 +215,48 @@ function buildImportMap(): DOMConversionMap {
   return importMap;
 }
 
+// export function CustomTextEditor({
+//   value,
+//   setValue,
+// }: {
+//   value: string;
+//   setValue: (v: string) => void;
+// }): JSX.Element {
+//   const {
+//     settings: { emptyEditor, measureTypingPerf },
+//   } = useSettings();
+
+//   const initialConfig = {
+//     editorState: emptyEditor ? undefined : $prepopulatedRichText,
+//     html: { import: buildImportMap() },
+//     namespace: "Text Editor",
+//     nodes: [...PlaygroundNodes],
+//     onError: (error: Error) => {
+//       throw error;
+//     },
+//     theme: PlaygroundEditorTheme,
+//   };
+
+//   return (
+//     <SettingsContext>
+//       <LexicalComposer initialConfig={initialConfig}>
+//         <SharedHistoryContext>
+//           <TableContext>
+//             <ToolbarContext>
+//               <PrepopulateHtmlPlugin html={value} />
+//               <div className="editor-shell">
+//                 <Editor2 setValue={setValue} />
+//               </div>
+//               {measureTypingPerf ? <TypingPerfPlugin /> : null}
+//             </ToolbarContext>
+//           </TableContext>
+//         </SharedHistoryContext>
+//       </LexicalComposer>
+//     </SettingsContext>
+//   );
+// }
+
+
 export function CustomTextEditor({
   value,
   setValue,
@@ -225,6 +267,11 @@ export function CustomTextEditor({
   const {
     settings: { emptyEditor, measureTypingPerf },
   } = useSettings();
+
+  interface Props {
+  value: string;
+  setValue: (html: string) => void;
+}
 
   const initialConfig = {
     editorState: emptyEditor ? undefined : $prepopulatedRichText,
@@ -255,5 +302,3 @@ export function CustomTextEditor({
     </SettingsContext>
   );
 }
-
-

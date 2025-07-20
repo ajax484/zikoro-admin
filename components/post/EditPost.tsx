@@ -198,6 +198,7 @@ export default function EditPost({ postId }: { postId: string }) {
     setValue("content", html); // react-hook-form will track this
   };
 
+  console.log("Fetched content:", data?.content);
   return (
     <div className="lg:max-w-[1180px] mx-auto">
       <div className="flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-12 pt-28">
@@ -321,12 +322,13 @@ export default function EditPost({ postId }: { postId: string }) {
             </div>
 
             <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
-              {data &&
+              {typeof watch("content") === "string" && (
                 <CustomTextEditor
-                  value={watch("content") || ""}
+                  key={postId}
+                  value={watch("content")}
                   setValue={handleEditorChange}
                 />
-              }
+              )}
             </div>
           </form>
         </section>
