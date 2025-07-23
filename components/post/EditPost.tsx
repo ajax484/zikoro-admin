@@ -14,6 +14,7 @@ export default function EditPost({ postId }: { postId: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
+
   const router = useRouter();
   const {
     register,
@@ -172,10 +173,31 @@ export default function EditPost({ postId }: { postId: string }) {
     }
   };
 
+  // useEffect(() => {
+  //   if (data) {
+  //     reset({
+  //       content: data?.content,
+  //       title: data?.title,
+  //       category: data?.category,
+  //       readingDuration: data?.readingDuration,
+  //       tags: data?.tags,
+  //     });
+  //     setFormData({
+  //       title: data?.title,
+  //       category: data?.category,
+  //       tags: data?.tags,
+  //       readingDuration: data?.readingDuration,
+  //       statusDetail: data?.statusDetails,
+  //     });
+  //     setStatus(data?.status);
+  //     setValue("content", data.content);
+  //   }
+  // }, [data]);
+
   useEffect(() => {
     if (data) {
       reset({
-        content: data?.content,
+        content: data?.content, // This correctly sets the initial value in react-hook-form
         title: data?.title,
         category: data?.category,
         readingDuration: data?.readingDuration,
@@ -189,14 +211,18 @@ export default function EditPost({ postId }: { postId: string }) {
         statusDetail: data?.statusDetails,
       });
       setStatus(data?.status);
-      setValue("content", data.content);
+      setValue("content", data.content); // Redundant if reset already sets it, but harmless
     }
-  }, [data]);
+  }, [data, reset, setValue]); // Add setValue to dependency array if not already there
+
+
+
 
 
   const handleEditorChange = (html: string) => {
     setValue("content", html); // react-hook-form will track this
   };
+
 
   console.log("Fetched content:", data?.content);
   return (
@@ -322,13 +348,22 @@ export default function EditPost({ postId }: { postId: string }) {
             </div>
 
             <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
-              {typeof watch("content") === "string" && (
+              {/* {data?.content && typeof watch("content") === "string" && (
                 <CustomTextEditor
-                  key={postId}
+                  key={postId} // important to reset internal state
                   value={watch("content")}
                   setValue={handleEditorChange}
                 />
+              )} */}
+
+              {data?.content !== undefined && ( // Ensure data and content are loaded before rendering
+                <CustomTextEditor
+                  key={postId} // Key helps to re-mount the component if postId changes
+                  value={content || ""} // Pass the watched content, default to empty string
+                  setValue={handleEditorChange}
+                />
               )}
+
             </div>
           </form>
         </section>

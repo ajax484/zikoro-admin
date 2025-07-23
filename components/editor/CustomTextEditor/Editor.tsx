@@ -102,7 +102,6 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
   const [isSmallWidthViewport, setIsSmallWidthViewport] =
     useState<boolean>(false);
   const [editor] = useLexicalComposerContext();
-
   const [activeEditor, setActiveEditor] = useState(editor);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
   const [hasInitialized, setHasInitialized] = useState(false);
@@ -203,7 +202,8 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
               onChange={(editorState: EditorState) => {
                 editorState.read(() => {
                   const html = $generateHtmlFromNodes(editor);
-                  htmlRef.current = html;
+                  htmlRef.current = html; // Update internal ref
+                  setValue(html); // Call the setValue prop from the parent
                 });
               }}
             />

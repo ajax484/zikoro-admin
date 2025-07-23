@@ -114,41 +114,80 @@ function $prepopulatedRichText() {
   }
 }
 
+// function PrepopulateHtmlPlugin({ html }: { html?: string }): null {
+//   const [editor] = useLexicalComposerContext();
+
+//   React.useEffect(() => {
+//     if (!html || html.trim() === "") return;
+
+//     editor.update(() => {
+//       // Create a proper DOM document
+//       const parser = new DOMParser();
+//       const dom = parser.parseFromString(
+//         `<!DOCTYPE html><html><body>${html}</body></html>`,
+//         "text/html"
+//       );
+
+//       // Use the full document, not just the body element
+//       $generateNodesFromDOM(editor, dom);
+
+//       // Clean up any empty paragraphs that might have been created
+//       const root = $getRoot();
+//       const children = root.getChildren();
+//       if (
+//         children.length === 1 &&
+//         $isParagraphNode(children[0]) &&
+//         children[0].getChildren().length === 0
+//       ) {
+//         root.clear();
+//       }
+
+//       // Move selection to start
+//       root.selectStart();
+//     });
+//   }, [editor, html]);
+
+//   return null;
+// }
+
+
 function PrepopulateHtmlPlugin({ html }: { html?: string }): null {
   const [editor] = useLexicalComposerContext();
+  const initializedRef = React.useRef(false); // Add a ref to track if it's already initialized
 
   React.useEffect(() => {
-    if (!html || html.trim() === "") return;
+    // Only run this once on initial HTML load
+    if (initializedRef.current || !html || html.trim() === "") {
+      return;
+    }
 
     editor.update(() => {
-      // Create a proper DOM document
       const parser = new DOMParser();
       const dom = parser.parseFromString(
         `<!DOCTYPE html><html><body>${html}</body></html>`,
         "text/html"
       );
 
-      // Use the full document, not just the body element
+      // Clear the current editor content before loading new HTML
+      $getRoot().clear();
       $generateNodesFromDOM(editor, dom);
 
-      // Clean up any empty paragraphs that might have been created
+      // Ensure there's at least one paragraph if the content was empty after import
       const root = $getRoot();
-      const children = root.getChildren();
-      if (
-        children.length === 1 &&
-        $isParagraphNode(children[0]) &&
-        children[0].getChildren().length === 0
-      ) {
-        root.clear();
+      if (root.getChildrenSize() === 0) {
+        root.append($createParagraphNode());
       }
 
-      // Move selection to start
+      // Move selection to start if content was loaded
       root.selectStart();
     });
-  }, [editor, html]);
+
+    initializedRef.current = true; // Mark as initialized
+  }, [editor, html]); // Dependency array: editor and html
 
   return null;
 }
+
 
 function getExtraStyles(element: HTMLElement): string {
   // Parse styles from pasted input, but only if they match exactly the
@@ -215,6 +254,54 @@ function buildImportMap(): DOMConversionMap {
   return importMap;
 }
 
+
+// export function CustomTextEditor({
+//   value,
+//   setValue,
+// }: {
+//   value: string;
+//   setValue: (v: string) => void;
+// }): JSX.Element {
+//   const {
+//     settings: { emptyEditor, measureTypingPerf },
+//   } = useSettings();
+
+//   interface Props {
+//   value: string;
+//   setValue: (html: string) => void;
+// }
+
+//   const initialConfig = {
+//     editorState: emptyEditor ? undefined : $prepopulatedRichText,
+//     html: { import: buildImportMap() },
+//     namespace: "Text Editor",
+//     nodes: [...PlaygroundNodes],
+//     onError: (error: Error) => {
+//       throw error;
+//     },
+//     theme: PlaygroundEditorTheme,
+//   };
+
+//   return (
+//     <SettingsContext>
+//       <LexicalComposer initialConfig={initialConfig}>
+//         <SharedHistoryContext>
+//           <TableContext>
+//             <ToolbarContext>
+//               <PrepopulateHtmlPlugin html={value} />
+//               <div className="editor-shell">
+//                 <Editor2 setValue={setValue} />
+//               </div>
+//               {measureTypingPerf ? <TypingPerfPlugin /> : null}
+//             </ToolbarContext>
+//           </TableContext>
+//         </SharedHistoryContext>
+//       </LexicalComposer>
+//     </SettingsContext>
+//   );
+// }
+
+
 export function CustomTextEditor({
   value,
   setValue,
@@ -226,13 +313,8 @@ export function CustomTextEditor({
     settings: { emptyEditor, measureTypingPerf },
   } = useSettings();
 
-  interface Props {
-    value: string;
-    setValue: (html: string) => void;
-  }
-
   const initialConfig = {
-    editorState: emptyEditor ? undefined : $prepopulatedRichText,
+    editorState: emptyEditor ? undefined : $prepopulatedRichText, // This line can actually be removed or simplified
     html: { import: buildImportMap() },
     namespace: "Text Editor",
     nodes: [...PlaygroundNodes],
@@ -248,6 +330,7 @@ export function CustomTextEditor({
         <SharedHistoryContext>
           <TableContext>
             <ToolbarContext>
+              {/* This is crucial: Pass the 'value' prop directly to PrepopulateHtmlPlugin */}
               <PrepopulateHtmlPlugin html={value} />
               <div className="editor-shell">
                 <Editor2 setValue={setValue} />
