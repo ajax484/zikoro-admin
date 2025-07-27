@@ -848,7 +848,7 @@ console.log("modal", modal)
             disabled={!isEditable}
           />
           
-          {/* <button
+          <button
             disabled={!isEditable}
             onClick={() => {
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
@@ -860,8 +860,8 @@ console.log("modal", modal)
             type="button"
             aria-label={`Format text as bold. Shortcut: ${SHORTCUTS.BOLD}`}>
             <i className="format bold" />
-          </button> */}
-          {/* <button
+          </button>
+          <button
             disabled={!isEditable}
             onClick={() => {
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
@@ -873,8 +873,8 @@ console.log("modal", modal)
             type="button"
             aria-label={`Format text as italics. Shortcut: ${SHORTCUTS.ITALIC}`}>
             <i className="format italic" />
-          </button> */}
-          {/* <button
+          </button>
+          <button
             disabled={!isEditable}
             onClick={() => {
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
@@ -887,7 +887,7 @@ console.log("modal", modal)
             type="button"
             aria-label={`Format text to underlined. Shortcut: ${SHORTCUTS.UNDERLINE}`}>
             <i className="format underline" />
-          </button> */}
+          </button>
           {canViewerSeeInsertCodeButton && (
             <button
               disabled={!isEditable}
