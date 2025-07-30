@@ -211,11 +211,11 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
                 editorState.read(() => {
                   const html = $generateHtmlFromNodes(editor);
                   htmlRef.current = html;
-                  setValue(html); // 👈 this updates the form field value
+                  setValue(html); // this updates the form field value
                 });
               }}
             />
-            
+
             <MarkdownShortcutPlugin />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />
