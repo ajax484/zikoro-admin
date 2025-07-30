@@ -196,7 +196,7 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
             )} */}
 
 
-            <OnChangePlugin
+            {/* <OnChangePlugin
               onChange={(editorState: EditorState) => {
                 editorState.read(() => {
                   const html = $generateHtmlFromNodes(editor);
@@ -204,8 +204,18 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
                   setValue(html); // Call the setValue prop from the parent
                 });
               }}
-            />
+            /> */}
 
+            <OnChangePlugin
+              onChange={(editorState: EditorState) => {
+                editorState.read(() => {
+                  const html = $generateHtmlFromNodes(editor);
+                  htmlRef.current = html;
+                  setValue(html); // 👈 this updates the form field value
+                });
+              }}
+            />
+            
             <MarkdownShortcutPlugin />
             <CodeHighlightPlugin />
             <ListPlugin hasStrictIndent={listStrictIndent} />

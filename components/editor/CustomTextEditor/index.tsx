@@ -29,7 +29,7 @@ import TypingPerfPlugin from "./plugins/TypingPerfPlugin";
 import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 import { parseAllowedColor } from "./ui/ColorPicker";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import React from "react";
+import React, { useEffect } from "react";
 import { $generateNodesFromDOM } from "@lexical/html";
 import Editor2 from "./Editor";
 
@@ -113,76 +113,38 @@ function $prepopulatedRichText() {
   }
 }
 
-// function PrepopulateHtmlPlugin({ html }: { html?: string }): null {
-//   const [editor] = useLexicalComposerContext();
-
-//   React.useEffect(() => {
-//     if (!html || html.trim() === "") return;
-
-//     editor.update(() => {
-//       // Create a proper DOM document
-//       const parser = new DOMParser();
-//       const dom = parser.parseFromString(
-//         `<!DOCTYPE html><html><body>${html}</body></html>`,
-//         "text/html"
-//       );
-
-//       // Use the full document, not just the body element
-//       $generateNodesFromDOM(editor, dom);
-
-//       // Clean up any empty paragraphs that might have been created
-//       const root = $getRoot();
-//       const children = root.getChildren();
-//       if (
-//         children.length === 1 &&
-//         $isParagraphNode(children[0]) &&
-//         children[0].getChildren().length === 0
-//       ) {
-//         root.clear();
-//       }
-
-//       // Move selection to start
-//       root.selectStart();
-//     });
-//   }, [editor, html]);
-
-//   return null;
-// }
 
 
-function PrepopulateHtmlPlugin({ html }: { html?: string }): null {
+
+function PrepopulateHtmlPlugin({ html }: { html?: string }) {
   const [editor] = useLexicalComposerContext();
-  const initializedRef = React.useRef(false); // Add a ref to track if it's already initialized
+  const initialized = React.useRef(false);
 
-  React.useEffect(() => {
-    // Only run this once on initial HTML load
-    if (initializedRef.current || !html || html.trim() === "") {
-      return;
-    }
+  useEffect(() => {
+    if (initialized.current) return;
+    if (!html || html.trim() === "") return;
 
     editor.update(() => {
       const parser = new DOMParser();
-      const dom = parser.parseFromString(
-        `<!DOCTYPE html><html><body>${html}</body></html>`,
-        "text/html"
-      );
+      const dom = parser.parseFromString(`<!DOCTYPE html><html><body>${html}</body></html>`, "text/html");
+      const nodes = $generateNodesFromDOM(editor, dom);
 
-      // Clear the current editor content before loading new HTML
-      $getRoot().clear();
-      $generateNodesFromDOM(editor, dom);
-
-      // Ensure there's at least one paragraph if the content was empty after import
       const root = $getRoot();
-      if (root.getChildrenSize() === 0) {
+      root.clear();
+
+      if (nodes.length > 0) {
+        for (const node of nodes) {
+          root.append(node);
+        }
+      } else {
         root.append($createParagraphNode());
       }
 
-      // Move selection to start if content was loaded
       root.selectStart();
     });
 
-    initializedRef.current = true; // Mark as initialized
-  }, [editor, html]); // Dependency array: editor and html
+    initialized.current = true;
+  }, [editor, html]);
 
   return null;
 }
@@ -254,53 +216,6 @@ function buildImportMap(): DOMConversionMap {
 }
 
 
-// export function CustomTextEditor({
-//   value,
-//   setValue,
-// }: {
-//   value: string;
-//   setValue: (v: string) => void;
-// }): JSX.Element {
-//   const {
-//     settings: { emptyEditor, measureTypingPerf },
-//   } = useSettings();
-
-//   interface Props {
-//   value: string;
-//   setValue: (html: string) => void;
-// }
-
-//   const initialConfig = {
-//     editorState: emptyEditor ? undefined : $prepopulatedRichText,
-//     html: { import: buildImportMap() },
-//     namespace: "Text Editor",
-//     nodes: [...PlaygroundNodes],
-//     onError: (error: Error) => {
-//       throw error;
-//     },
-//     theme: PlaygroundEditorTheme,
-//   };
-
-//   return (
-//     <SettingsContext>
-//       <LexicalComposer initialConfig={initialConfig}>
-//         <SharedHistoryContext>
-//           <TableContext>
-//             <ToolbarContext>
-//               <PrepopulateHtmlPlugin html={value} />
-//               <div className="editor-shell">
-//                 <Editor2 setValue={setValue} />
-//               </div>
-//               {measureTypingPerf ? <TypingPerfPlugin /> : null}
-//             </ToolbarContext>
-//           </TableContext>
-//         </SharedHistoryContext>
-//       </LexicalComposer>
-//     </SettingsContext>
-//   );
-// }
-
-
 export function CustomTextEditor({
   value,
   setValue,
@@ -322,6 +237,8 @@ export function CustomTextEditor({
     },
     theme: PlaygroundEditorTheme,
   };
+
+  console.log("CustomTextEditor value:", value);
 
   return (
     <SettingsContext>
