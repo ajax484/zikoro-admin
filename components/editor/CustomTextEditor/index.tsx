@@ -22,7 +22,6 @@ import {
 import { SettingsContext, useSettings } from "./context/SettingsContext";
 import { SharedHistoryContext } from "./context/SharedHistoryContext";
 import { ToolbarContext } from "./context/ToolbarContext";
-import Editor from "./Editor";
 import PlaygroundNodes from "./nodes/PlaygroundNodes";
 import { TableContext } from "./plugins/TablePlugin";
 import { parseAllowedFontSize } from "./plugins/ToolbarPlugin/fontSize";
@@ -343,3 +342,15 @@ export function CustomTextEditor({
     </SettingsContext>
   );
 }
+
+
+
+
+
+
+// index.tsx (CustomTextEditor component)
+
+
+
+
+// src/index.tsx (or wherever your CustomTextEditor is located)

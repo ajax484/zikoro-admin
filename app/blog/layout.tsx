@@ -41,8 +41,8 @@ export default function RootLayout({
         <Toaster position="top-right" toastOptions={{ style: { zIndex: 9999 } }} />
 
         {/* Nav */}
-        <nav className="w-full fixed top-0 ">
-          <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 pt-5  h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar ">
+        <nav className="w-full fixed top-0 z-[50]">
+          <div className="bg-gray-50 min-w-0 lg:min-w-[900px] px-3 lg:px-10 pt-5  h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar  ">
             <ul className="flex gap-x-16 text-gray-700">
               {links.map(({ name, href }, index) => {
                 return (

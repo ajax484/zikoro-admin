@@ -70,8 +70,6 @@ import ContentEditable from "./ui/ContentEditable";
 import { EditorState, LexicalEditor } from "lexical";
 import { $generateHtmlFromNodes } from "@lexical/html";
 
-
-
 export default function Editor2({ setValue, value }: { setValue: any; value?: string; }): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
@@ -136,7 +134,7 @@ export default function Editor2({ setValue, value }: { setValue: any; value?: st
 
   return (
     <>
-      <div className=" z-10 bg-transparent border-[1px] rounded-lg border-gray-300 px-4 py-2">
+      <div className=" bg-transparent border-[1px] rounded-lg border-gray-300 px-4 py-2">
         <ToolbarPlugin
           editor={editor}
           activeEditor={activeEditor}
