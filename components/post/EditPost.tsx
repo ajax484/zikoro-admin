@@ -7,13 +7,14 @@ import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
 import Image from "next/image";
-import { TextEditor } from "@/components/editor/TextEditor";
+import { CustomTextEditor } from "@/components/editor/CustomTextEditor";
 
 export default function EditPost({ postId }: { postId: string }) {
   const { data, refetch } = useFetchBlogPost(postId);
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
+
   const router = useRouter();
   const {
     register,
@@ -175,7 +176,7 @@ export default function EditPost({ postId }: { postId: string }) {
   useEffect(() => {
     if (data) {
       reset({
-        content: data?.content,
+        content: data?.content, // This correctly sets the initial value in react-hook-form
         title: data?.title,
         category: data?.category,
         readingDuration: data?.readingDuration,
@@ -189,9 +190,16 @@ export default function EditPost({ postId }: { postId: string }) {
         statusDetail: data?.statusDetails,
       });
       setStatus(data?.status);
+      setValue("content", data.content); // Redundant if reset already sets it, but harmless
     }
-  }, [data]);
+  }, [data, reset, setValue]); // Add setValue to dependency array if not already there
 
+  const handleEditorChange = (html: string) => {
+    setValue("content", html); // react-hook-form will track this
+  };
+
+
+  console.log("Fetched content:", data?.content);
   return (
     <div className="lg:max-w-[1180px] mx-auto">
       <div className="flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-12 pt-28">
@@ -314,14 +322,17 @@ export default function EditPost({ postId }: { postId: string }) {
               )}
             </div>
 
-            <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10">
-              {data && (
-                <TextEditor
-                  defaultValue={data.content}
-                  onChange={setMessage}
-                  isBlog
+            <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
+          
+
+              {data?.content !== undefined && ( // Ensure data and content are loaded before rendering
+                <CustomTextEditor
+                  key={postId} // Key helps to re-mount the component if postId changes
+                  value={content || ""} // Pass the watched content, default to empty string
+                  setValue={handleEditorChange}
                 />
               )}
+
             </div>
           </form>
         </section>
@@ -330,3 +341,4 @@ export default function EditPost({ postId }: { postId: string }) {
     </div>
   );
 }
+

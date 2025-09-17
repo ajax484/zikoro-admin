@@ -1,14 +1,15 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useFetchArticle } from "@/hooks/services/help";
-import { TextEditor } from "@/components/editor/TextEditor";
+import { CustomTextEditor } from "@/components/editor/CustomTextEditor";
 
 export default function EditArticle({ articleId }: { articleId: number }) {
   const { data } = useFetchArticle(articleId);
   const router = useRouter();
+  const [editorContent, setEditorContent] = useState("");
 
   const {
     register,
@@ -83,13 +84,21 @@ export default function EditArticle({ articleId }: { articleId: number }) {
   useEffect(() => {
     if (data) {
       reset({
-        content: data?.content,
+        content: data?.Details,
         title: data?.title,
         category: data?.productCategory,
       });
+      setEditorContent(data?.Details); // <--- sync to state for the editor
+      setValue("content", data?.Details);
     }
-  }, [data, reset]);
+  }, [data, reset, setValue]);
 
+  const handleEditorChange = (html: string) => {
+    setEditorContent(html);          // local state for editor display
+    setValue("content", html);       // react-hook-form tracking
+  };
+
+  console.log("data", data);
 
   return (
     <div className="lg:max-w-[1180px] mx-auto">
@@ -136,13 +145,15 @@ export default function EditArticle({ articleId }: { articleId: number }) {
               </div>
             </div>
 
-            <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10">
-              {data && (
-                <TextEditor
-                  defaultValue={data.Details}
-                  onChange={setMessage}
+
+            <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
+              {data &&
+                <CustomTextEditor
+                  key={articleId}
+                  value={editorContent}
+                  setValue={handleEditorChange}
                 />
-              )}
+              }
             </div>
           </form>
         </section>

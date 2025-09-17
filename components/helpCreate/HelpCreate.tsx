@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { GreaterThan } from "styled-icons/fa-solid";
-import Editor from "@/components/editor/TextEditor";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { CustomTextEditor } from "../editor/CustomTextEditor";
 
 export default function Create() {
   const router = useRouter();
@@ -64,6 +64,10 @@ export default function Create() {
     content: [],
   });
 
+  const handleEditorChange = (html: string) => {
+    setValue("content", html); // react-hook-form will track this
+  };
+
   //handle change function
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -102,10 +106,12 @@ export default function Create() {
       });
   };
 
+  const stripHtml = (html: string) =>
+    html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, "").trim();
+
   const isFormInvalid =
     !formData.title.trim() ||
-    !formData.category.trim() ||
-    !content || (Array.isArray(content) && content.length === 0)
+    !formData.category.trim()
 
 
   return (
@@ -253,17 +259,14 @@ export default function Create() {
         </div>
 
         <div className="mt-8 lg:mt-[50px] bg-transparent flex-1 resize-none h-fit mb-10 ">
-          <Editor
-            // defaultValue={content}
-            // placeholder="Type your blog content..."
-            // onChange={setMessage}
+          <CustomTextEditor
+            value={watch("content") || ""}
+            setValue={handleEditorChange}
           />
         </div>
       </section>
     </form>
   );
 }
-
-
 
 
