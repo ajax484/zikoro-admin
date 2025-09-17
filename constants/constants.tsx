@@ -1,5 +1,19 @@
 import { AdminNavLinkType, NavLinkType } from "@/types";
 import React from "react";
+import {
+  IdentificationCardIcon,
+  UserIcon as User,
+  AddressBookTabsIcon,
+  InfoIcon,
+  CertificateIcon,
+  PenNibIcon,
+  TicketIcon,
+  CreditCardIcon,
+  GiftIcon,
+  BankIcon,
+  BuildingIcon,
+  CashRegisterIcon,
+} from "@phosphor-icons/react";
 
 export function HomeIcon({ color }: { color: string }) {
   return (
@@ -594,61 +608,61 @@ export const links: NavLinkType[] = [
     href: "",
   },
  */
-export const adminLinks: AdminNavLinkType[] = [
+export const adminLinks: NavLinkType[] = [
   {
     name: "Events",
-    image: "/images/a_event.svg",
+    Icon: TicketIcon,
     href: "events?e=review",
   },
   {
     name: "Payout",
-    image: "/images/a_payout.svg",
+    Icon: BankIcon,
     href: "payout",
   },
   {
     name: "Gift Payout",
-    image: "/images/a_payout.svg",
+    Icon: CreditCardIcon,
     href: "gift-payout",
   },
   {
     name: "Transactions",
-    image: "/images/a_event.svg",
+    Icon: CashRegisterIcon,
     href: "transactions",
   },
   {
     name: "Workspaces",
-    image: "/images/a_event.svg",
+    Icon: BuildingIcon,
     href: "workspaces",
   },
   {
     name: "Verify",
-    image: "/images/a_event.svg",
+    Icon: IdentificationCardIcon,
     href: "verify",
   },
 
   {
     name: "Affliliate",
-    image: "/images/a_affiliate.svg",
+    Icon: User,
     href: "affiliate",
   },
   {
     name: "Contacts",
-    image: "/images/a_contact.svg",
+    Icon: AddressBookTabsIcon,
     href: "contacts",
   },
   {
     name: "Blog",
-    image: "/images/a_blog.svg",
+    Icon: PenNibIcon,
     href: "blog/dashboard",
   },
   {
     name: "Certificates",
-    image: "/images/a_certificate.svg",
+    Icon: CertificateIcon,
     href: "certificates",
   },
   {
     name: "Help Center",
-    image: "/images/a_help.svg",
+    Icon: InfoIcon,
     href: "help",
   },
 ];

@@ -1,31 +1,66 @@
-import React from "react";
 import type { Metadata } from "next";
-import { montserrat } from "@/constants/fonts";
+import { montserrat } from "@/utils/font";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Toaster } from "react-hot-toast";
-import { TOASTER_PROPS } from "@/lib";
-import { AdminSideBar } from "@/components/admin/AdminSideBar/AdminSideBar";
 
 export const metadata: Metadata = {
-  title: "Admin Zikoro",
+  title: "Zikoro Admin",
+  description:
+    "Secure and Verifiable Digital Credentials for Achievements. Create, manage and share digital certificates and badges in 5 minutes",
+
+  openGraph: {
+    type: "website",
+    url: "/logo.png",
+    title: "Zikoro - Credentials",
+    description:
+      "Secure and Verifiable Digital Credentials for Achievements. Create, manage and share digital certificates and badges in 5 minutes",
+    images: [
+      {
+        url: "/zikoro-og.jpeg",
+        width: 115,
+        height: 40,
+        alt: "Zikoro - Credentials",
+      },
+    ],
+  },
+
+  // Additional SEO fields (optional)
+  keywords:
+    "Digital certificates, badges, verifiable credentials, skill recognition, secure certificates, Blockchain credentials, education certificates, digital learning badges, skills validation, employee recognition, training badges, corporate certificates, professional achievements, trust badges, validated achievements, shareable  badges, shareable certificates",
+  robots: "index, follow",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  const websiteStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Zikoro",
+    url: "https://www.zikoro.com/",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://www.zikoro.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
   return (
-    <html lang="en" className="text-mobile sm:text-desktop">
-      <body className={`${montserrat.className}`}>
-        <main className={`relative w-full h-full bg-[#F9FAFF]`}>
-          <AdminSideBar />
-          <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right bg-[#F7F8FF]  pb-12">
-            {children}
-          </div>
-        </main>
-        <Toaster {...TOASTER_PROPS} />
+    <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
+      </head>
+
+      <body className={`${montserrat.className} antialiased`}>
+        <ToastContainer />
+        <>{children}</>
       </body>
     </html>
   );

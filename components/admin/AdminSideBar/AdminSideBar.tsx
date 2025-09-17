@@ -53,14 +53,13 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
             className="w-[150px] h-[40px] mx-4"
           />
           {/**nav links */}
-        
-          <ul className="flex flex-col gap-y-1 items-start overflow-y-auto no-scrollbar justify-start w-full h-[calc(100vh-180px)] px-2 pb-36">
 
-            {adminLinks.map(({ href, name, image }) => {
+          <ul className="flex flex-col gap-y-1 items-start overflow-y-auto no-scrollbar justify-start w-full h-[calc(100vh-180px)] px-2 pb-36">
+            {adminLinks.map(({ href, name, Icon }) => {
               const currentHref = href.includes("?")
                 ? href?.split("?")[0]
                 : href;
-                const path = pathname.split("/")[1]
+              const path = pathname.split("/")[1];
               return (
                 <li key={name} className="w-full">
                   <Link
@@ -71,12 +70,10 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
                         "text-basePrimary pl-2 pr-4  bg-[#001fcc]/10 border-l-4 border-basePrimary bg-opacity-10  "
                     )}
                   >
-                    <Image
-                      alt={name}
-                      src={image}
-                      width={30}
-                      height={30}
-                      className="w-6 h-6"
+                    <Icon
+                      size={24}
+                      className="text-basePrimary"
+                      weight="duotone"
                     />
                     <span>{name}</span>
                   </Link>

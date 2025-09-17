@@ -4,11 +4,13 @@ import { loginSchema, onboardingSchema } from "@/schemas/auth";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { postRequest } from "@/utils/api";
 import useUserStore from "@/store/globalUserStore";
 import { createClient } from "@/utils/supabase/client";
 import { TUser } from "@/types/user";
+import { nanoid } from "nanoid";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const supabase = createClient();
 
@@ -16,7 +18,10 @@ export function useRegistration() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function register(values: z.infer<typeof loginSchema>) {
+  async function register(
+    values: z.infer<typeof loginSchema>,
+    workspaceAlias?: string
+  ) {
     setLoading(true);
 
     try {
@@ -27,6 +32,10 @@ export function useRegistration() {
           emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${
             values?.email
           }/${new Date().toISOString()}`,
+          data: {
+            platform: "credentials",
+            verification_token: nanoid(),
+          },
         },
       });
 
@@ -40,7 +49,9 @@ export function useRegistration() {
         //  saveCookie("user", data);
         toast.success("Registration Successful");
         router.push(
-          `/verify-email?message=Verify your Account&content= Thank you for signing up! A verification code has been sent to your registered email address. Please check your inbox and enter the code to verify your account.&email=${values.email}&type=verify`
+          `/verify-email?email=${values.email}&type=verify${
+            workspaceAlias ? `&workspaceAlias=${workspaceAlias}` : ""
+          }`
         );
       }
     } catch (error) {
@@ -61,11 +72,10 @@ export function useLogin() {
 
   async function logIn(
     values: z.infer<typeof loginSchema>,
-    redirectTo: string | null
+    redirectTo?: string
   ) {
     setLoading(true);
     try {
-      console.log("here");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
@@ -75,7 +85,7 @@ export function useLogin() {
         await setLoggedInUser(data?.user?.email);
         //  console.log(data?.user?.email);
         toast.success("Sign In Successful");
-        router.push(redirectTo ?? "/blog/dashboard");
+        router.push(redirectTo ?? "/home");
         setLoading(false);
       } else {
         toast.error("Incorrect Details");
@@ -95,10 +105,12 @@ export function useLogin() {
 export function useLogOut(redirectPath: string = "/") {
   const router = useRouter();
   const { setUser } = useUserStore();
+  const { setOrganization } = useOrganizationStore();
 
   async function logOut() {
     await supabase.auth.signOut();
     setUser(null);
+    setOrganization(null);
     router.push(redirectPath);
   }
 
@@ -224,7 +236,12 @@ export function useVerifyCode() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function verifyCode(email: string, token: string, type: string | null) {
+  async function verifyCode(
+    email: string,
+    token: string,
+    type: string | null,
+    workspaceAlias?: string
+  ) {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.verifyOtp({
@@ -243,7 +260,9 @@ export function useVerifyCode() {
         router.push(
           `${
             window.location.origin
-          }/onboarding?email=${email}&createdAt=${new Date().toISOString()}`
+          }/onboarding?email=${email}&createdAt=${new Date().toISOString()}${
+            workspaceAlias ? `&workspaceAlias=${workspaceAlias}` : ""
+          }`
         );
       }
     } catch (error: any) {
@@ -283,6 +302,7 @@ export const getUser = async (email: string | null) => {
 export function useOnboarding() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useUserStore();
+  const params = useSearchParams();
 
   type CreateUser = {
     values: z.infer<typeof onboardingSchema>;
@@ -306,6 +326,16 @@ export function useOnboarding() {
   ) {
     try {
       setLoading(true);
+      if (params.get("token")) {
+        const token = params.get("token");
+        const userId = params.get("userId");
+
+        const { data, status } = await postRequest<any>({
+          endpoint: `/verifyuser/${userId}/${token}`,
+          payload: "",
+        });
+      }
+
       const { data, error, status } = await supabase
         .from("users")
         .insert({

@@ -15,6 +15,7 @@ import { useUpdateData } from "@/hooks/services/request";
 import { OrganizationVerification } from "@/typings/organization";
 import Image from "next/image";
 import Link from "next/link";
+import useUserStore from "../../../../../store/globalUserStore";
 
 export const columns = (
   getData: () => Promise<OrganizationVerification | undefined>
@@ -143,6 +144,8 @@ export const columns = (
     id: "actions",
     cell: ({ row }) => {
       const verification = row.original as OrganizationVerification;
+      const { user } = useUserStore();
+      console.log(verification, user, "user");
 
       const { updateData, isLoading } = useUpdateData(
         `/workspaces/verification`
