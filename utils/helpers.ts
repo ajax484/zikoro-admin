@@ -279,3 +279,27 @@ export function maskAccountNumber(accountNumber: string): string {
   const maskedDigits = accountNumber.slice(0, -4).replace(/\d/g, "*"); // Replace all other digits with '*'
   return `${maskedDigits}${visibleDigits}`;
 }
+export function abbreviateNumber(num: number): string {
+  if (num >= 1_000_000_000_000) {
+    return (num / 1_000_000_000_000).toFixed(1).replace(/\.0$/, "") + "T";
+  }
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  }
+  return num.toString();
+}
+
+export function generateAlias(): string {
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < 20; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}

@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   robots: "index, follow",
 };
 
+import Providers from "@/components/shared/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -59,8 +61,10 @@ export default function RootLayout({
       </head>
 
       <body className={`${montserrat.className} antialiased`}>
-        <ToastContainer />
-        <>{children}</>
+        <Providers>
+          <ToastContainer />
+          <>{children}</>
+        </Providers>
       </body>
     </html>
   );

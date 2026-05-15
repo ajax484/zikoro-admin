@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   title: "Admin Zikoro",
 };
 
+import Providers from "@/components/shared/Providers";
+
 export default function RootLayout({
   children,
 }: {
@@ -19,13 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="text-mobile sm:text-desktop">
       <body className={`${montserrat.className}`}>
-        <main className={`relative w-full h-full bg-[#F9FAFF]`}>
-          <AdminSideBar />
-          <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right bg-[#F7F8FF]  pb-12">
-            {children}
-          </div>
-        </main>
-        <Toaster {...TOASTER_PROPS} />
+        <Providers>
+          <main className={`relative w-full h-full bg-[#F9FAFF]`}>
+            <AdminSideBar />
+            <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right bg-[#F7F8FF]  pb-12">
+              {children}
+            </div>
+          </main>
+          <Toaster {...TOASTER_PROPS} />
+        </Providers>
       </body>
     </html>
   );
