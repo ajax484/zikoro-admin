@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import VerificationInput from "react-verification-input";
-import mailImage from "@/public/mail64.png";
 import { Loader } from "lucide-react";
 
 type SearchParams = {
@@ -52,13 +51,6 @@ export default function Page({ searchParams }: { searchParams: SearchParams }) {
   return (
     <div className="w-full h-full inset-0 fixed">
       <div className="w-fit h-fit m-auto inset-0 absolute flex flex-col gap-y-2 items-center justify-center px-4">
-        <Image
-          src={mailImage}
-          alt="mail"
-          className="w-20 h-20"
-          width={100}
-          height={100}
-        />
         <h1 className="font-semibold text-base w-full text-center sm:text-xl">
           {message}
         </h1>

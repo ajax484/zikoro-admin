@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { useRegistration } from "@/hooks/services/auth";
-import { useRegister } from "@/mutations/auth.mutations";
 import { Loader } from "lucide-react";
 
 const AppointmentSignupForm = ({
@@ -14,7 +13,7 @@ const AppointmentSignupForm = ({
 }) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const { mutateAsync: register, isPending: isLoading } = useRegister(
+  const { register, loading: isLoading } = useRegistration(
     workspaceAlias || ""
   );
   const [formData, setFormData] = useState({

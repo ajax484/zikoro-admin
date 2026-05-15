@@ -20,7 +20,7 @@ const AppointmentLoginPage = ({
         <div className="bg-zikoroBlue w-fit h-screen" />
       </div>
       <div className="w-full lg:w-[50%]">
-        <AppointmentLoginForm redirectedFrom={searchParams?.redirectedFrom} />
+        {/* <AppointmentLoginForm redirectedFrom={searchParams?.redirectedFrom} /> */}
       </div>
     </div>
   );

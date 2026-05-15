@@ -14,14 +14,11 @@ import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const supabase = createClient();
 
-export function useRegistration() {
+export function useRegistration(workspaceAlias?: string) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function register(
-    values: z.infer<typeof loginSchema>,
-    workspaceAlias?: string
-  ) {
+  async function register(values: z.infer<typeof loginSchema>) {
     setLoading(true);
 
     try {
@@ -51,7 +48,7 @@ export function useRegistration() {
         router.push(
           `/verify-email?email=${values.email}&type=verify${
             workspaceAlias ? `&workspaceAlias=${workspaceAlias}` : ""
-          }`
+          }`,
         );
       }
     } catch (error) {
@@ -72,7 +69,7 @@ export function useLogin() {
 
   async function logIn(
     values: z.infer<typeof loginSchema>,
-    redirectTo?: string
+    redirectTo?: string,
   ) {
     setLoading(true);
     try {
@@ -166,7 +163,7 @@ export function useForgotPassword() {
         //  saveCookie("user", data);
 
         router.push(
-          `/verify-email?message=Reset Password&content=If the email you entered is registered, we've sent an OTP code to your inbox. Please check your email and follow the instructions to reset your password.&email=${email}&type=reset-password`
+          `/verify-email?message=Reset Password&content=If the email you entered is registered, we've sent an OTP code to your inbox. Please check your email and follow the instructions to reset your password.&email=${email}&type=reset-password`,
         );
       }
     } catch (error) {
@@ -240,7 +237,7 @@ export function useVerifyCode() {
     email: string,
     token: string,
     type: string | null,
-    workspaceAlias?: string
+    workspaceAlias?: string,
   ) {
     try {
       setLoading(true);
@@ -262,7 +259,7 @@ export function useVerifyCode() {
             window.location.origin
           }/onboarding?email=${email}&createdAt=${new Date().toISOString()}${
             workspaceAlias ? `&workspaceAlias=${workspaceAlias}` : ""
-          }`
+          }`,
         );
       }
     } catch (error: any) {
@@ -290,7 +287,7 @@ export const getUser = async (email: string | null) => {
     if (typeof window !== "undefined")
       window.open(
         `/onboarding?email=${email}&createdAt=${new Date().toISOString()}`,
-        "_self"
+        "_self",
       );
     return;
   }
@@ -322,7 +319,7 @@ export function useOnboarding() {
   async function registration(
     values: FormData,
     email: string | null,
-    createdAt: string | null
+    createdAt: string | null,
   ) {
     try {
       setLoading(true);
@@ -378,7 +375,7 @@ export function useOnboarding() {
 
 export const useGetUserId = () => {
   const getUserId = async (
-    email: string | null
+    email: string | null,
   ): Promise<string | undefined> => {
     if (!email) return;
 
