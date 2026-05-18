@@ -2,12 +2,15 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 
-const includedPaths: string[] = [
-
-]
+const publicPaths: string[] = [
+  "/login",
+  "/forgot-password",
+  "/update-password",
+  "/verify-email",
+  "/auth/callback",
+];
 
 export const updateSession = async (request: NextRequest) => {
-
   try {
     // Create an unmodified response
     let response = NextResponse.next({
@@ -45,48 +48,52 @@ export const updateSession = async (request: NextRequest) => {
       data: { user },
     } = await supabase.auth.getUser();
 
-
-    // Check if the request path is included in the protected paths
-    const isIncludedPath = includedPaths.some((includedPath) =>
-      path.startsWith(includedPath)
+    // Check if the request path is a public path
+    const isPublicPath = publicPaths.some((publicPath) =>
+      path === publicPath || path.startsWith(publicPath + "/")
     );
 
-    // Check if the request path starts with /workspace
-    // if (path.startsWith("/blog") && !user) {
-    //   const redirectUrl = new URL("/login", request.url);
-    //   redirectUrl.searchParams.set("redirectedFrom", path);
-    //   return NextResponse.redirect(redirectUrl);
-    // }
+    if (!isPublicPath) {
+      if (!user) {
+        // If user is not authenticated and path is not public, redirect/reject
+        if (path.startsWith("/api")) {
+          return NextResponse.json(
+            { error: "Authorization failed: Authenticated user required" },
+            { status: 401 }
+          );
+        } else {
+          const redirectUrl = new URL("/login", request.url);
+          redirectUrl.searchParams.set("redirectedFrom", path);
+          return NextResponse.redirect(redirectUrl);
+        }
+      }
 
-    // if (path.startsWith("/events") && !user) {
-    //   const redirectUrl = new URL("/login", request.url);
-    //   redirectUrl.searchParams.set("redirectedFrom", path);
-    //   return NextResponse.redirect(redirectUrl);
-    // }
+      // Check if user is a platform admin
+      const { data: userData } = await supabase
+        .from("users")
+        .select("role")
+        .eq("userEmail", user.email)
+        .maybeSingle();
+
+      const isAdmin = userData && userData.role === 'admin';
 
 
-    if (isIncludedPath && !user) {
-      // If user is not authenticated and path is included, redirect to the login page
-      if (path.startsWith("/api")) {
-        return NextResponse.json(
-          { error: "Authorization failed" },
-          { status: 403 }
-        );
-      } else {
-        const redirectUrl = new URL("/login", request.url);
-        redirectUrl.searchParams.set("redirectedFrom", path);
-        return NextResponse.redirect(redirectUrl);
+      if (!isAdmin) {
+        // Sign out non-admins and redirect them to login with error query
+        await supabase.auth.signOut();
+        
+        if (path.startsWith("/api")) {
+          return NextResponse.json(
+            { error: "Access denied: Platform Administrator role required" },
+            { status: 403 }
+          );
+        } else {
+          const redirectUrl = new URL("/login", request.url);
+          redirectUrl.searchParams.set("error", "unauthorized");
+          return NextResponse.redirect(redirectUrl);
+        }
       }
     }
-
-    // TODO: Apply protection when user from users table is null or without referal code.
-    // AVOID THIS, IT WILL INCREASE THE LOADING TIME, RATHER ADD IT TO THE GLOBAL CONTEXT, WHERE USER ALREADY EXIST IN useUSERSTORE
-    // const {data:userData,error} = await supabase.from('users').select('*').eq('userEmail',user?.email).single()
-    // if(!userData?.referralCode){
-    //   const redirectUrl = new URL(`/onboarding?email=${userData?.userEmail}&createdAt=${userData?.created_at}`, request.url);
-    //   redirectUrl.searchParams.set("redirectedFrom", path);
-    //   return NextResponse.redirect(redirectUrl);
-    // }
 
     return response;
   } catch (e) {

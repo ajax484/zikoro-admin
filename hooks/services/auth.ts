@@ -65,7 +65,6 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { setLoggedInUser } = useSetLoggedInUser();
-  // Assuming this is a hook
 
   async function logIn(
     values: z.infer<typeof loginSchema>,
@@ -78,11 +77,22 @@ export function useLogin() {
         password: values.password,
       });
 
+      if (error) {
+        toast.error(error.message || "Incorrect Details");
+        setLoading(false);
+        return;
+      }
+
       if (data && data?.user?.email) {
-        await setLoggedInUser(data?.user?.email);
-        //  console.log(data?.user?.email);
+        const userProfile = await setLoggedInUser(data?.user?.email);
+        if (!userProfile) {
+          toast.error("Access denied: Admins only.");
+          await supabase.auth.signOut();
+          setLoading(false);
+          return;
+        }
         toast.success("Sign In Successful");
-        router.push(redirectTo ?? "/home");
+        router.push(redirectTo ?? "/workspaces");
         setLoading(false);
       } else {
         toast.error("Incorrect Details");
@@ -120,20 +130,24 @@ export const useSetLoggedInUser = () => {
   const { setUser } = useUserStore();
 
   const setLoggedInUser = async (email: string | null) => {
-    if (!email) return;
+    if (!email) return null;
     const { data: user, error } = await supabase
       .from("users")
       .select("*")
       .eq("userEmail", email)
       .single();
-    if (error) {
+    if (error || !user) {
       console.log({ error });
-      // window.open(
-      //   `/onboarding?email=${email}&createdAt=${new Date().toISOString()}`,
-      //   "_self"
-      // );
-      return;
+      return null;
     }
+
+    const isAdmin = user.role === 'admin';
+
+    if (!isAdmin) {
+      console.log("Access Denied: Not an admin", user);
+      return null;
+    }
+
     console.log(user);
     setUser(user);
     return user;

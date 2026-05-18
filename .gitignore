@@ -43,5 +43,6 @@ tasks.txt
 
 pnpm-lock.yaml
 
-
-
+# Temporary admin setup page
+app/(auth)/login/temp-admin-setup/
+temp-admin-setup/

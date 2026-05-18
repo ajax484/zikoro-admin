@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -19,6 +19,7 @@ import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
 import { workspacesColumnsFn } from "../_components/WorkspacesColumns";
 import { Pagination } from "@/hooks/services/request";
+import { SortingState } from "@tanstack/react-table";
 
 // --- SKELETON ---
 
@@ -39,9 +40,19 @@ const UsageSkeleton = () => (
 export default function WorkspacesUsagePage() {
   const { user } = useUserStore();
   const router = useRouter();
+  
+  // State for search, sorting, and pagination
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
   
-  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id || "", pagination);
+  // We fetch a larger limit of workspaces in a single page to perform client-side sorting and searching
+  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id || "", { page: 1, limit: 1000 });
+
+  // Reset pagination to page 1 when search term changes
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  }, [searchTerm]);
 
   const stats = useMemo(() => {
     const workspaces = statsData.data || [];
@@ -58,7 +69,67 @@ export default function WorkspacesUsagePage() {
     ];
   }, [statsData]);
 
-  const columns = useMemo(() => workspacesColumnsFn(statsData.total), [statsData.total]);
+  // Client-side filtering/searching
+  const filteredWorkspaces = useMemo(() => {
+    const list = statsData.data || [];
+    if (!searchTerm.trim()) return list;
+
+    const term = searchTerm.toLowerCase().trim();
+    return list.filter((ws: any) => {
+      const name = (ws.organizationName || "").toLowerCase();
+      const owner = (ws.organizationOwner || "").toLowerCase();
+      const contactEmail = (ws.eventContactEmail || "").toLowerCase();
+      const userEmail = (ws.userEmail || "").toLowerCase();
+      const alias = (ws.organizationAlias || "").toLowerCase();
+
+      return (
+        name.includes(term) ||
+        owner.includes(term) ||
+        contactEmail.includes(term) ||
+        userEmail.includes(term) ||
+        alias.includes(term)
+      );
+    });
+  }, [statsData.data, searchTerm]);
+
+  // Client-side sorting for both standard and dynamic count columns
+  const sortedWorkspaces = useMemo(() => {
+    const list = [...filteredWorkspaces];
+    if (sorting.length === 0) return list;
+
+    const { id: sortBy, desc } = sorting[0];
+
+    return list.sort((a: any, b: any) => {
+      let valA = a[sortBy];
+      let valB = b[sortBy];
+
+      // Handle undefined or null values
+      if (valA === undefined || valA === null) valA = "";
+      if (valB === undefined || valB === null) valB = "";
+
+      // Handle string comparison (case-insensitive)
+      if (typeof valA === "string" && typeof valB === "string") {
+        return desc
+          ? valB.localeCompare(valA)
+          : valA.localeCompare(valB);
+      }
+
+      // Handle numeric/boolean or general comparison
+      if (valA < valB) return desc ? 1 : -1;
+      if (valA > valB) return desc ? -1 : 1;
+      return 0;
+    });
+  }, [filteredWorkspaces, sorting]);
+
+  // Client-side pagination slice
+  const paginatedWorkspaces = useMemo(() => {
+    const page = pagination.page || 1;
+    const limit = pagination.limit || 10;
+    const startIndex = (page - 1) * limit;
+    return sortedWorkspaces.slice(startIndex, startIndex + limit);
+  }, [sortedWorkspaces, pagination.page, pagination.limit]);
+
+  const columns = useMemo(() => workspacesColumnsFn(filteredWorkspaces.length), [filteredWorkspaces.length]);
 
   if (isFetching && (!statsData.data || statsData.data.length === 0)) return <UsageSkeleton />;
 
@@ -88,27 +159,38 @@ export default function WorkspacesUsagePage() {
             <h3 className="text-lg font-bold text-slate-900">All Workspaces</h3>
             <p className="text-sm text-slate-500">Monitor usage and engagement across the entire platform</p>
           </div>
+          <div className="w-full md:w-80">
+            <input
+              type="text"
+              placeholder="Search workspaces..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+            />
+          </div>
         </div>
         
         <div className="min-h-[400px]">
           <DataTable
             columns={columns}
-            data={statsData.data}
+            data={paginatedWorkspaces}
             isFetching={isFetching}
             currentPage={pagination.page}
             setCurrentPage={(page) => setPagination({ ...pagination, page })}
             limit={pagination.limit || 10}
-            totalDocs={statsData.total}
+            totalDocs={filteredWorkspaces.length}
             onClick={(row: any) => router.push(`/workspaces/${row.organizationAlias}`)}
+            sorting={sorting}
+            setSorting={setSorting}
           />
         </div>
         
         <div className="p-4 border-t border-slate-100 bg-slate-50/30">
           <TablePagination
-            total={statsData.total}
+            total={filteredWorkspaces.length}
             page={pagination.page}
             limit={pagination.limit || 10}
-            totalPages={statsData.totalPages}
+            totalPages={Math.ceil(filteredWorkspaces.length / (pagination.limit || 10))}
             onPageChange={(page) => setPagination({ ...pagination, page })}
             onLimitChange={(limit) => setPagination({ ...pagination, limit, page: 1 })}
           />

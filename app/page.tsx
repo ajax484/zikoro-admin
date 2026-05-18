@@ -15,7 +15,7 @@ export default function Page() {
     if (!user) {
       router.push("/login");
     } else {
-      router.push("/");
+      router.push("/workspaces");
     }
   }, [user]);
 

@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, PlusIcon } from "@phosphor-icons/react";
-import { CreateOrganization } from "@/components/CreateOrganisation/createOrganisation";
+import { DownloadIcon } from "@phosphor-icons/react";
 import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
 import useUserStore from "@/store/globalUserStore";
 import { toast } from "react-toastify";
@@ -20,7 +19,6 @@ export default function WorkspacesOverviewLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const { user } = useUserStore();
   
   // We fetch stats here to power the export and refetch globally for overview tabs
@@ -68,21 +66,8 @@ export default function WorkspacesOverviewLayout({
           <Button variant="outline" className="shadow-sm" onClick={handleExport}>
             <DownloadIcon weight="bold" className="mr-2 h-4 w-4" /> Export Stats
           </Button>
-          <Button 
-            className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20"
-            onClick={() => setShowCreateModal(true)}
-          >
-            <PlusIcon weight="bold" className="mr-2 h-4 w-4" /> Create Workspace
-          </Button>
         </div>
       </div>
-
-      {showCreateModal && (
-        <CreateOrganization 
-          close={() => setShowCreateModal(false)} 
-          refetch={refetch}
-        />
-      )}
 
       {/* Content */}
       <div className="pt-2">
