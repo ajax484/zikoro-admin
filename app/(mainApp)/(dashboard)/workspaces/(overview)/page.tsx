@@ -47,7 +47,7 @@ export default function WorkspacesUsagePage() {
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
   
   // We fetch a larger limit of workspaces in a single page to perform client-side sorting and searching
-  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id || "", { page: 1, limit: 1000 });
+  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id || "", { page: 1, limit: 10 });
 
   // Reset pagination to page 1 when search term changes
   useEffect(() => {
