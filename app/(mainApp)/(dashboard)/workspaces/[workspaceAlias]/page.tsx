@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -18,26 +18,35 @@ import {
   UsersIcon,
   BriefcaseIcon,
   ClockIcon,
-  CurrencyDollarIcon,
   LightningIcon,
   CheckCircleIcon,
   GlobeIcon,
-  EnvelopeIcon,
+  PhoneIcon,
   ShieldCheckIcon,
   IdentificationCardIcon,
   FileTextIcon,
-  ArrowSquareOutIcon,
-  PencilSimpleIcon,
+  PackageIcon,
+  XCircleIcon,
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
 import {
   useFetchWorkspacesStats,
   useFetchWorkspaceTeamMembers,
+  useFetchWorkspaceSubscription,
 } from "@/queries/Workspaces.queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
 import { cn } from "@/lib/utils";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Pagination } from "@/hooks/services/request";
 
 // --- SUB-COMPONENTS ---
 
@@ -68,7 +77,11 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
       value: workspace.organizationAlias,
       icon: GlobeIcon,
     },
-    { label: "Contact Email", value: workspace.userEmail, icon: EnvelopeIcon },
+    {
+      label: "Phone Number",
+      value: workspace.eventPhoneNumber || "N/A",
+      icon: PhoneIcon,
+    },
     {
       label: "Owner Email",
       value: workspace.organizationOwner || workspace.userEmail,
@@ -78,11 +91,6 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
       label: "Date Created",
       value: new Date(workspace.created_at).toLocaleDateString(),
       icon: ClockIcon,
-    },
-    {
-      label: "Default Currency",
-      value: workspace.prefixPreferences?.sku?.prefix === "SKU" ? "USD" : "NGN",
-      icon: CurrencyDollarIcon,
     },
   ];
 
@@ -132,7 +140,7 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
           <CardContent className="space-y-6">
             <div className="space-y-4">
               {[
-                { label: "Email Verified", status: true, icon: EnvelopeIcon },
+                { label: "Email Verified", status: true, icon: PhoneIcon },
                 {
                   label: "Identity Verified",
                   status: workspace.verification?.length > 0,
@@ -276,9 +284,6 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
             Manage user access and roles for this workspace
           </CardDescription>
         </div>
-        <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
-          Invite Member
-        </Button>
       </CardHeader>
       <CardContent className="p-0">
         <DataTable
@@ -304,6 +309,240 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
         </div>
       </CardContent>
     </Card>
+  );
+};
+
+const getSubscriptionStatus = (sub: any): { label: string; color: string } => {
+  if (!sub) return { label: "No Plan", color: "bg-slate-100 text-slate-500" };
+  if (sub.cancelledAt) return { label: "Cancelled", color: "bg-red-100 text-red-700" };
+  const now = new Date();
+  if (sub.trialExpiryDate && new Date(sub.trialExpiryDate) > now) {
+    return { label: "Trial", color: "bg-blue-100 text-blue-700" };
+  }
+  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) < now) {
+    return { label: "Expired", color: "bg-amber-100 text-amber-700" };
+  }
+  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) > now) {
+    return { label: "Active", color: "bg-emerald-100 text-emerald-700" };
+  }
+  return { label: "Inactive", color: "bg-slate-100 text-slate-500" };
+};
+
+const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
+  const [historyPagination, setHistoryPagination] = useState<Pagination>({ page: 1, limit: 10 });
+  const { data: subData, isFetching } = useFetchWorkspaceSubscription(
+    workspaceAlias,
+    historyPagination,
+  );
+
+  const sub = subData?.subscription;
+  const history = subData?.history;
+  const status = getSubscriptionStatus(sub);
+
+  if (isFetching && !sub) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card className="border-none shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold">Subscription Plan</CardTitle>
+          <CardDescription>
+            Management of organization licensing and quotas
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-8 items-start">
+            <div className="flex-1 space-y-6 w-full">
+              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    Current Plan
+                  </span>
+                  <h2 className="text-2xl font-black text-slate-900">
+                    {sub?.subscriptionPlanAlias || "No Active Plan"}
+                  </h2>
+                </div>
+                <Badge
+                  className={cn(
+                    "px-4 py-1.5 font-bold uppercase tracking-widest text-[10px]",
+                    status.color,
+                  )}
+                >
+                  {status.label}
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Billing Cycle
+                  </span>
+                  <p className="text-sm font-bold text-slate-700 mt-1 capitalize">
+                    {sub?.billingCycle || "N/A"}
+                  </p>
+                </div>
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Start Date
+                  </span>
+                  <p className="text-sm font-bold text-slate-700 mt-1">
+                    {sub?.subscriptionStartDate
+                      ? new Date(sub.subscriptionStartDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Renewal / End Date
+                  </span>
+                  <p className="text-sm font-bold text-slate-700 mt-1">
+                    {sub?.subscriptionEndDate
+                      ? new Date(sub.subscriptionEndDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Trial Expiry
+                  </span>
+                  <p className="text-sm font-bold text-slate-700 mt-1">
+                    {sub?.trialExpiryDate
+                      ? new Date(sub.trialExpiryDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Amount Paid
+                  </span>
+                  <p className="text-sm font-bold text-slate-700 mt-1">
+                    {sub?.amountPaid != null
+                      ? `${sub.currency || ""} ${sub.amountPaid.toLocaleString()}`
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="p-4 border rounded-xl border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Cancel at Period End
+                  </span>
+                  <p className="text-sm font-bold mt-1 flex items-center gap-1">
+                    {sub?.cancelAtSubscriptionEnd ? (
+                      <span className="text-red-600 flex items-center gap-1">
+                        <XCircleIcon weight="bold" size={14} /> Yes
+                      </span>
+                    ) : (
+                      <span className="text-emerald-600 flex items-center gap-1">
+                        <CheckCircleIcon weight="bold" size={14} /> No
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment History */}
+      <Card className="border-none shadow-sm overflow-hidden">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold">Payment History</CardTitle>
+          <CardDescription>
+            All billing transactions for this organization
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader className="bg-slate-50/50">
+              <TableRow>
+                <TableHead className="pl-6">Date</TableHead>
+                <TableHead>Plan</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead>Reference</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead className="pr-6">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(history?.data || []).map((record: any) => (
+                <TableRow key={record.id}>
+                  <TableCell className="pl-6 text-xs text-slate-500">
+                    {record.paidAt
+                      ? new Date(record.paidAt).toLocaleDateString()
+                      : record.created_at
+                        ? new Date(record.created_at).toLocaleDateString()
+                        : "N/A"}
+                  </TableCell>
+                  <TableCell className="text-sm font-medium text-slate-700">
+                    {record.subscriptionPlan || "N/A"}
+                  </TableCell>
+                  <TableCell className="text-sm font-bold text-slate-900">
+                    {record.amount != null
+                      ? `${record.currency || ""} ${record.amount.toLocaleString()}`
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-500 capitalize">
+                    {record.paymentMethod || "N/A"}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-400 font-mono">
+                    {record.transactionReference || "—"}
+                  </TableCell>
+                  <TableCell className="text-xs capitalize text-slate-500">
+                    {record.eventType || "—"}
+                  </TableCell>
+                  <TableCell className="pr-6">
+                    <Badge
+                      className={cn(
+                        "capitalize text-[10px] font-bold",
+                        record.status === "success" || record.status === "paid"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : record.status === "pending"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-red-100 text-red-700",
+                      )}
+                    >
+                      {record.status || "Unknown"}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {(!history?.data || history.data.length === 0) && (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-10 text-slate-400 text-sm"
+                  >
+                    No payment history found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="p-4 border-t border-slate-50 bg-slate-50/30">
+            <TablePagination
+              total={history?.total || 0}
+              page={historyPagination.page}
+              limit={historyPagination.limit || 10}
+              totalPages={history?.totalPages || 0}
+              onPageChange={(page) =>
+                setHistoryPagination({ ...historyPagination, page })
+              }
+              onLimitChange={(limit) =>
+                setHistoryPagination({ ...historyPagination, limit, page: 1 })
+              }
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
@@ -385,19 +624,6 @@ export default function WorkspaceDetailsPage() {
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              className="h-11 px-5 font-semibold text-slate-600 hover:text-indigo-600 transition-all border-slate-200"
-            >
-              <PencilSimpleIcon weight="bold" className="mr-2" /> Edit Info
-            </Button>
-            <Button className="h-11 px-6 font-bold bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20">
-              Launch Workspace{" "}
-              <ArrowSquareOutIcon weight="bold" className="ml-2" />
-            </Button>
-          </div>
         </div>
       </div>
 
@@ -422,9 +648,9 @@ export default function WorkspaceDetailsPage() {
           colorClass="bg-sky-50 text-sky-600"
         />
         <StatCard
-          label="Total Revenue"
-          value={`$${workspace.totalRevenue?.toLocaleString()}`}
-          icon={CurrencyDollarIcon}
+          label="Total Purchase Orders"
+          value={workspace.purchaseOrdersCount?.toLocaleString() ?? "0"}
+          icon={PackageIcon}
           colorClass="bg-emerald-50 text-emerald-600"
         />
       </div>
@@ -464,93 +690,7 @@ export default function WorkspaceDetailsPage() {
           value="subscription"
           className="focus-visible:outline-none m-0"
         >
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold">
-                Subscription Plan
-              </CardTitle>
-              <CardDescription>
-                Management of organization licensing and quotas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-1 space-y-6 w-full">
-                  <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                    <div className="space-y-1">
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        Current Plan
-                      </span>
-                      <h2 className="text-2xl font-black text-slate-900">
-                        {workspace.subscriptionPlan || "Basic"} Plan
-                      </h2>
-                    </div>
-                    <Badge className="bg-indigo-600 px-4 py-1.5 font-bold uppercase tracking-widest text-[10px]">
-                      Upgrade
-                    </Badge>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-xl border-slate-100">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">
-                        Renewal Date
-                      </span>
-                      <p className="text-sm font-bold text-slate-700 mt-1">
-                        {workspace.subscriptionExpiryDate
-                          ? new Date(
-                              workspace.subscriptionExpiryDate,
-                            ).toLocaleDateString()
-                          : "N/A"}
-                      </p>
-                    </div>
-                    <div className="p-4 border rounded-xl border-slate-100">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">
-                        Payment Status
-                      </span>
-                      <p className="text-sm font-bold text-emerald-600 mt-1 flex items-center gap-1">
-                        <CheckCircleIcon weight="bold" /> Up to date
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full lg:w-80 space-y-4">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-                    Workspace Quotas
-                  </h4>
-                  {[
-                    {
-                      label: "Team Members",
-                      current: workspace.usersCount,
-                      max: 5,
-                    },
-                    {
-                      label: "Active Products",
-                      current: workspace.productsCount,
-                      max: 1000,
-                    },
-                  ].map((quota, i) => (
-                    <div key={i} className="space-y-2">
-                      <div className="flex justify-between text-xs font-bold">
-                        <span className="text-slate-500">{quota.label}</span>
-                        <span className="text-slate-900">
-                          {quota.current} / {quota.max}
-                        </span>
-                      </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-indigo-600 transition-all duration-1000"
-                          style={{
-                            width: `${Math.min((quota.current / quota.max) * 100, 100)}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <SubscriptionTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
         <TabsContent

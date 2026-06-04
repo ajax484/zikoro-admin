@@ -43,6 +43,9 @@ export function useFetchWorkspacesStats(userId?: string, pagination: Pagination 
       const searchParams = new URLSearchParams();
       searchParams.set("page", (pagination.page || 1).toString());
       searchParams.set("limit", (pagination.limit || 10).toString());
+      if (pagination.search) {
+        searchParams.set("search", pagination.search);
+      }
       if (workspaceAlias) {
         searchParams.set("workspaceAlias", workspaceAlias);
       }
@@ -54,6 +57,7 @@ export function useFetchWorkspacesStats(userId?: string, pagination: Pagination 
           customersCount: number;
           usersCount: number;
           totalRevenue: number;
+          purchaseOrdersCount: number;
         })[];
         total: number;
         page: number;
@@ -170,6 +174,49 @@ export function useFetchWorkspaceTeamInvites(
       total: 0,
       totalPages: 0,
       page: pagination.page,
+    },
+    isFetching,
+    status,
+    error,
+    refetch,
+  };
+}
+
+export function useFetchWorkspaceSubscription(
+  workspaceAlias: string,
+  historyPagination: Pagination = { page: 1, limit: 10 },
+) {
+  const { data, isFetching, status, error, refetch } = useQuery({
+    queryKey: ["workspaceSubscription", workspaceAlias, { historyPagination }],
+    queryFn: async () => {
+      const { data, status } = await getRequest<any>({
+        endpoint: `/workspaces/${workspaceAlias}/subscription`,
+        searchParams: new URLSearchParams({
+          page: (historyPagination.page || 1).toString(),
+          limit: (historyPagination.limit || 10).toString(),
+        }),
+      });
+
+      if (status !== 200) {
+        toast.error(data.error ?? "Unknown error");
+        throw new Error(data.error ?? "Unknown error");
+      }
+
+      return data.data;
+    },
+    enabled: !!workspaceAlias,
+  });
+
+  return {
+    data: {
+      subscription: (data as any)?.subscription || null,
+      history: (data as any)?.history || {
+        data: [],
+        limit: historyPagination.limit || 10,
+        total: 0,
+        totalPages: 0,
+        page: historyPagination.page || 1,
+      },
     },
     isFetching,
     status,

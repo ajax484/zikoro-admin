@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const workspaceAlias = searchParams.get("workspaceAlias");
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
+  const search = searchParams.get("search") || "";
 
   const from = (page - 1) * limit;
   const to = from + limit - 1;
@@ -20,6 +21,13 @@ export async function GET(req: NextRequest) {
     if (workspaceAlias) {
       orgQuery = orgQuery.eq("organizationAlias", workspaceAlias);
     }
+    
+    if (search) {
+      const term = `%${search.trim()}%`;
+      orgQuery = orgQuery.or(
+        `organizationName.ilike.${term},organizationAlias.ilike.${term},organizationOwner.ilike.${term},eventContactEmail.ilike.${term}`
+      );
+    }
 
     const { data: organizations, error: orgError, count } = await orgQuery
       .range(from, to)
@@ -30,7 +38,7 @@ export async function GET(req: NextRequest) {
     // 3. Fetch counts and metrics for each organization
     const statsPromises = (organizations || []).map(async (org) => {
       // Parallelize counts for each org
-      const [products, orders, customers, users, revenue] = await Promise.all([
+      const [products, orders, customers, users, revenue, purchaseOrders] = await Promise.all([
         supabase
           .from("inventoryProducts")
           .select("id", { count: "exact", head: true })
@@ -51,7 +59,11 @@ export async function GET(req: NextRequest) {
         supabase
           .from("salesOrder")
           .select("totalValue")
-          .eq("organizationAlias", org.organizationAlias)
+          .eq("organizationAlias", org.organizationAlias),
+        supabase
+          .from("inventoryPurchaseOrder")
+          .select("id", { count: "exact", head: true })
+          .eq("organizationAlias", org.organizationAlias),
       ]);
 
       const totalRevenue = revenue.data?.reduce((sum, order) => sum + (order.totalValue || 0), 0) || 0;
@@ -63,6 +75,7 @@ export async function GET(req: NextRequest) {
         customersCount: customers.count || 0,
         usersCount: users.count || 0,
         totalRevenue,
+        purchaseOrdersCount: purchaseOrders.count || 0,
       };
     });
 

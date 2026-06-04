@@ -55,7 +55,7 @@ export default function WorkspacesUsagePage() {
   });
 
   // We fetch a larger limit of workspaces in a single page to perform client-side sorting and searching
-  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id!, {
+  const { data: statsData, isFetching, status } = useFetchWorkspacesStats(user?.id!, {
     page: 1,
     limit: 10,
     search: searchTerm,
@@ -165,7 +165,7 @@ export default function WorkspacesUsagePage() {
     [filteredWorkspaces.length],
   );
 
-  if (isFetching && (!statsData.data || statsData.data.length === 0))
+  if (status === "pending")
     return <UsageSkeleton />;
 
   return (
