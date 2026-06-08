@@ -10,7 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
-import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
+import { useFetchWorkspacesStats, useFetchWorkspaces } from "@/queries/Workspaces.queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
@@ -48,9 +48,13 @@ export default function InventoryWorkspacesPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
 
-  const { data: statsData, isFetching, status } = useFetchWorkspacesStats(user?.id!, {
+  const { data: statsData, status: statsStatus } = useFetchWorkspacesStats(user?.id!, {
     page: 1,
-    limit: 10,
+    limit: 1000,
+  });
+
+  const { data: workspacesData, isFetching: isFetchingWorkspaces, status: workspacesStatus } = useFetchWorkspaces(user?.id!, {
+    ...pagination,
     search: searchTerm,
   });
 
@@ -73,22 +77,8 @@ export default function InventoryWorkspacesPage() {
     ];
   }, [statsData]);
 
-  const filteredWorkspaces = useMemo(() => {
-    const list = statsData.data || [];
-    if (!searchTerm.trim()) return list;
-    const term = searchTerm.toLowerCase().trim();
-    return list.filter((ws: any) => {
-      const name = (ws.organizationName || "").toLowerCase();
-      const owner = (ws.organizationOwner || "").toLowerCase();
-      const contactEmail = (ws.eventContactEmail || "").toLowerCase();
-      const userEmail = (ws.userEmail || "").toLowerCase();
-      const alias = (ws.organizationAlias || "").toLowerCase();
-      return name.includes(term) || owner.includes(term) || contactEmail.includes(term) || userEmail.includes(term) || alias.includes(term);
-    });
-  }, [statsData.data, searchTerm]);
-
   const sortedWorkspaces = useMemo(() => {
-    const list = [...filteredWorkspaces];
+    const list = [...(workspacesData?.data || [])];
     if (sorting.length === 0) return list;
     const { id: sortBy, desc } = sorting[0];
     return list.sort((a: any, b: any) => {
@@ -100,17 +90,11 @@ export default function InventoryWorkspacesPage() {
       if (valA > valB) return desc ? -1 : 1;
       return 0;
     });
-  }, [filteredWorkspaces, sorting]);
+  }, [workspacesData?.data, sorting]);
 
-  const paginatedWorkspaces = useMemo(() => {
-    const page = pagination.page || 1;
-    const limit = pagination.limit || 10;
-    return sortedWorkspaces.slice((page - 1) * limit, page * limit);
-  }, [sortedWorkspaces, pagination.page, pagination.limit]);
+  const columns = useMemo(() => workspacesColumnsFn(workspacesData?.total || 0), [workspacesData?.total]);
 
-  const columns = useMemo(() => workspacesColumnsFn(filteredWorkspaces.length), [filteredWorkspaces.length]);
-
-  if (status === "pending") return <UsageSkeleton />;
+  if (statsStatus === "pending") return <UsageSkeleton />;
 
   return (
     <div className="space-y-6">
@@ -152,12 +136,12 @@ export default function InventoryWorkspacesPage() {
         <div className="min-h-[400px]">
           <DataTable
             columns={columns}
-            data={paginatedWorkspaces}
-            isFetching={isFetching}
+            data={sortedWorkspaces}
+            isFetching={isFetchingWorkspaces}
             currentPage={pagination.page}
             setCurrentPage={(page) => setPagination({ ...pagination, page })}
             limit={pagination.limit || 10}
-            totalDocs={filteredWorkspaces.length}
+            totalDocs={workspacesData?.total || 0}
             onClick={(row: any) =>
               // Updated to /admin/inventory/workspaces/:alias
               router.push(`/admin/inventory/workspaces/${row.organizationAlias}`)
@@ -169,10 +153,10 @@ export default function InventoryWorkspacesPage() {
 
         <div className="p-4 border-t border-slate-100 bg-slate-50/30">
           <TablePagination
-            total={filteredWorkspaces.length}
-            page={pagination.page}
-            limit={pagination.limit || 10}
-            totalPages={Math.ceil(filteredWorkspaces.length / (pagination.limit || 10))}
+            total={workspacesData?.total || 0}
+            page={workspacesData.page}
+            limit={workspacesData.limit || 10}
+            totalPages={workspacesData?.totalPages || 1}
             onPageChange={(page) => setPagination({ ...pagination, page })}
             onLimitChange={(limit) => setPagination({ ...pagination, limit, page: 1 })}
           />

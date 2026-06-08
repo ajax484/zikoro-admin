@@ -38,7 +38,12 @@ const supabase = createClient();
         .order("created_at", { ascending: false })
         .range(from, to);
 
-      if (search !== "") query.ilike("organizationName", `%${search.trim()}%`);
+      if (search !== "") {
+        const term = `%${search.trim()}%`;
+        query.or(
+          `organizationName.ilike.${term},organizationAlias.ilike.${term},organizationOwner.ilike.${term},eventContactEmail.ilike.${term}`
+        );
+      }
 
       const { data, error, count } = await query;
 

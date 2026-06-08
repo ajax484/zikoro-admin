@@ -5,13 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { TOrganization } from "@/typings/organization";
 
-export function useFetchWorkspaces(userId?: string) {
+export function useFetchWorkspaces(userId?: string, pagination: Pagination = { page: 1, limit: 10 }) {
   const { data, isFetching, status, error, refetch } = useQuery({
-    queryKey: ["workspaces", userId],
+    queryKey: ["workspaces", userId, { pagination }],
     queryFn: async () => {
       const searchParams = new URLSearchParams();
+      searchParams.set("page", (pagination.page || 1).toString());
+      searchParams.set("limit", (pagination.limit || 10).toString());
+      if (pagination.search) {
+        searchParams.set("search", pagination.search);
+      }
 
-      const { data, status } = await getRequest<TOrganization[]>({
+      const { data, status } = await getRequest<any>({
         endpoint: `/workspaces`,
         searchParams,
       });
@@ -28,7 +33,13 @@ export function useFetchWorkspaces(userId?: string) {
   });
 
   return {
-    data: data || [],
+    data: {
+      data: data?.data || [],
+      limit: data?.limit || pagination.limit || 10,
+      total: data?.total || 0,
+      totalPages: data?.totalPages || 0,
+      page: data?.page || pagination.page || 1,
+    },
     isFetching,
     status,
     error,
