@@ -10,7 +10,10 @@ import {
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
-import { useFetchWorkspacesStats, useFetchWorkspaces } from "@/queries/Workspaces.queries";
+import {
+  useFetchWorkspacesStats,
+  useFetchWorkspaces,
+} from "@/queries/Workspaces.queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
@@ -46,14 +49,18 @@ export default function InventoryWorkspacesPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
-
-  const { data: statsData, status: statsStatus } = useFetchWorkspacesStats(user?.id!, {
+  const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    limit: 1000,
+    limit: 10,
   });
 
-  const { data: workspacesData, isFetching: isFetchingWorkspaces, status: workspacesStatus } = useFetchWorkspaces(user?.id!, {
+  const { data: statsData, status: statsStatus } = useFetchWorkspacesStats();
+
+  const {
+    data: workspacesData,
+    isFetching: isFetchingWorkspaces,
+    status: workspacesStatus,
+  } = useFetchWorkspaces(user?.id!, {
     ...pagination,
     search: searchTerm,
   });
@@ -61,21 +68,6 @@ export default function InventoryWorkspacesPage() {
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
   }, [searchTerm]);
-
-  const stats = useMemo(() => {
-    const workspaces = statsData.data || [];
-    const totalWorkspaces = statsData.total || 0;
-    const users = workspaces.reduce((acc: number, ws: any) => acc + (ws.usersCount || 0), 0);
-    const orders = workspaces.reduce((acc: number, ws: any) => acc + (ws.ordersCount || 0), 0);
-    const revenue = workspaces.reduce((acc: number, ws: any) => acc + (ws.totalRevenue || 0), 0);
-
-    return [
-      { label: "Total Workspaces", value: totalWorkspaces.toLocaleString(), icon: BriefcaseIcon },
-      { label: "Active Users", value: users.toLocaleString(), icon: UsersIcon },
-      { label: "Total Orders", value: orders.toLocaleString(), icon: LightningIcon },
-      { label: "Total Revenue", value: `$${revenue.toLocaleString()}`, icon: CurrencyDollarIcon },
-    ];
-  }, [statsData]);
 
   const sortedWorkspaces = useMemo(() => {
     const list = [...(workspacesData?.data || [])];
@@ -92,23 +84,60 @@ export default function InventoryWorkspacesPage() {
     });
   }, [workspacesData?.data, sorting]);
 
-  const columns = useMemo(() => workspacesColumnsFn(workspacesData?.total || 0), [workspacesData?.total]);
+  const columns = useMemo(
+    () => workspacesColumnsFn(workspacesData?.total || 0),
+    [workspacesData?.total],
+  );
 
   if (statsStatus === "pending") return <UsageSkeleton />;
+
+  const stats = [
+    {
+      label: "Total Workspaces",
+      value: statsData?.totalWorkspaces,
+      icon: BriefcaseIcon,
+    },
+    {
+      label: "Active Users",
+      value: statsData?.totalUsers,
+      icon: UsersIcon,
+    },
+    {
+      label: "Total Orders",
+      value: statsData?.totalOrders,
+      icon: LightningIcon,
+    },
+    {
+      label: "Total Purchase Orders",
+      value: statsData?.totalPurchaseOrders,
+      icon: CurrencyDollarIcon,
+    },
+  ];
+
+  console.log(statsData);
+  console.log(stats);
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+          <Card
+            key={i}
+            className="border-none shadow-sm bg-white/50 backdrop-blur-sm"
+          >
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {stat.label}
+                  </p>
                   <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
                 </div>
                 <div className="p-3 bg-white rounded-xl shadow-sm">
-                  <stat.icon weight="bold" className="w-5 h-5 text-indigo-600" />
+                  <stat.icon
+                    weight="bold"
+                    className="w-5 h-5 text-indigo-600"
+                  />
                 </div>
               </div>
             </CardContent>
@@ -120,7 +149,9 @@ export default function InventoryWorkspacesPage() {
         <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-bold text-slate-900">All Workspaces</h3>
-            <p className="text-sm text-slate-500">Monitor usage and engagement across the entire platform</p>
+            <p className="text-sm text-slate-500">
+              Monitor usage and engagement across the entire platform
+            </p>
           </div>
           <div className="w-full md:w-80">
             <input
@@ -144,7 +175,9 @@ export default function InventoryWorkspacesPage() {
             totalDocs={workspacesData?.total || 0}
             onClick={(row: any) =>
               // Updated to /admin/inventory/workspaces/:alias
-              router.push(`/admin/inventory/workspaces/${row.organizationAlias}`)
+              router.push(
+                `/admin/inventory/workspaces/${row.organizationAlias}`,
+              )
             }
             sorting={sorting}
             setSorting={setSorting}
@@ -158,7 +191,9 @@ export default function InventoryWorkspacesPage() {
             limit={workspacesData.limit || 10}
             totalPages={workspacesData?.totalPages || 1}
             onPageChange={(page) => setPagination({ ...pagination, page })}
-            onLimitChange={(limit) => setPagination({ ...pagination, limit, page: 1 })}
+            onLimitChange={(limit) =>
+              setPagination({ ...pagination, limit, page: 1 })
+            }
           />
         </div>
       </div>

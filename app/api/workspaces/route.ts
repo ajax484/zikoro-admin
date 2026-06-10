@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-const supabase = createClient();
+  const supabase = createClient();
 
   if (req.method === "GET") {
     try {
@@ -13,6 +13,8 @@ const supabase = createClient();
       const page = parseInt(searchParams.get("page") || "1", 10);
       const limit = parseInt(searchParams.get("limit") || "10", 10);
       const search = searchParams.get("search") || "";
+      const sortBy = searchParams.get("sortBy") || "created_at";
+      const order = searchParams.get("order") || "desc";
 
       console.log(page, limit);
 
@@ -20,7 +22,7 @@ const supabase = createClient();
         console.log("invalid pagination parameters");
         return NextResponse.json(
           { error: "Invalid pagination parameters" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -33,15 +35,20 @@ const supabase = createClient();
           `*,
           verification:organizationVerification(*)
           `,
-          { count: "exact" }
+          { count: "exact" },
         )
-        .order("created_at", { ascending: false })
+        // .eq("activeApps->inventory", true)
+        .order(sortBy, { ascending: order === "asc" })
         .range(from, to);
+
+      if (workspaceAlias) {
+        query.eq("organizationAlias", workspaceAlias);
+      }
 
       if (search !== "") {
         const term = `%${search.trim()}%`;
         query.or(
-          `organizationName.ilike.${term},organizationAlias.ilike.${term},organizationOwner.ilike.${term},eventContactEmail.ilike.${term}`
+          `organizationName.ilike.${term},organizationAlias.ilike.${term},organizationOwner.ilike.${term},eventContactEmail.ilike.${term}`,
         );
       }
 
@@ -49,10 +56,35 @@ const supabase = createClient();
 
       if (error) throw error;
 
+      const aliases = (data || []).map((org) => org.organizationAlias);
+
+      const { data: statsData, error: statsError } = await supabase
+        .from("workspace_stats_view")
+        .select("*")
+        .in("organizationAlias", aliases);
+
+      if (statsError) {
+        console.error("Failed to fetch stats view:", statsError);
+      }
+
+      const dataWithStats = (data || []).map((org) => {
+        const stats = statsData?.find((s) => s.organizationAlias === org.organizationAlias);
+        
+        return {
+          ...org,
+          productsCount: stats?.productsCount || 0,
+          ordersCount: stats?.ordersCount || 0,
+          customersCount: stats?.customersCount || 0,
+          usersCount: stats?.usersCount || 0,
+          totalRevenue: stats?.totalRevenue || 0,
+          purchaseOrdersCount: stats?.purchaseOrdersCount || 0,
+        };
+      });
+
       return NextResponse.json(
         {
           data: {
-            data,
+            data: dataWithStats,
             page,
             limit,
             total: count,
@@ -61,7 +93,7 @@ const supabase = createClient();
         },
         {
           status: 200,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -71,7 +103,7 @@ const supabase = createClient();
         },
         {
           status: 500,
-        }
+        },
       );
     }
   } else {

@@ -5,14 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon } from "@phosphor-icons/react";
-import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
+import { useFetchWorkspaces } from "@/queries/Workspaces.queries";
 import useUserStore from "@/store/globalUserStore";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 import Link from "next/link";
 
-export default function WorkspacesOverviewLayout({
+export default function WorkspacesUsageLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -21,18 +21,17 @@ export default function WorkspacesOverviewLayout({
   const router = useRouter();
   const { user } = useUserStore();
   
-  // We fetch stats here to power the export and refetch globally for overview tabs
-  const { data: statsData, refetch } = useFetchWorkspacesStats(user?.id || "", { page: 1, limit: 100 });
+  const { data: workspacesData, refetch } = useFetchWorkspaces(user?.id || "", { page: 1, limit: 100 });
 
   const activeTab = pathname === "/workspaces" ? "usage" : pathname.split("/").pop() || "usage";
 
   const handleExport = () => {
-    if (!statsData.data || statsData.data.length === 0) {
+    if (!workspacesData?.data || workspacesData.data.length === 0) {
       toast.info("No data available to export");
       return;
     }
 
-    const exportData = statsData.data.map((ws: any) => ({
+    const exportData = workspacesData.data.map((ws: any) => ({
       "Workspace Name": ws.organizationName,
       "Contact Email": ws.userEmail,
       "Owner Email": ws.organizationOwner || "N/A",

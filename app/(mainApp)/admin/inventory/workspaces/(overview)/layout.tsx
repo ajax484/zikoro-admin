@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon } from "@phosphor-icons/react";
-import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
+import { useFetchWorkspaces } from "@/queries/Workspaces.queries";
 import useUserStore from "@/store/globalUserStore";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
@@ -17,15 +17,15 @@ export default function InventoryWorkspacesLayout({
 }) {
   const { user } = useUserStore();
 
-  const { data: statsData } = useFetchWorkspacesStats(user?.id || "", { page: 1, limit: 100 });
+  const { data: workspacesData } = useFetchWorkspaces(user?.id || "", { page: 1, limit: 100 });
 
   const handleExport = () => {
-    if (!statsData.data || statsData.data.length === 0) {
+    if (!workspacesData?.data || workspacesData.data.length === 0) {
       toast.info("No data available to export");
       return;
     }
 
-    const exportData = statsData.data.map((ws: any) => ({
+    const exportData = workspacesData.data.map((ws: any) => ({
       "Workspace Name": ws.organizationName,
       "Contact Email": ws.userEmail,
       "Owner Email": ws.organizationOwner || "N/A",

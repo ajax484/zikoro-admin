@@ -10,7 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
-import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
+import { useFetchWorkspacesStats, useFetchWorkspaces } from "@/queries/Workspaces.queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
@@ -54,10 +54,10 @@ export default function WorkspacesUsagePage() {
     limit: 10,
   });
 
-  // We fetch a larger limit of workspaces in a single page to perform client-side sorting and searching
-  const { data: statsData, isFetching, status } = useFetchWorkspacesStats(user?.id!, {
-    page: 1,
-    limit: 10,
+  const { data: statsData, status: statsStatus } = useFetchWorkspacesStats(user?.id!);
+
+  const { data: workspacesData, isFetching: isFetchingWorkspaces, status: workspacesStatus } = useFetchWorkspaces(user?.id!, {
+    ...pagination,
     search: searchTerm,
   });
 
@@ -67,67 +67,29 @@ export default function WorkspacesUsagePage() {
   }, [searchTerm]);
 
   const stats = useMemo(() => {
-    const workspaces = statsData.data || [];
-    const totalWorkspaces = statsData.total || 0;
-    const users = workspaces.reduce(
-      (acc: number, ws: any) => acc + (ws.usersCount || 0),
-      0,
-    );
-    const orders = workspaces.reduce(
-      (acc: number, ws: any) => acc + (ws.ordersCount || 0),
-      0,
-    );
-    const revenue = workspaces.reduce(
-      (acc: number, ws: any) => acc + (ws.totalRevenue || 0),
-      0,
-    );
-
     return [
       {
         label: "Total Workspaces",
-        value: totalWorkspaces.toLocaleString(),
+        value: (statsData?.totalWorkspaces || 0).toLocaleString(),
         icon: BriefcaseIcon,
       },
-      { label: "Active Users", value: users.toLocaleString(), icon: UsersIcon },
+      { label: "Active Users", value: (statsData?.totalUsers || 0).toLocaleString(), icon: UsersIcon },
       {
         label: "Total Orders",
-        value: orders.toLocaleString(),
+        value: (statsData?.totalOrders || 0).toLocaleString(),
         icon: LightningIcon,
       },
       {
         label: "Total Revenue",
-        value: `$${revenue.toLocaleString()}`,
+        value: `$${(statsData?.totalRevenue || 0).toLocaleString()}`,
         icon: CurrencyDollarIcon,
       },
     ];
   }, [statsData]);
 
-  // Client-side filtering/searching
-  const filteredWorkspaces = useMemo(() => {
-    const list = statsData.data || [];
-    if (!searchTerm.trim()) return list;
-
-    const term = searchTerm.toLowerCase().trim();
-    return list.filter((ws: any) => {
-      const name = (ws.organizationName || "").toLowerCase();
-      const owner = (ws.organizationOwner || "").toLowerCase();
-      const contactEmail = (ws.eventContactEmail || "").toLowerCase();
-      const userEmail = (ws.userEmail || "").toLowerCase();
-      const alias = (ws.organizationAlias || "").toLowerCase();
-
-      return (
-        name.includes(term) ||
-        owner.includes(term) ||
-        contactEmail.includes(term) ||
-        userEmail.includes(term) ||
-        alias.includes(term)
-      );
-    });
-  }, [statsData.data, searchTerm]);
-
   // Client-side sorting for both standard and dynamic count columns
   const sortedWorkspaces = useMemo(() => {
-    const list = [...filteredWorkspaces];
+    const list = [...(workspacesData?.data || [])];
     if (sorting.length === 0) return list;
 
     const { id: sortBy, desc } = sorting[0];
@@ -150,22 +112,14 @@ export default function WorkspacesUsagePage() {
       if (valA > valB) return desc ? -1 : 1;
       return 0;
     });
-  }, [filteredWorkspaces, sorting]);
-
-  // Client-side pagination slice
-  const paginatedWorkspaces = useMemo(() => {
-    const page = pagination.page || 1;
-    const limit = pagination.limit || 10;
-    const startIndex = (page - 1) * limit;
-    return sortedWorkspaces.slice(startIndex, startIndex + limit);
-  }, [sortedWorkspaces, pagination.page, pagination.limit]);
+  }, [workspacesData?.data, sorting]);
 
   const columns = useMemo(
-    () => workspacesColumnsFn(filteredWorkspaces.length),
-    [filteredWorkspaces.length],
+    () => workspacesColumnsFn(workspacesData?.total || 0),
+    [workspacesData?.total],
   );
 
-  if (status === "pending")
+  if (statsStatus === "pending")
     return <UsageSkeleton />;
 
   return (
@@ -218,12 +172,12 @@ export default function WorkspacesUsagePage() {
         <div className="min-h-[400px]">
           <DataTable
             columns={columns}
-            data={paginatedWorkspaces}
-            isFetching={isFetching}
+            data={sortedWorkspaces}
+            isFetching={isFetchingWorkspaces}
             currentPage={pagination.page}
             setCurrentPage={(page) => setPagination({ ...pagination, page })}
             limit={pagination.limit || 10}
-            totalDocs={filteredWorkspaces.length}
+            totalDocs={workspacesData?.total || 0}
             onClick={(row: any) =>
               router.push(`/workspaces/${row.organizationAlias}`)
             }
@@ -234,12 +188,10 @@ export default function WorkspacesUsagePage() {
 
         <div className="p-4 border-t border-slate-100 bg-slate-50/30">
           <TablePagination
-            total={filteredWorkspaces.length}
+            total={workspacesData?.total || 0}
             page={pagination.page}
             limit={pagination.limit || 10}
-            totalPages={Math.ceil(
-              filteredWorkspaces.length / (pagination.limit || 10),
-            )}
+            totalPages={workspacesData?.totalPages || 1}
             onPageChange={(page) => setPagination({ ...pagination, page })}
             onLimitChange={(limit) =>
               setPagination({ ...pagination, limit, page: 1 })

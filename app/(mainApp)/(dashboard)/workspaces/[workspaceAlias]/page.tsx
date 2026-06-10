@@ -30,7 +30,7 @@ import {
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
 import {
-  useFetchWorkspacesStats,
+  useFetchWorkspaces,
   useFetchWorkspaceTeamMembers,
   useFetchWorkspaceSubscription,
 } from "@/queries/Workspaces.queries";
@@ -554,13 +554,13 @@ export default function WorkspaceDetailsPage() {
   const { user } = useUserStore();
   const [activeTab, setActiveTab] = useState("overview");
 
-  const { data: statsData, isFetching } = useFetchWorkspacesStats(
+  const { data: workspacesData, isFetching } = useFetchWorkspaces(
     user?.id || "",
     { page: 1, limit: 1 },
     workspaceAlias as string,
   );
 
-  const workspace = statsData.data?.[0];
+  const workspace = workspacesData.data?.[0];
 
   if (isFetching && !workspace) {
     return (

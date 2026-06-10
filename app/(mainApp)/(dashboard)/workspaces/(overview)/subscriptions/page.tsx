@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useUserStore from "@/store/globalUserStore";
-import { useFetchWorkspacesStats } from "@/queries/Workspaces.queries";
+import { useFetchWorkspaces } from "@/queries/Workspaces.queries";
 import { Pagination } from "@/hooks/services/request";
 import { StatusBadge, PlanBadge, InitialsAvatar } from "../../_components/WorkspacesCommon";
 import { TablePagination } from "@/components/shared/TablePagination";
@@ -27,9 +27,9 @@ export default function WorkspacesSubscriptionsPage() {
   const { user } = useUserStore();
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
   
-  const { data: statsData, isFetching } = useFetchWorkspacesStats(user?.id || "", pagination);
+  const { data: workspacesData, isFetching } = useFetchWorkspaces(user?.id || "", pagination);
 
-  const workspaces = statsData.data || [];
+  const workspaces = workspacesData.data || [];
 
   if (isFetching && workspaces.length === 0) return <div className="p-10 text-center text-slate-400">Loading subscriptions...</div>;
 
@@ -88,10 +88,10 @@ export default function WorkspacesSubscriptionsPage() {
           
           <div className="p-4 border-t border-slate-50 bg-slate-50/30">
             <TablePagination
-              total={statsData.total}
+              total={workspacesData?.total || 0}
               page={pagination.page}
               limit={pagination.limit || 10}
-              totalPages={statsData.totalPages}
+              totalPages={workspacesData?.totalPages || 0}
               onPageChange={(page) => setPagination({ ...pagination, page })}
               onLimitChange={(limit) => setPagination({ ...pagination, limit, page: 1 })}
             />

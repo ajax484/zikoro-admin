@@ -5,15 +5,22 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { TOrganization } from "@/typings/organization";
 
-export function useFetchWorkspaces(userId?: string, pagination: Pagination = { page: 1, limit: 10 }) {
+export function useFetchWorkspaces(
+  userId?: string,
+  pagination: Pagination = { page: 1, limit: 10 },
+  workspaceAlias?: string,
+) {
   const { data, isFetching, status, error, refetch } = useQuery({
-    queryKey: ["workspaces", userId, { pagination }],
+    queryKey: ["workspaces", userId, { pagination, workspaceAlias }],
     queryFn: async () => {
       const searchParams = new URLSearchParams();
       searchParams.set("page", (pagination.page || 1).toString());
       searchParams.set("limit", (pagination.limit || 10).toString());
       if (pagination.search) {
         searchParams.set("search", pagination.search);
+      }
+      if (workspaceAlias) {
+        searchParams.set("workspaceAlias", workspaceAlias);
       }
 
       const { data, status } = await getRequest<any>({
@@ -47,36 +54,22 @@ export function useFetchWorkspaces(userId?: string, pagination: Pagination = { p
   };
 }
 
-export function useFetchWorkspacesStats(userId?: string, pagination: Pagination = { page: 1, limit: 10 }, workspaceAlias?: string) {
-  const { data, isFetching, status, error, refetch } = useQuery({
-    queryKey: ["workspaces-stats", userId, { pagination, workspaceAlias }],
-    queryFn: async () => {
-      const searchParams = new URLSearchParams();
-      searchParams.set("page", (pagination.page || 1).toString());
-      searchParams.set("limit", (pagination.limit || 10).toString());
-      if (pagination.search) {
-        searchParams.set("search", pagination.search);
-      }
-      if (workspaceAlias) {
-        searchParams.set("workspaceAlias", workspaceAlias);
-      }
+interface StatsData {
+  totalWorkspaces: number;
+  totalProducts: number;
+  totalOrders: number;
+  totalCustomers: number;
+  totalUsers: number;
+  totalRevenue: number;
+  totalPurchaseOrders: number;
+}
 
-      const { data, status } = await getRequest<{
-        data: (TOrganization & {
-          productsCount: number;
-          ordersCount: number;
-          customersCount: number;
-          usersCount: number;
-          totalRevenue: number;
-          purchaseOrdersCount: number;
-        })[];
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-      }>({
+export function useFetchWorkspacesStats(userId?: string) {
+  const { data, isFetching, status, error, refetch } = useQuery<StatsData>({
+    queryKey: ["workspaces-stats", userId],
+    queryFn: async () => {
+      const { data, status } = await getRequest<StatsData>({
         endpoint: `/workspaces/stats`,
-        searchParams,
       });
 
       if (status !== 200) {
@@ -84,19 +77,20 @@ export function useFetchWorkspacesStats(userId?: string, pagination: Pagination 
         throw new Error(data.error ?? "Unknown error");
       }
 
-      return data;
+      console.log(data.data);
+      return data.data;
     },
   });
 
-  const responseData = data as any;
-
   return {
-    data: {
-      data: responseData?.data || [],
-      limit: responseData?.limit || pagination.limit || 10,
-      total: responseData?.total || 0,
-      totalPages: responseData?.totalPages || 0,
-      page: responseData?.page || pagination.page || 1,
+    data: data || {
+      totalWorkspaces: 0,
+      totalProducts: 0,
+      totalOrders: 0,
+      totalCustomers: 0,
+      totalUsers: 0,
+      totalRevenue: 0,
+      totalPurchaseOrders: 0,
     },
     isFetching,
     status,
@@ -112,9 +106,8 @@ export function useFetchWorkspaceTeamMembers(
   const { data, isFetching, status, error, refetch } = useQuery({
     queryKey: ["workspaceTeamMembers", workspaceId, { pagination }],
     queryFn: async () => {
-      const { data, status } = await getRequest<
-        any // Replace with proper type if needed
-      >({
+      const { data, status } = await getRequest<any>({
+        // Replace with proper type if needed
         endpoint: `/workspaces/${workspaceId}/team`,
         searchParams: new URLSearchParams({
           page: (pagination.page || 1).toString(),
