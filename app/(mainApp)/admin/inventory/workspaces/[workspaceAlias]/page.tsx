@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -34,6 +34,41 @@ import {
   useFetchWorkspaceTeamMembers,
   useFetchWorkspaceSubscription,
 } from "@/queries/Workspaces.queries";
+import { useFetchSubscriptionPricing } from "@/queries/SubscriptionPricing.queries";
+import {
+  useUpdateWorkspaceSubscription,
+  useSetWorkspaceInventoryAccess,
+  useUpdateWorkspaces,
+  useDeleteWorkspace,
+} from "@/mutations/workspaces.mutations";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
@@ -47,6 +82,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pagination } from "@/hooks/services/request";
+import { InventoryDataTab } from "./_components/inventoryData/InventoryDataTab";
 
 // --- SUB-COMPONENTS ---
 
@@ -233,8 +269,177 @@ const getSubscriptionStatus = (sub: any): { label: string; color: string } => {
   return { label: "Inactive", color: "bg-slate-100 text-slate-500" };
 };
 
+const PLAN_OPTIONS = ["Free", "Standard", "Pro", "Plus", "Enterprise"];
+const CYCLE_OPTIONS = ["Quarterly", "Biannually", "Yearly"];
+const CURRENCY_OPTIONS = ["USD", "NGN"];
+
+const toDateInputValue = (value?: string | null) => {
+  if (!value) return "";
+  return new Date(value).toISOString().slice(0, 10);
+};
+
+const ManageSubscriptionDialog = ({
+  open,
+  onOpenChange,
+  workspaceAlias,
+  sub,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  workspaceAlias: string;
+  sub: any;
+}) => {
+  const { user } = useUserStore();
+  const { data: pricingPlans } = useFetchSubscriptionPricing("Inventory");
+  const updateSubscription = useUpdateWorkspaceSubscription(workspaceAlias);
+
+  const [plan, setPlan] = useState("Free");
+  const [billingCycle, setBillingCycle] = useState("Yearly");
+  const [currency, setCurrency] = useState("USD");
+  const [amountPaid, setAmountPaid] = useState("0");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [trialExpiry, setTrialExpiry] = useState("");
+  const [cancelAtEnd, setCancelAtEnd] = useState(false);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const matched = pricingPlans.find((p) => p.pricingAlias === sub?.subscriptionPlanAlias);
+    setPlan(matched?.plan || sub?.plan || "Free");
+    setBillingCycle(sub?.billingCycle || "Yearly");
+    setCurrency(sub?.currency || "USD");
+    setAmountPaid(String(sub?.amountPaid ?? 0));
+    setStartDate(toDateInputValue(sub?.subscriptionStartDate));
+    setEndDate(toDateInputValue(sub?.subscriptionEndDate));
+    setTrialExpiry(toDateInputValue(sub?.trialExpiryDate));
+    setCancelAtEnd(!!sub?.cancelAtSubscriptionEnd);
+  }, [open, sub, pricingPlans]);
+
+  const handleSave = async () => {
+    const matchedPricing = pricingPlans.find(
+      (p) => p.plan === plan && p.subscriptionCycle === billingCycle && p.currency === currency,
+    );
+
+    await updateSubscription.mutateAsync({
+      subscriptionPlanAlias: matchedPricing?.pricingAlias || sub?.subscriptionPlanAlias || null,
+      billingCycle,
+      currency,
+      amountPaid: Number(amountPaid) || 0,
+      subscriptionStartDate: startDate ? new Date(startDate).toISOString() : null,
+      subscriptionEndDate: endDate ? new Date(endDate).toISOString() : null,
+      trialExpiryDate: trialExpiry ? new Date(trialExpiry).toISOString() : null,
+      cancelAtSubscriptionEnd: cancelAtEnd,
+      adminUserId: user?.id || null,
+    });
+
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Manage Subscription</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Plan</Label>
+              <Select value={plan} onValueChange={setPlan}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select plan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PLAN_OPTIONS.map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Billing Cycle</Label>
+              <Select value={billingCycle} onValueChange={setBillingCycle}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select cycle" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CYCLE_OPTIONS.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Currency</Label>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CURRENCY_OPTIONS.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Amount Paid</Label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={amountPaid}
+                onChange={(e) => setAmountPaid(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Start Date</Label>
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Renewal / End Date</Label>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Trial Expiry</Label>
+            <Input type="date" value={trialExpiry} onChange={(e) => setTrialExpiry(e.target.value)} />
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl border border-slate-100 p-4">
+            <div>
+              <Label className="text-sm font-bold">Cancel at Period End</Label>
+              <p className="text-xs text-slate-500">Subscription won't renew after the end date</p>
+            </div>
+            <Switch checked={cancelAtEnd} onCheckedChange={setCancelAtEnd} />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button disabled={updateSubscription.isPending} onClick={handleSave}>
+            {updateSubscription.isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
   const [historyPagination, setHistoryPagination] = useState<Pagination>({ page: 1, limit: 10 });
+  const [manageOpen, setManageOpen] = useState(false);
   const { data: subData, isFetching } = useFetchWorkspaceSubscription(workspaceAlias, historyPagination);
 
   const sub = subData?.subscription;
@@ -253,9 +458,14 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
   return (
     <div className="space-y-6">
       <Card className="border-none shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg font-bold">Subscription Plan</CardTitle>
-          <CardDescription>Management of organization licensing and quotas</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-bold">Subscription Plan</CardTitle>
+            <CardDescription>Management of organization licensing and quotas</CardDescription>
+          </div>
+          <Button size="sm" onClick={() => setManageOpen(true)}>
+            Manage Subscription
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -360,7 +570,117 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
           </div>
         </CardContent>
       </Card>
+
+      <ManageSubscriptionDialog
+        open={manageOpen}
+        onOpenChange={setManageOpen}
+        workspaceAlias={workspaceAlias}
+        sub={sub}
+      />
     </div>
+  );
+};
+
+const SettingsTab = ({ workspace }: { workspace: any }) => {
+  const workspaceAlias = workspace.organizationAlias as string;
+  const isActive = workspace.activeApps?.inventory !== false;
+
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  const setAccess = useSetWorkspaceInventoryAccess(workspaceAlias);
+  const deleteWorkspace = useDeleteWorkspace(workspaceAlias);
+
+  return (
+    <Card className="border-none shadow-sm">
+      <CardHeader>
+        <CardTitle className="text-lg font-bold text-red-600">Danger Zone</CardTitle>
+        <CardDescription>Irreversible actions for this organization</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="p-4 border border-red-100 bg-red-50/30 rounded-xl flex items-center justify-between">
+          <div>
+            <h4 className="text-sm font-bold text-red-900">
+              {isActive ? "Deactivate Workspace" : "Reactivate Workspace"}
+            </h4>
+            <p className="text-xs text-red-600/70">
+              {isActive
+                ? "Suspend this organization's access to the Inventory app"
+                : "Restore this organization's access to the Inventory app"}
+            </p>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" disabled={setAccess.isPending}>
+                {isActive ? "Deactivate" : "Reactivate"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {isActive ? "Deactivate" : "Reactivate"} {workspace.organizationName}?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {isActive
+                    ? "This will immediately revoke this organization's access to the Inventory app. They can be reactivated at any time."
+                    : "This will restore this organization's access to the Inventory app."}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={() => setAccess.mutate(!isActive)}
+                >
+                  {isActive ? "Deactivate" : "Reactivate"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
+        <div className="p-4 border border-red-100 bg-red-50/30 rounded-xl flex items-center justify-between">
+          <div>
+            <h4 className="text-sm font-bold text-red-900">Delete Workspace</h4>
+            <p className="text-xs text-red-600/70">
+              Permanently remove this organization across all Zikoro apps. This cannot be undone.
+            </p>
+          </div>
+          <AlertDialog onOpenChange={(open) => !open && setDeleteConfirm("")}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" disabled={deleteWorkspace.isPending}>
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete {workspace.organizationName}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This permanently deletes the organization and all of its data across every Zikoro
+                  app (Inventory, Events, CRM, Forms, etc.) — not just Inventory. This action cannot
+                  be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="space-y-2 px-1">
+                <Label className="text-xs text-slate-500">
+                  Type <span className="font-bold">{workspace.organizationAlias}</span> to confirm
+                </Label>
+                <Input value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} />
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700"
+                  disabled={deleteConfirm !== workspace.organizationAlias}
+                  onClick={() => deleteWorkspace.mutate()}
+                >
+                  Delete Permanently
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -369,8 +689,9 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
 export default function InventoryWorkspaceDetailsPage() {
   const { workspaceAlias } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(searchParams.get("pa") ? "inventory-data" : "overview");
 
   const { data: workspacesData, isFetching } = useFetchWorkspaces(
     user?.id || "",
@@ -418,8 +739,16 @@ export default function InventoryWorkspaceDetailsPage() {
             <div className="space-y-1">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-bold text-slate-900">{workspace.organizationName}</h1>
-                <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-100 font-bold uppercase text-[10px]">
-                  {workspace.status === "active" || workspace.status === true ? "Active" : "Inactive"}
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "font-bold uppercase text-[10px]",
+                    workspace.activeApps?.inventory !== false
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                      : "bg-red-50 text-red-700 border-red-100",
+                  )}
+                >
+                  {workspace.activeApps?.inventory !== false ? "Active" : "Inactive"}
                 </Badge>
               </div>
               <p className="text-slate-500 text-sm font-medium flex items-center gap-2">
@@ -440,10 +769,10 @@ export default function InventoryWorkspaceDetailsPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="border-b border-slate-200">
           <TabsList className="bg-transparent h-auto p-0 gap-8">
-            {["Overview", "Team", "Subscription", "Settings"].map((tab) => (
+            {["Overview", "Team", "Inventory Data", "Subscription", "Settings"].map((tab) => (
               <TabsTrigger
                 key={tab}
-                value={tab.toLowerCase()}
+                value={tab.toLowerCase().replace(/\s+/g, "-")}
                 className="px-0 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-bold text-slate-400 data-[state=active]:text-indigo-600 transition-all uppercase tracking-wider text-xs"
               >
                 {tab}
@@ -460,33 +789,16 @@ export default function InventoryWorkspaceDetailsPage() {
           <TeamTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
+        <TabsContent value="inventory-data" className="focus-visible:outline-none m-0">
+          <InventoryDataTab workspaceAlias={workspaceAlias as string} />
+        </TabsContent>
+
         <TabsContent value="subscription" className="focus-visible:outline-none m-0">
           <SubscriptionTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
         <TabsContent value="settings" className="focus-visible:outline-none m-0">
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-red-600">Danger Zone</CardTitle>
-              <CardDescription>Irreversible actions for this organization</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 border border-red-100 bg-red-50/30 rounded-xl flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-red-900">Deactivate Workspace</h4>
-                  <p className="text-xs text-red-600/70">Temporarily suspend all access to this workspace</p>
-                </div>
-                <Button variant="destructive" size="sm">Deactivate</Button>
-              </div>
-              <div className="p-4 border border-red-100 bg-red-50/30 rounded-xl flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-red-900">Delete Workspace</h4>
-                  <p className="text-xs text-red-600/70">Permanently remove this organization and all its data</p>
-                </div>
-                <Button variant="destructive" size="sm">Delete</Button>
-              </div>
-            </CardContent>
-          </Card>
+          <SettingsTab workspace={workspace} />
         </TabsContent>
       </Tabs>
     </div>

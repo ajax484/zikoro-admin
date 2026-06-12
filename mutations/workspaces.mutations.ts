@@ -135,12 +135,95 @@ export function useDeleteWorkspace(workspaceId: string) {
         autoClose: 3000,
       });
 
-      router.push("/home");
+      router.push("/admin/inventory/workspaces");
     },
     onError: (error, _, toastId) => {
       console.error(error);
       toast.update(toastId, {
         render: "Failed to update workspace. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    },
+  });
+}
+
+export function useUpdateWorkspaceSubscription(workspaceAlias: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: Record<string, any>) => {
+      const { data, status } = await patchRequest<any>({
+        endpoint: `/workspaces/${workspaceAlias}/subscription`,
+        payload,
+      });
+
+      if (status !== 200) {
+        throw new Error(data.error || "Failed to update subscription");
+      }
+
+      return data.data;
+    },
+    onMutate: () => {
+      return toast.loading("Updating subscription...");
+    },
+    onSuccess: (_, __, toastId) => {
+      queryClient.invalidateQueries({ queryKey: ["workspaceSubscription", workspaceAlias] });
+      queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+
+      toast.update(toastId, {
+        render: "Subscription updated successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    },
+    onError: (error, _, toastId) => {
+      console.error(error);
+      toast.update(toastId, {
+        render: "Failed to update subscription. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    },
+  });
+}
+
+export function useSetWorkspaceInventoryAccess(workspaceAlias: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (active: boolean) => {
+      const { data, status } = await patchRequest<TOrganization>({
+        endpoint: `/workspaces/${workspaceAlias}`,
+        payload: { activeApps: { inventory: active } },
+      });
+
+      if (status !== 200) {
+        throw new Error(data.error || "Failed to update workspace access");
+      }
+
+      return data.data;
+    },
+    onMutate: (active) => {
+      return toast.loading(active ? "Activating workspace..." : "Deactivating workspace...");
+    },
+    onSuccess: (_, active, toastId) => {
+      queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+
+      toast.update(toastId, {
+        render: active ? "Workspace activated successfully!" : "Workspace deactivated successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    },
+    onError: (error, _, toastId) => {
+      console.error(error);
+      toast.update(toastId, {
+        render: "Failed to update workspace access. Please try again.",
         type: "error",
         isLoading: false,
         autoClose: 3000,

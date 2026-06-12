@@ -6,6 +6,8 @@ import {
   CalendarIcon,
   SquaresFourIcon,
   ArchiveBoxIcon,
+  TagIcon,
+  MagnifyingGlassIcon,
 } from "@phosphor-icons/react/dist/ssr";
 
 export type ModuleNavLink = {
@@ -22,6 +24,11 @@ export const inventoryLinks: ModuleNavLink[] = [
     href: "admin/inventory/workspaces",
   },
   {
+    name: "Plan Pricing",
+    Icon: TagIcon,
+    href: "admin/inventory/plans",
+  },
+  {
     name: "Transactions",
     Icon: CashRegisterIcon,
     href: "admin/inventory/transactions",
@@ -30,6 +37,11 @@ export const inventoryLinks: ModuleNavLink[] = [
     name: "Verify",
     Icon: IdentificationCardIcon,
     href: "admin/inventory/verify",
+  },
+  {
+    name: "Search",
+    Icon: MagnifyingGlassIcon,
+    href: "admin/inventory/search",
   },
 ];
 
