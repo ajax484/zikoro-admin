@@ -8,6 +8,7 @@ import {
   ArchiveBoxIcon,
   TagIcon,
   MagnifyingGlassIcon,
+  ClipboardTextIcon,
 } from "@phosphor-icons/react/dist/ssr";
 
 export type ModuleNavLink = {
@@ -42,6 +43,11 @@ export const inventoryLinks: ModuleNavLink[] = [
     name: "Search",
     Icon: MagnifyingGlassIcon,
     href: "admin/inventory/search",
+  },
+  {
+    name: "Audit Log",
+    Icon: ClipboardTextIcon,
+    href: "admin/inventory/audit-log",
   },
 ];
 

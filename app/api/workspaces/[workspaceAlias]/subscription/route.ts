@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { logAuditEvent } from "@/utils/auditLog";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -66,15 +67,17 @@ export async function PATCH(
 
   try {
     const payload = await req.json();
-    const { adminUserId, ...subscriptionFields } = payload;
+    const { adminUserId, adminEmail, reason, ...subscriptionFields } = payload;
 
     const { data: existingSubs, error: existingError } = await supabase
       .from("inventorySubscription")
-      .select("id")
+      .select("*")
       .eq("organizationAlias", workspaceAlias)
       .order("created_at", { ascending: false });
 
     if (existingError) throw existingError;
+
+    const before = existingSubs?.[0] || null;
 
     let result;
     if (existingSubs && existingSubs.length > 0) {
@@ -116,6 +119,18 @@ export async function PATCH(
       subscriptionEndDate: subscriptionFields.subscriptionEndDate,
       inventorySubscriptionHistoryAndPaymentAlias: historyAlias,
       subscriptionPlan: subscriptionFields.subscriptionPlanAlias || null,
+    });
+
+    await logAuditEvent(supabase, {
+      actorId: adminUserId,
+      actorEmail: adminEmail,
+      organizationAlias: workspaceAlias,
+      entityType: "subscription",
+      entityId: workspaceAlias,
+      action: "update_subscription",
+      beforeData: before,
+      afterData: data,
+      reason,
     });
 
     return NextResponse.json({ data }, { status: 200 });

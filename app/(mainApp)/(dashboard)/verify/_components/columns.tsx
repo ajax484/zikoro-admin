@@ -7,15 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useUpdateData } from "@/hooks/services/request";
 import { OrganizationVerification } from "@/typings/organization";
 import Image from "next/image";
 import Link from "next/link";
-import useUserStore from "../../../../../store/globalUserStore";
+import useUserStore from "@/store/globalUserStore";
 
 export const columns = (
   getData: () => Promise<OrganizationVerification | undefined>
@@ -144,59 +146,131 @@ export const columns = (
     id: "actions",
     cell: ({ row }) => {
       const verification = row.original as OrganizationVerification;
-      const { user } = useUserStore();
-      console.log(verification, user, "user");
-
-      const { updateData, isLoading } = useUpdateData(
-        `/workspaces/verification`
-      );
-
-      const updateVerificationFn = async (status: string) => {
-        await updateData({
-          payload: {
-            status,
-            workspaceAlias: verification.workspaceAlias,
-          },
-        });
-        await getData();
-      };
-
-      return (
-        <div className="flex flex-row gap-2">
-          {verification.status === "pending" ? (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button disabled={isLoading}>Approve</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Approve Verification</DialogTitle>
-                </DialogHeader>
-                <div className="flex justify-center p-4">
-                  <p>
-                    Are you sure you want to approve this verification for:{" "}
-                    <b>{verification.workspace.organizationName}</b>
-                  </p>
-                </div>
-                <div className="flex justify-center p-4">
-                  <DialogClose asChild>
-                    <Button
-                      disabled={isLoading}
-                      onClick={() => updateVerificationFn("verified")}
-                    >
-                      Approve
-                    </Button>
-                  </DialogClose>
-                </div>
-              </DialogContent>
-            </Dialog>
-          ) : (
-            <div className="font-medium capitalize text-center">
-              {verification.status}
-            </div>
-          )}
-        </div>
-      );
+      return <VerificationActionCell verification={verification} getData={getData} />;
     },
   },
 ];
+
+const VerificationActionCell = ({
+  verification,
+  getData,
+}: {
+  verification: OrganizationVerification;
+  getData: () => Promise<any>;
+}) => {
+  const { user } = useUserStore();
+  const { updateData, isLoading } = useUpdateData("/workspaces/verification");
+  const [approveOpen, setApproveOpen] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [reason, setReason] = useState("");
+
+  const handleApprove = async () => {
+    await updateData({
+      payload: {
+        status: "verified",
+        workspaceAlias: verification.workspaceAlias,
+        adminUserId: user?.id || null,
+        adminEmail: user?.userEmail || null,
+        reason: reason.trim() || null,
+      },
+    });
+    setApproveOpen(false);
+    setReason("");
+    await getData();
+  };
+
+  const handleReject = async () => {
+    await updateData({
+      payload: {
+        status: "rejected",
+        workspaceAlias: verification.workspaceAlias,
+        adminUserId: user?.id || null,
+        adminEmail: user?.userEmail || null,
+        reason: reason.trim() || null,
+      },
+    });
+    setRejectOpen(false);
+    setReason("");
+    await getData();
+  };
+
+  if (verification.status !== "pending") {
+    return (
+      <div className="font-medium capitalize text-center text-sm">
+        {verification.status}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-row gap-2">
+      <Dialog open={approveOpen} onOpenChange={(open) => { setApproveOpen(open); if (!open) setReason(""); }}>
+        <DialogTrigger asChild>
+          <Button size="sm" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium">
+            Approve
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Approve Verification</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-slate-600">
+              Are you sure you want to approve verification for: <b>{verification.workspace?.organizationName || verification.workspaceAlias}</b>?
+            </p>
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-500">Reason / Notes (Optional)</Label>
+              <Input
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Enter comments..."
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setApproveOpen(false)} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button onClick={handleApprove} disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
+              {isLoading ? "Approving..." : "Approve"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={rejectOpen} onOpenChange={(open) => { setRejectOpen(open); if (!open) setReason(""); }}>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="destructive" disabled={isLoading} className="font-medium">
+            Reject
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reject Verification</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-slate-600">
+              Are you sure you want to reject verification for: <b>{verification.workspace?.organizationName || verification.workspaceAlias}</b>?
+            </p>
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-500">Reason for rejection <span className="text-red-500">*</span></Label>
+              <Input
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="e.g. invalid documents, mismatching name"
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setRejectOpen(false)} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button onClick={handleReject} disabled={isLoading || !reason.trim()} variant="destructive">
+              {isLoading ? "Rejecting..." : "Reject"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};

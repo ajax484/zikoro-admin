@@ -102,8 +102,10 @@ export const patchRequest = async <T>({
 
 export const deleteRequest = async <T>({
   endpoint,
+  payload,
 }: {
   endpoint: string;
+  payload?: any;
 }): Promise<AxiosResponse<ApiResponse<T>>> => {
-  return await Api.delete<ApiResponse<T>>(endpoint);
+  return await Api.delete<ApiResponse<T>>(endpoint, { data: payload });
 };

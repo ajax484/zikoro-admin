@@ -6,6 +6,7 @@ import {
 import { deleteRequest, patchRequest, postRequest } from "@/utils/api";
 import { toast } from "react-toastify";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
 import { organizationSchema } from "@/schemas/organization";
 import z from "zod";
@@ -106,13 +107,19 @@ export function useUpdateWorkspaces(workspaceId: string) {
 
 export function useDeleteWorkspace(workspaceId: string) {
   const { setOrganization } = useOrganizationStore();
+  const { user } = useUserStore();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (payload?: { reason?: string }) => {
       const { status } = await deleteRequest<TOrganization>({
         endpoint: `/workspaces/${workspaceId}`,
+        payload: {
+          adminUserId: user?.id || null,
+          adminEmail: user?.userEmail || null,
+          reason: payload?.reason,
+        },
       });
 
       if (status !== 200) {
@@ -192,13 +199,19 @@ export function useUpdateWorkspaceSubscription(workspaceAlias: string) {
 }
 
 export function useSetWorkspaceInventoryAccess(workspaceAlias: string) {
+  const { user } = useUserStore();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (active: boolean) => {
+    mutationFn: async ({ active, reason }: { active: boolean; reason: string }) => {
       const { data, status } = await patchRequest<TOrganization>({
         endpoint: `/workspaces/${workspaceAlias}`,
-        payload: { activeApps: { inventory: active } },
+        payload: {
+          activeApps: { inventory: active },
+          adminUserId: user?.id || null,
+          adminEmail: user?.userEmail || null,
+          reason,
+        },
       });
 
       if (status !== 200) {
@@ -207,10 +220,10 @@ export function useSetWorkspaceInventoryAccess(workspaceAlias: string) {
 
       return data.data;
     },
-    onMutate: (active) => {
+    onMutate: ({ active }) => {
       return toast.loading(active ? "Activating workspace..." : "Deactivating workspace...");
     },
-    onSuccess: (_, active, toastId) => {
+    onSuccess: (_, { active }, toastId) => {
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
 
       toast.update(toastId, {

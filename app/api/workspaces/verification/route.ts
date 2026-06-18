@@ -1,4 +1,5 @@
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
+import { logAuditEvent } from "@/utils/auditLog";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -106,23 +107,45 @@ const supabase = createClient();
 }
 
 export async function PATCH(req: NextRequest) {
-const supabase = createClient();
+  const supabase = createClient();
 
   if (req.method !== "PATCH") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
 
   try {
-    const bodyParams = await req.json();
+    const { workspaceAlias, adminUserId, adminEmail, reason, ...updateFields } = await req.json();
+
+    // Fetch before state for audit log
+    const { data: before } = await supabase
+      .from("organizationVerification")
+      .select("*")
+      .eq("workspaceAlias", workspaceAlias)
+      .maybeSingle();
 
     const { data, error } = await supabase
       .from("organizationVerification")
-      .update(bodyParams)
-      .eq("workspaceAlias", bodyParams.workspaceAlias)
+      .update(updateFields)
+      .eq("workspaceAlias", workspaceAlias)
       .select("*, workspace:organization!inner(*)")
       .maybeSingle();
 
     if (error) throw error;
+
+    // Log audit event if status changed
+    if (updateFields.status && before?.status !== updateFields.status) {
+      await logAuditEvent(supabase, {
+        actorId: adminUserId,
+        actorEmail: adminEmail,
+        organizationAlias: workspaceAlias,
+        entityType: "verification",
+        entityId: workspaceAlias,
+        action: updateFields.status === "verified" ? "approve_verification" : "reject_verification",
+        beforeData: before,
+        afterData: data,
+        reason: reason || null,
+      });
+    }
 
     return NextResponse.json(
       {

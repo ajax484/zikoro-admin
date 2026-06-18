@@ -105,6 +105,7 @@ const StatCard = ({ label, value, icon: Icon, colorClass }: any) => (
 // --- TABS ---
 
 const OverviewTab = ({ workspace }: { workspace: any }) => {
+  const router = useRouter();
   const info = [
     { label: "Organization Alias", value: workspace.organizationAlias, icon: GlobeIcon },
     { label: "Phone Number", value: workspace.eventPhoneNumber || "N/A", icon: PhoneIcon },
@@ -166,7 +167,13 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full text-xs h-9">Manage Compliance</Button>
+            <Button
+              variant="outline"
+              className="w-full text-xs h-9"
+              onClick={() => router.push(`/admin/inventory/verify?search=${workspace.organizationAlias}`)}
+            >
+              Manage Compliance
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -301,9 +308,11 @@ const ManageSubscriptionDialog = ({
   const [endDate, setEndDate] = useState("");
   const [trialExpiry, setTrialExpiry] = useState("");
   const [cancelAtEnd, setCancelAtEnd] = useState(false);
+  const [reason, setReason] = useState("");
 
   React.useEffect(() => {
     if (!open) return;
+    setReason("");
     const matched = pricingPlans.find((p) => p.pricingAlias === sub?.subscriptionPlanAlias);
     setPlan(matched?.plan || sub?.plan || "Free");
     setBillingCycle(sub?.billingCycle || "Yearly");
@@ -330,6 +339,8 @@ const ManageSubscriptionDialog = ({
       trialExpiryDate: trialExpiry ? new Date(trialExpiry).toISOString() : null,
       cancelAtSubscriptionEnd: cancelAtEnd,
       adminUserId: user?.id || null,
+      adminEmail: user?.userEmail || null,
+      reason: reason.trim() || null,
     });
 
     onOpenChange(false);
@@ -426,9 +437,19 @@ const ManageSubscriptionDialog = ({
             </div>
             <Switch checked={cancelAtEnd} onCheckedChange={setCancelAtEnd} />
           </div>
+
+          <div className="space-y-2">
+            <Label>Reason for Update <span className="text-red-500">*</span></Label>
+            <Input
+              type="text"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="e.g. plan upgrade, complimentary standard plan"
+            />
+          </div>
         </div>
         <DialogFooter>
-          <Button disabled={updateSubscription.isPending} onClick={handleSave}>
+          <Button disabled={updateSubscription.isPending || !reason.trim()} onClick={handleSave}>
             {updateSubscription.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
@@ -586,9 +607,15 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
   const isActive = workspace.activeApps?.inventory !== false;
 
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteReason, setDeleteReason] = useState("");
+  const [accessReason, setAccessReason] = useState("");
 
-  const setAccess = useSetWorkspaceInventoryAccess(workspaceAlias);
+  const setAccess = useSetWorkspaceWorkspaceInventoryAccess(workspaceAlias);
   const deleteWorkspace = useDeleteWorkspace(workspaceAlias);
+
+  function useSetWorkspaceWorkspaceInventoryAccess(alias: string) {
+    return useSetWorkspaceInventoryAccess(alias);
+  }
 
   return (
     <Card className="border-none shadow-sm">
@@ -608,7 +635,7 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                 : "Restore this organization's access to the Inventory app"}
             </p>
           </div>
-          <AlertDialog>
+          <AlertDialog onOpenChange={(open) => !open && setAccessReason("")}>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="sm" disabled={setAccess.isPending}>
                 {isActive ? "Deactivate" : "Reactivate"}
@@ -625,11 +652,22 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                     : "This will restore this organization's access to the Inventory app."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
+              <div className="space-y-2 px-1">
+                <Label className="text-xs text-slate-500">
+                  Reason for {isActive ? "deactivation" : "reactivation"} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  value={accessReason}
+                  onChange={(e) => setAccessReason(e.target.value)}
+                  placeholder="e.g. billing issue, user request"
+                />
+              </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-red-600 hover:bg-red-700"
-                  onClick={() => setAccess.mutate(!isActive)}
+                  disabled={!accessReason.trim()}
+                  onClick={() => setAccess.mutate({ active: !isActive, reason: accessReason })}
                 >
                   {isActive ? "Deactivate" : "Reactivate"}
                 </AlertDialogAction>
@@ -645,7 +683,7 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
               Permanently remove this organization across all Zikoro apps. This cannot be undone.
             </p>
           </div>
-          <AlertDialog onOpenChange={(open) => !open && setDeleteConfirm("")}>
+          <AlertDialog onOpenChange={(open) => { if (!open) { setDeleteConfirm(""); setDeleteReason(""); } }}>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="sm" disabled={deleteWorkspace.isPending}>
                 Delete
@@ -660,18 +698,30 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                   be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <div className="space-y-2 px-1">
-                <Label className="text-xs text-slate-500">
-                  Type <span className="font-bold">{workspace.organizationAlias}</span> to confirm
-                </Label>
-                <Input value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} />
+              <div className="space-y-4 px-1">
+                <div className="space-y-2">
+                  <Label className="text-xs text-slate-500">
+                    Type <span className="font-bold">{workspace.organizationAlias}</span> to confirm
+                  </Label>
+                  <Input value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs text-slate-500">
+                    Reason for deletion <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    value={deleteReason}
+                    onChange={(e) => setDeleteReason(e.target.value)}
+                    placeholder="e.g. client cancellation, duplicate account"
+                  />
+                </div>
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-red-600 hover:bg-red-700"
-                  disabled={deleteConfirm !== workspace.organizationAlias}
-                  onClick={() => deleteWorkspace.mutate()}
+                  disabled={deleteConfirm !== workspace.organizationAlias || !deleteReason.trim()}
+                  onClick={() => deleteWorkspace.mutate({ reason: deleteReason })}
                 >
                   Delete Permanently
                 </AlertDialogAction>
@@ -691,7 +741,9 @@ export default function InventoryWorkspaceDetailsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const [activeTab, setActiveTab] = useState(searchParams.get("pa") ? "inventory-data" : "overview");
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("pa") ? "inventory-data" : searchParams.get("tab") || "overview",
+  );
 
   const { data: workspacesData, isFetching } = useFetchWorkspaces(
     user?.id || "",
