@@ -6,10 +6,20 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { CheckCircleIcon, ClockIcon, PauseCircleIcon, BellIcon } from "@phosphor-icons/react";
 import { abbreviateNumber } from "@/utils/helpers";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useMutateData } from "@/hooks/services/request";
+import AddPoints from "./AddCredits";
+import { generateAlphanumericHash } from "./columns";
 
 export const workspacesColumnsFn: (
-  totalWorkspaces: number
-) => ColumnDef<any>[] = (totalWorkspaces: number) => [
+  totalWorkspaces: number,
+  refetch: () => void
+) => ColumnDef<any>[] = (totalWorkspaces: number, refetch: () => void) => [
   {
     id: "select",
     // @ts-ignore
@@ -158,5 +168,71 @@ export const workspacesColumnsFn: (
         {new Date(row.original.created_at).toLocaleDateString()}
       </span>
     ),
+  },
+  {
+    id: "actions",
+    // @ts-ignore
+    meta: { width: "1.2fr" },
+    cell: ({ row }: { row: any }) => {
+      const organization = row.original;
+      const { mutateData, isLoading } = useMutateData(
+        `/workspaces/credits/buy`
+      );
+
+      const addCreditsFn = async (credits: {
+        bronze: number;
+        silver: number;
+        gold: number;
+      }) => {
+        const reference =
+          "ADMIN-" +
+          organization?.organizationAlias +
+          "-" +
+          generateAlphanumericHash(12);
+
+        await mutateData({
+          payload: {
+            credits: {
+              gold: {
+                amount: credits.gold,
+                price: 0,
+              },
+              silver: {
+                amount: credits.silver,
+                price: 0,
+              },
+              bronze: {
+                amount: credits.bronze,
+                price: 0,
+              },
+            },
+            workspaceId: organization?.id,
+            email: organization.eventContactEmail,
+            name: "User",
+            workspaceName: organization?.organizationName,
+            reference,
+            currency: "NGN",
+            workspaceAlias: organization?.organizationAlias,
+            activityBy: "13",
+          },
+        });
+        refetch();
+      };
+
+      return (
+        <div onClick={(e) => e.stopPropagation()} className="flex flex-row gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button disabled={isLoading} size="sm" className="h-8 text-xs font-semibold">
+                Add Credits
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="!w-fit !max-w-fit">
+              <AddPoints addPoints={addCreditsFn} />
+            </DialogContent>
+          </Dialog>
+        </div>
+      );
+    },
   },
 ];

@@ -46,7 +46,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "@/hooks/services/request";
+import { Pagination, useMutateData } from "@/hooks/services/request";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddPoints from "../_components/AddCredits";
+import { generateAlphanumericHash } from "../_components/columns";
 
 // --- SUB-COMPONENTS ---
 
@@ -328,12 +335,58 @@ const getSubscriptionStatus = (sub: any): { label: string; color: string } => {
   return { label: "Inactive", color: "bg-slate-100 text-slate-500" };
 };
 
-const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
+const SubscriptionTab = ({ workspace }: { workspace: any }) => {
+  const workspaceAlias = workspace.organizationAlias;
   const [historyPagination, setHistoryPagination] = useState<Pagination>({ page: 1, limit: 10 });
-  const { data: subData, isFetching } = useFetchWorkspaceSubscription(
+  const [creditsOpen, setCreditsOpen] = useState(false);
+  const { data: subData, isFetching, refetch } = useFetchWorkspaceSubscription(
     workspaceAlias,
     historyPagination,
   );
+  const { mutateData, isLoading: isMutating } = useMutateData(
+    `/workspaces/credits/buy`
+  );
+
+  const addCreditsFn = async (credits: {
+    bronze: number;
+    silver: number;
+    gold: number;
+  }) => {
+    const reference =
+      "ADMIN-" +
+      workspaceAlias +
+      "-" +
+      generateAlphanumericHash(12);
+
+    await mutateData({
+      payload: {
+        credits: {
+          gold: {
+            amount: credits.gold,
+            price: 0,
+          },
+          silver: {
+            amount: credits.silver,
+            price: 0,
+          },
+          bronze: {
+            amount: credits.bronze,
+            price: 0,
+          },
+        },
+        workspaceId: workspace.id,
+        email: workspace.eventContactEmail || workspace.organizationOwner,
+        name: "User",
+        workspaceName: workspace.organizationName,
+        reference,
+        currency: "NGN",
+        workspaceAlias,
+        activityBy: "13",
+      },
+    });
+    setCreditsOpen(false);
+    refetch();
+  };
 
   const sub = subData?.subscription;
   const history = subData?.history;
@@ -452,11 +505,23 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
 
       {/* Payment History */}
       <Card className="border-none shadow-sm overflow-hidden">
-        <CardHeader>
-          <CardTitle className="text-lg font-bold">Payment History</CardTitle>
-          <CardDescription>
-            All billing transactions for this organization
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-bold">Payment History</CardTitle>
+            <CardDescription>
+              All billing transactions for this organization
+            </CardDescription>
+          </div>
+          <Dialog open={creditsOpen} onOpenChange={setCreditsOpen}>
+            <DialogTrigger asChild>
+              <Button disabled={isMutating} className="gap-2 text-xs font-semibold h-9">
+                Add Credits
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="!w-fit !max-w-fit">
+              <AddPoints addPoints={addCreditsFn} />
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -690,7 +755,7 @@ export default function WorkspaceDetailsPage() {
           value="subscription"
           className="focus-visible:outline-none m-0"
         >
-          <SubscriptionTab workspaceAlias={workspaceAlias as string} />
+          <SubscriptionTab workspace={workspace} />
         </TabsContent>
 
         <TabsContent

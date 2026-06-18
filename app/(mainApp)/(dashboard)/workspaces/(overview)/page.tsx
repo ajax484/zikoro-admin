@@ -56,7 +56,7 @@ export default function WorkspacesUsagePage() {
 
   const { data: statsData, status: statsStatus } = useFetchWorkspacesStats(user?.id!);
 
-  const { data: workspacesData, isFetching: isFetchingWorkspaces, status: workspacesStatus } = useFetchWorkspaces(user?.id!, {
+  const { data: workspacesData, isFetching: isFetchingWorkspaces, status: workspacesStatus, refetch } = useFetchWorkspaces(user?.id!, {
     ...pagination,
     search: searchTerm,
   });
@@ -115,8 +115,8 @@ export default function WorkspacesUsagePage() {
   }, [workspacesData?.data, sorting]);
 
   const columns = useMemo(
-    () => workspacesColumnsFn(workspacesData?.total || 0),
-    [workspacesData?.total],
+    () => workspacesColumnsFn(workspacesData?.total || 0, refetch),
+    [workspacesData?.total, refetch],
   );
 
   if (statsStatus === "pending")
