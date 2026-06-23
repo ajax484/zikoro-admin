@@ -1,24 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/shared/DataTable";
 import { TablePagination } from "@/components/shared/TablePagination";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/hooks/services/request";
 import { useFetchInventoryTransactions, InventoryTransaction } from "@/queries/InventoryTransactions.queries";
 import { useFetchSubscriptionPricing } from "@/queries/SubscriptionPricing.queries";
 import { PlanBadge, InitialsAvatar } from "../workspaces/_components/WorkspacesCommon";
+import { GlobalFilterSidebar } from "@/components/shared/filters/GlobalFilterSidebar";
+import { FilterConfig } from "@/types/filters";
 
 const statusStyles: Record<string, string> = {
   success: "bg-emerald-50 text-emerald-700 border-emerald-100",
@@ -129,11 +124,14 @@ const columns: ColumnDef<InventoryTransaction>[] = [
 
 export default function InventoryTransactionsPage() {
   const router = useRouter();
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
-  const [plan, setPlan] = useState("all");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const searchParams = useSearchParams();
+  
+  const search = searchParams.get("search") || "";
+  const status = searchParams.get("status") || "all";
+  const plan = searchParams.get("plan") || "all";
+  const startDate = searchParams.get("date_start") || "";
+  const endDate = searchParams.get("date_end") || "";
+
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10 });
 
   useEffect(() => {
@@ -152,55 +150,52 @@ export default function InventoryTransactionsPage() {
   const { data: pricingPlans } = useFetchSubscriptionPricing("Inventory");
   const planOptions = Array.from(new Set(pricingPlans.map((p) => p.plan).filter((p): p is string => !!p)));
 
+  const filterConfigs: FilterConfig[] = [
+    {
+      id: "search",
+      label: "Search",
+      type: "text",
+      placeholder: "Search by workspace or reference...",
+    },
+    {
+      id: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "all", label: "All Statuses" },
+        { value: "success", label: "Success" },
+        { value: "pending", label: "Pending" },
+        { value: "failed", label: "Failed" },
+      ],
+    },
+    {
+      id: "plan",
+      label: "Plan",
+      type: "select",
+      options: [
+        { value: "all", label: "All Plans" },
+        ...planOptions.map(p => ({ value: p, label: p })),
+      ],
+    },
+    {
+      id: "date",
+      label: "Date Range",
+      type: "date-range",
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex flex-col gap-4">
+        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg font-bold text-slate-900">Transactions</h3>
             <p className="text-sm text-slate-500">
               Inventory billing and subscription transactions across all workspaces
             </p>
           </div>
-
-          <div className="flex flex-col md:flex-row gap-3">
-            <input
-              type="text"
-              placeholder="Search by workspace or reference..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
-            />
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="w-full md:w-36"><SelectValue placeholder="Status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="success">Success</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={plan} onValueChange={setPlan}>
-              <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="Plan" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Plans</SelectItem>
-                {planOptions.map((p) => (
-                  <SelectItem key={p} value={p}>{p}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-            />
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-            />
+          <div className="flex items-center gap-3">
+            <GlobalFilterSidebar configs={filterConfigs} triggerLabel="Filter Transactions" />
           </div>
         </div>
 

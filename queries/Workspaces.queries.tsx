@@ -3,7 +3,7 @@ import { Pagination } from "@/hooks/services/request";
 import { getRequest } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { TOrganization } from "@/typings/organization";
+import { TOrganization, TWorkspaceSubscription } from "@/typings/organization";
 
 export function useFetchWorkspaces(
   userId?: string,
@@ -54,6 +54,55 @@ export function useFetchWorkspaces(
   };
 }
 
+export function useFetchInventoryWorkspaces(
+  userId?: string,
+  pagination: Pagination = { page: 1, limit: 10 },
+  workspaceAlias?: string,
+) {
+  const { data, isFetching, status, error, refetch } = useQuery({
+    queryKey: ["inventory-workspaces", userId, { pagination, workspaceAlias }],
+    queryFn: async () => {
+      const searchParams = new URLSearchParams();
+      searchParams.set("page", (pagination.page || 1).toString());
+      searchParams.set("limit", (pagination.limit || 10).toString());
+      if (pagination.search) {
+        searchParams.set("search", pagination.search);
+      }
+      if (workspaceAlias) {
+        searchParams.set("workspaceAlias", workspaceAlias);
+      }
+
+      const { data, status } = await getRequest<any>({
+        endpoint: `/inventory/workspaces`,
+        searchParams,
+      });
+
+      if (status !== 200) {
+        toast.error(data.error ?? "Unknown error");
+        throw new Error(data.error ?? "Unknown error");
+      }
+
+      console.log(data.data);
+
+      return data.data;
+    },
+  });
+
+  return {
+    data: {
+      data: data?.data || [],
+      limit: data?.limit || pagination.limit || 10,
+      total: data?.total || 0,
+      totalPages: data?.totalPages || 0,
+      page: data?.page || pagination.page || 1,
+    },
+    isFetching,
+    status,
+    error,
+    refetch,
+  };
+}
+
 interface StatsData {
   totalWorkspaces: number;
   totalProducts: number;
@@ -69,7 +118,7 @@ export function useFetchWorkspacesStats(userId?: string) {
     queryKey: ["workspaces-stats", userId],
     queryFn: async () => {
       const { data, status } = await getRequest<StatsData>({
-        endpoint: `/workspaces/stats`,
+        endpoint: `/inventory/workspaces/stats`,
       });
 
       if (status !== 200) {
@@ -193,7 +242,16 @@ export function useFetchWorkspaceSubscription(
   const { data, isFetching, status, error, refetch } = useQuery({
     queryKey: ["workspaceSubscription", workspaceAlias, { historyPagination }],
     queryFn: async () => {
-      const { data, status } = await getRequest<any>({
+      const { data, status } = await getRequest<{
+        subscription: TWorkspaceSubscription | null;
+        history: {
+          data: any[];
+          limit: number;
+          total: number;
+          totalPages: number;
+          page: number;
+        };
+      }>({
         endpoint: `/workspaces/${workspaceAlias}/subscription`,
         searchParams: new URLSearchParams({
           page: (historyPagination.page || 1).toString(),
@@ -202,8 +260,8 @@ export function useFetchWorkspaceSubscription(
       });
 
       if (status !== 200) {
-        toast.error(data.error ?? "Unknown error");
-        throw new Error(data.error ?? "Unknown error");
+        toast.error((data as any).error ?? "Unknown error");
+        throw new Error((data as any).error ?? "Unknown error");
       }
 
       return data.data;
@@ -213,7 +271,7 @@ export function useFetchWorkspaceSubscription(
 
   return {
     data: {
-      subscription: (data as any)?.subscription || null,
+      subscription: (data as any)?.subscription as TWorkspaceSubscription | null,
       history: (data as any)?.history || {
         data: [],
         limit: historyPagination.limit || 10,

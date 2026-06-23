@@ -7,6 +7,7 @@ import {
   CalendarIcon,
   ArrowRightIcon,
 } from "@phosphor-icons/react";
+import { BadgeIcon } from "lucide-react";
 
 const modules = [
   {
@@ -20,11 +21,11 @@ const modules = [
     iconColor: "text-indigo-600",
   },
   {
-    id: "workspace",
-    label: "Workspace",
-    description: "Organisation configuration and workspace-level settings.",
-    href: "/admin/workspace",
-    Icon: HouseLineIcon,
+    id: "credentials",
+    label: "Credentials",
+    description: "Manage verification and credentials.",
+    href: "/admin/credentials",
+    Icon: BadgeIcon,
     color: "from-violet-500 to-purple-600",
     bg: "bg-violet-50",
     iconColor: "text-violet-600",

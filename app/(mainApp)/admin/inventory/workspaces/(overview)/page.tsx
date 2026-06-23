@@ -12,7 +12,7 @@ import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
 import {
   useFetchWorkspacesStats,
-  useFetchWorkspaces,
+  useFetchInventoryWorkspaces,
 } from "@/queries/Workspaces.queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared/DataTable";
@@ -60,7 +60,7 @@ export default function InventoryWorkspacesPage() {
     data: workspacesData,
     isFetching: isFetchingWorkspaces,
     status: workspacesStatus,
-  } = useFetchWorkspaces(user?.id!, {
+  } = useFetchInventoryWorkspaces(user?.id!, {
     ...pagination,
     search: searchTerm,
   });

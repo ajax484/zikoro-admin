@@ -94,7 +94,9 @@ const StatCard = ({ label, value, icon: Icon, colorClass }: any) => (
           <Icon weight="bold" className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            {label}
+          </p>
           <h3 className="text-xl font-bold text-slate-900 mt-0.5">{value}</h3>
         </div>
       </div>
@@ -107,10 +109,27 @@ const StatCard = ({ label, value, icon: Icon, colorClass }: any) => (
 const OverviewTab = ({ workspace }: { workspace: any }) => {
   const router = useRouter();
   const info = [
-    { label: "Organization Alias", value: workspace.organizationAlias, icon: GlobeIcon },
-    { label: "Phone Number", value: workspace.eventPhoneNumber || "N/A", icon: PhoneIcon },
-    { label: "Owner Email", value: workspace.organizationOwner || workspace.userEmail, icon: ShieldCheckIcon },
-    { label: "Date Created", value: new Date(workspace.created_at).toLocaleDateString(), icon: ClockIcon },
+    {
+      label: "Organization Alias",
+      value: workspace.organizationAlias,
+      icon: GlobeIcon,
+    },
+    {
+      label: "Phone Number",
+      value: workspace.eventPhoneNumber || "N/A",
+      icon: PhoneIcon,
+    },
+    { label: "Country", value: workspace.country || "N/A", icon: GlobeIcon },
+    {
+      label: "Owner Email",
+      value: workspace.organizationOwner || workspace.userEmail,
+      icon: ShieldCheckIcon,
+    },
+    {
+      label: "Date Created",
+      value: new Date(workspace.created_at).toLocaleDateString(),
+      icon: ClockIcon,
+    },
   ];
 
   return (
@@ -118,19 +137,30 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
       <div className="lg:col-span-2 space-y-6">
         <Card className="border-none shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-bold">General Information</CardTitle>
-            <CardDescription>Basic details about this organization</CardDescription>
+            <CardTitle className="text-lg font-bold">
+              General Information
+            </CardTitle>
+            <CardDescription>
+              Basic details about this organization
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {info.map((item, i) => (
-              <div key={i} className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0">
+              <div
+                key={i}
+                className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0"
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
                     <item.icon size={18} />
                   </div>
-                  <span className="text-sm font-medium text-slate-500">{item.label}</span>
+                  <span className="text-sm font-medium text-slate-500">
+                    {item.label}
+                  </span>
                 </div>
-                <span className="text-sm font-semibold text-slate-900">{item.value}</span>
+                <span className="text-sm font-semibold text-slate-900">
+                  {item.value}
+                </span>
               </div>
             ))}
           </CardContent>
@@ -140,29 +170,59 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
       <div className="space-y-6">
         <Card className="border-none shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-bold">Verification Status</CardTitle>
+            <CardTitle className="text-lg font-bold">
+              Verification Status
+            </CardTitle>
             <CardDescription>Security and compliance checks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
               {[
                 { label: "Email Verified", status: true, icon: PhoneIcon },
-                { label: "Identity Verified", status: workspace.verification?.length > 0, icon: IdentificationCardIcon },
-                { label: "Business Documents", status: false, icon: FileTextIcon },
+                {
+                  label: "Identity Verified",
+                  status: workspace.verification?.length > 0,
+                  icon: IdentificationCardIcon,
+                },
+                {
+                  label: "Business Documents",
+                  status: false,
+                  icon: FileTextIcon,
+                },
               ].map((step, i) => (
                 <div key={i} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={cn("p-2 rounded-lg", step.status ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-300")}>
+                    <div
+                      className={cn(
+                        "p-2 rounded-lg",
+                        step.status
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-slate-50 text-slate-300",
+                      )}
+                    >
                       <step.icon size={18} weight="bold" />
                     </div>
-                    <span className={cn("text-sm font-medium", step.status ? "text-slate-900" : "text-slate-400")}>
+                    <span
+                      className={cn(
+                        "text-sm font-medium",
+                        step.status ? "text-slate-900" : "text-slate-400",
+                      )}
+                    >
                       {step.label}
                     </span>
                   </div>
                   {step.status ? (
-                    <CheckCircleIcon weight="bold" className="text-emerald-500 w-5 h-5" />
+                    <CheckCircleIcon
+                      weight="bold"
+                      className="text-emerald-500 w-5 h-5"
+                    />
                   ) : (
-                    <Badge variant="outline" className="text-[10px] uppercase font-bold text-slate-400">Pending</Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] uppercase font-bold text-slate-400"
+                    >
+                      Pending
+                    </Badge>
                   )}
                 </div>
               ))}
@@ -170,7 +230,11 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
             <Button
               variant="outline"
               className="w-full text-xs h-9"
-              onClick={() => router.push(`/admin/inventory/verify?search=${workspace.organizationAlias}`)}
+              onClick={() =>
+                router.push(
+                  `/admin/inventory/verify?search=${workspace.organizationAlias}`,
+                )
+              }
             >
               Manage Compliance
             </Button>
@@ -183,7 +247,10 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
 
 const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
   const [pagination, setPagination] = useState({ page: 1, limit: 10 });
-  const { data: teamData, isFetching } = useFetchWorkspaceTeamMembers(workspaceAlias, pagination);
+  const { data: teamData, isFetching } = useFetchWorkspaceTeamMembers(
+    workspaceAlias,
+    pagination,
+  );
 
   const columns = [
     {
@@ -191,12 +258,21 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       header: "Member",
       cell: ({ row }: any) => {
         const member = row.original;
-        const name = member.user ? `${member.user.firstName} ${member.user.lastName}` : member.userEmail;
-        const initials = name?.split(" ").map((n: any) => n[0]).join("").toUpperCase().slice(0, 2);
+        const name = member.user
+          ? `${member.user.firstName} ${member.user.lastName}`
+          : member.userEmail;
+        const initials = name
+          ?.split(" ")
+          .map((n: any) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2);
         return (
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-slate-100 text-slate-600 text-xs font-bold">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-slate-100 text-slate-600 text-xs font-bold">
+                {initials}
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-slate-900">{name}</span>
@@ -210,7 +286,10 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       accessorKey: "userRole",
       header: "Role",
       cell: ({ row }: any) => (
-        <Badge variant="outline" className="capitalize bg-slate-50 border-slate-100 text-slate-600">
+        <Badge
+          variant="outline"
+          className="capitalize bg-slate-50 border-slate-100 text-slate-600"
+        >
           {row.original.userRole}
         </Badge>
       ),
@@ -219,7 +298,14 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }: any) => (
-        <Badge className={cn("capitalize", row.original.status === "accepted" ? "bg-emerald-500" : "bg-amber-500")}>
+        <Badge
+          className={cn(
+            "capitalize",
+            row.original.status === "accepted"
+              ? "bg-emerald-500"
+              : "bg-amber-500",
+          )}
+        >
           {row.original.status || "Pending"}
         </Badge>
       ),
@@ -228,7 +314,9 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       accessorKey: "created_at",
       header: "Joined Date",
       cell: ({ row }: any) => (
-        <span className="text-xs text-slate-400">{new Date(row.original.created_at).toLocaleDateString()}</span>
+        <span className="text-xs text-slate-400">
+          {new Date(row.original.created_at).toLocaleDateString()}
+        </span>
       ),
     },
   ];
@@ -238,7 +326,9 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-lg font-bold">Team Members</CardTitle>
-          <CardDescription>Manage user access and roles for this workspace</CardDescription>
+          <CardDescription>
+            Manage user access and roles for this workspace
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="p-0">
@@ -258,7 +348,9 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
             limit={pagination.limit}
             totalPages={teamData.totalPages}
             onPageChange={(page) => setPagination({ ...pagination, page })}
-            onLimitChange={(limit) => setPagination({ ...pagination, limit, page: 1 })}
+            onLimitChange={(limit) =>
+              setPagination({ ...pagination, limit, page: 1 })
+            }
           />
         </div>
       </CardContent>
@@ -268,11 +360,15 @@ const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
 
 const getSubscriptionStatus = (sub: any): { label: string; color: string } => {
   if (!sub) return { label: "No Plan", color: "bg-slate-100 text-slate-500" };
-  if (sub.cancelledAt) return { label: "Cancelled", color: "bg-red-100 text-red-700" };
+  if (sub.cancelledAt)
+    return { label: "Cancelled", color: "bg-red-100 text-red-700" };
   const now = new Date();
-  if (sub.trialExpiryDate && new Date(sub.trialExpiryDate) > now) return { label: "Trial", color: "bg-blue-100 text-blue-700" };
-  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) < now) return { label: "Expired", color: "bg-amber-100 text-amber-700" };
-  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) > now) return { label: "Active", color: "bg-emerald-100 text-emerald-700" };
+  if (sub.trialExpiryDate && new Date(sub.trialExpiryDate) > now)
+    return { label: "Trial", color: "bg-blue-100 text-blue-700" };
+  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) < now)
+    return { label: "Expired", color: "bg-amber-100 text-amber-700" };
+  if (sub.subscriptionEndDate && new Date(sub.subscriptionEndDate) > now)
+    return { label: "Active", color: "bg-emerald-100 text-emerald-700" };
   return { label: "Inactive", color: "bg-slate-100 text-slate-500" };
 };
 
@@ -313,7 +409,9 @@ const ManageSubscriptionDialog = ({
   React.useEffect(() => {
     if (!open) return;
     setReason("");
-    const matched = pricingPlans.find((p) => p.pricingAlias === sub?.subscriptionPlanAlias);
+    const matched = pricingPlans.find(
+      (p) => p.pricingAlias === sub?.subscriptionPlanAlias,
+    );
     setPlan(matched?.plan || sub?.plan || "Free");
     setBillingCycle(sub?.billingCycle || "Yearly");
     setCurrency(sub?.currency || "USD");
@@ -326,15 +424,21 @@ const ManageSubscriptionDialog = ({
 
   const handleSave = async () => {
     const matchedPricing = pricingPlans.find(
-      (p) => p.plan === plan && p.subscriptionCycle === billingCycle && p.currency === currency,
+      (p) =>
+        p.plan === plan &&
+        p.subscriptionCycle === billingCycle &&
+        p.currency === currency,
     );
 
     await updateSubscription.mutateAsync({
-      subscriptionPlanAlias: matchedPricing?.pricingAlias || sub?.subscriptionPlanAlias || null,
+      subscriptionPlanAlias:
+        matchedPricing?.pricingAlias || sub?.subscriptionPlanAlias || null,
       billingCycle,
       currency,
       amountPaid: Number(amountPaid) || 0,
-      subscriptionStartDate: startDate ? new Date(startDate).toISOString() : null,
+      subscriptionStartDate: startDate
+        ? new Date(startDate).toISOString()
+        : null,
       subscriptionEndDate: endDate ? new Date(endDate).toISOString() : null,
       trialExpiryDate: trialExpiry ? new Date(trialExpiry).toISOString() : null,
       cancelAtSubscriptionEnd: cancelAtEnd,
@@ -417,29 +521,45 @@ const ManageSubscriptionDialog = ({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Start Date</Label>
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Renewal / End Date</Label>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Trial Expiry</Label>
-            <Input type="date" value={trialExpiry} onChange={(e) => setTrialExpiry(e.target.value)} />
+            <Input
+              type="date"
+              value={trialExpiry}
+              onChange={(e) => setTrialExpiry(e.target.value)}
+            />
           </div>
 
           <div className="flex items-center justify-between rounded-xl border border-slate-100 p-4">
             <div>
               <Label className="text-sm font-bold">Cancel at Period End</Label>
-              <p className="text-xs text-slate-500">Subscription won't renew after the end date</p>
+              <p className="text-xs text-slate-500">
+                Subscription won't renew after the end date
+              </p>
             </div>
             <Switch checked={cancelAtEnd} onCheckedChange={setCancelAtEnd} />
           </div>
 
           <div className="space-y-2">
-            <Label>Reason for Update <span className="text-red-500">*</span></Label>
+            <Label>
+              Reason for Update <span className="text-red-500">*</span>
+            </Label>
             <Input
               type="text"
               value={reason}
@@ -449,7 +569,10 @@ const ManageSubscriptionDialog = ({
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={updateSubscription.isPending || !reason.trim()} onClick={handleSave}>
+          <Button
+            disabled={updateSubscription.isPending || !reason.trim()}
+            onClick={handleSave}
+          >
             {updateSubscription.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
@@ -459,9 +582,15 @@ const ManageSubscriptionDialog = ({
 };
 
 const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
-  const [historyPagination, setHistoryPagination] = useState<Pagination>({ page: 1, limit: 10 });
+  const [historyPagination, setHistoryPagination] = useState<Pagination>({
+    page: 1,
+    limit: 10,
+  });
   const [manageOpen, setManageOpen] = useState(false);
-  const { data: subData, isFetching } = useFetchWorkspaceSubscription(workspaceAlias, historyPagination);
+  const { data: subData, isFetching } = useFetchWorkspaceSubscription(
+    workspaceAlias,
+    historyPagination,
+  );
 
   const sub = subData?.subscription;
   const history = subData?.history;
@@ -481,8 +610,12 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       <Card className="border-none shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-lg font-bold">Subscription Plan</CardTitle>
-            <CardDescription>Management of organization licensing and quotas</CardDescription>
+            <CardTitle className="text-lg font-bold">
+              Subscription Plan
+            </CardTitle>
+            <CardDescription>
+              Management of organization licensing and quotas
+            </CardDescription>
           </div>
           <Button size="sm" onClick={() => setManageOpen(true)}>
             Manage Subscription
@@ -493,10 +626,19 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
             <div className="flex-1 space-y-6 w-full">
               <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Current Plan</span>
-                  <h2 className="text-2xl font-black text-slate-900">{sub?.subscriptionPlanAlias || "No Active Plan"}</h2>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    Current Plan
+                  </span>
+                  <h2 className="text-2xl font-black text-slate-900">
+                    {sub?.subscriptionPlanAlias || "No Active Plan"}
+                  </h2>
                 </div>
-                <Badge className={cn("px-4 py-1.5 font-bold uppercase tracking-widest text-[10px]", status.color)}>
+                <Badge
+                  className={cn(
+                    "px-4 py-1.5 font-bold uppercase tracking-widest text-[10px]",
+                    status.color,
+                  )}
+                >
                   {status.label}
                 </Badge>
               </div>
@@ -504,23 +646,57 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   { label: "Billing Cycle", value: sub?.billingCycle || "N/A" },
-                  { label: "Start Date", value: sub?.subscriptionStartDate ? new Date(sub.subscriptionStartDate).toLocaleDateString() : "N/A" },
-                  { label: "Renewal / End Date", value: sub?.subscriptionEndDate ? new Date(sub.subscriptionEndDate).toLocaleDateString() : "N/A" },
-                  { label: "Trial Expiry", value: sub?.trialExpiryDate ? new Date(sub.trialExpiryDate).toLocaleDateString() : "N/A" },
-                  { label: "Amount Paid", value: sub?.amountPaid != null ? `${sub.currency || ""} ${sub.amountPaid.toLocaleString()}` : "N/A" },
+                  {
+                    label: "Start Date",
+                    value: sub?.subscriptionStartDate
+                      ? new Date(sub.subscriptionStartDate).toLocaleDateString()
+                      : "N/A",
+                  },
+                  {
+                    label: "Renewal / End Date",
+                    value: sub?.subscriptionEndDate
+                      ? new Date(sub.subscriptionEndDate).toLocaleDateString()
+                      : "N/A",
+                  },
+                  {
+                    label: "Trial Expiry",
+                    value: sub?.trialExpiryDate
+                      ? new Date(sub.trialExpiryDate).toLocaleDateString()
+                      : "N/A",
+                  },
+                  {
+                    label: "Amount Paid",
+                    value:
+                      sub?.amountPaid != null
+                        ? `${sub.currency || ""} ${sub.amountPaid.toLocaleString()}`
+                        : "N/A",
+                  },
                 ].map((item, i) => (
-                  <div key={i} className="p-4 border rounded-xl border-slate-100">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">{item.label}</span>
-                    <p className="text-sm font-bold text-slate-700 mt-1 capitalize">{item.value}</p>
+                  <div
+                    key={i}
+                    className="p-4 border rounded-xl border-slate-100"
+                  >
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">
+                      {item.label}
+                    </span>
+                    <p className="text-sm font-bold text-slate-700 mt-1 capitalize">
+                      {item.value}
+                    </p>
                   </div>
                 ))}
                 <div className="p-4 border rounded-xl border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">Cancel at Period End</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    Cancel at Period End
+                  </span>
                   <p className="text-sm font-bold mt-1 flex items-center gap-1">
                     {sub?.cancelAtSubscriptionEnd ? (
-                      <span className="text-red-600 flex items-center gap-1"><XCircleIcon weight="bold" size={14} /> Yes</span>
+                      <span className="text-red-600 flex items-center gap-1">
+                        <XCircleIcon weight="bold" size={14} /> Yes
+                      </span>
                     ) : (
-                      <span className="text-emerald-600 flex items-center gap-1"><CheckCircleIcon weight="bold" size={14} /> No</span>
+                      <span className="text-emerald-600 flex items-center gap-1">
+                        <CheckCircleIcon weight="bold" size={14} /> No
+                      </span>
                     )}
                   </p>
                 </div>
@@ -533,7 +709,9 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
       <Card className="border-none shadow-sm overflow-hidden">
         <CardHeader>
           <CardTitle className="text-lg font-bold">Payment History</CardTitle>
-          <CardDescription>All billing transactions for this organization</CardDescription>
+          <CardDescription>
+            All billing transactions for this organization
+          </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -552,21 +730,40 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
               {(history?.data || []).map((record: any) => (
                 <TableRow key={record.id}>
                   <TableCell className="pl-6 text-xs text-slate-500">
-                    {record.paidAt ? new Date(record.paidAt).toLocaleDateString() : record.created_at ? new Date(record.created_at).toLocaleDateString() : "N/A"}
+                    {record.paidAt
+                      ? new Date(record.paidAt).toLocaleDateString()
+                      : record.created_at
+                        ? new Date(record.created_at).toLocaleDateString()
+                        : "N/A"}
                   </TableCell>
-                  <TableCell className="text-sm font-medium text-slate-700">{record.subscriptionPlan || "N/A"}</TableCell>
+                  <TableCell className="text-sm font-medium text-slate-700">
+                    {record.subscriptionPlan || "N/A"}
+                  </TableCell>
                   <TableCell className="text-sm font-bold text-slate-900">
-                    {record.amount != null ? `${record.currency || ""} ${record.amount.toLocaleString()}` : "N/A"}
+                    {record.amount != null
+                      ? `${record.currency || ""} ${record.amount.toLocaleString()}`
+                      : "N/A"}
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500 capitalize">{record.paymentMethod || "N/A"}</TableCell>
-                  <TableCell className="text-xs text-slate-400 font-mono">{record.transactionReference || "—"}</TableCell>
-                  <TableCell className="text-xs capitalize text-slate-500">{record.eventType || "—"}</TableCell>
+                  <TableCell className="text-xs text-slate-500 capitalize">
+                    {record.paymentMethod || "N/A"}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-400 font-mono">
+                    {record.transactionReference || "—"}
+                  </TableCell>
+                  <TableCell className="text-xs capitalize text-slate-500">
+                    {record.eventType || "—"}
+                  </TableCell>
                   <TableCell className="pr-6">
-                    <Badge className={cn("capitalize text-[10px] font-bold",
-                      record.status === "success" || record.status === "paid" ? "bg-emerald-100 text-emerald-700"
-                      : record.status === "pending" ? "bg-amber-100 text-amber-700"
-                      : "bg-red-100 text-red-700"
-                    )}>
+                    <Badge
+                      className={cn(
+                        "capitalize text-[10px] font-bold",
+                        record.status === "success" || record.status === "paid"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : record.status === "pending"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-red-100 text-red-700",
+                      )}
+                    >
                       {record.status || "Unknown"}
                     </Badge>
                   </TableCell>
@@ -574,7 +771,12 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
               ))}
               {(!history?.data || history.data.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-10 text-slate-400 text-sm">No payment history found.</TableCell>
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-10 text-slate-400 text-sm"
+                  >
+                    No payment history found.
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -585,8 +787,12 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
               page={historyPagination.page}
               limit={historyPagination.limit || 10}
               totalPages={history?.totalPages || 0}
-              onPageChange={(page) => setHistoryPagination({ ...historyPagination, page })}
-              onLimitChange={(limit) => setHistoryPagination({ ...historyPagination, limit, page: 1 })}
+              onPageChange={(page) =>
+                setHistoryPagination({ ...historyPagination, page })
+              }
+              onLimitChange={(limit) =>
+                setHistoryPagination({ ...historyPagination, limit, page: 1 })
+              }
             />
           </div>
         </CardContent>
@@ -604,7 +810,7 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
 
 const SettingsTab = ({ workspace }: { workspace: any }) => {
   const workspaceAlias = workspace.organizationAlias as string;
-  const isActive = workspace.activeApps?.inventory !== false;
+  const hasAccess = workspace.activeApps?.inventory !== false;
 
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleteReason, setDeleteReason] = useState("");
@@ -620,31 +826,40 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
   return (
     <Card className="border-none shadow-sm">
       <CardHeader>
-        <CardTitle className="text-lg font-bold text-red-600">Danger Zone</CardTitle>
-        <CardDescription>Irreversible actions for this organization</CardDescription>
+        <CardTitle className="text-lg font-bold text-red-600">
+          Danger Zone
+        </CardTitle>
+        <CardDescription>
+          Irreversible actions for this organization
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="p-4 border border-red-100 bg-red-50/30 rounded-xl flex items-center justify-between">
           <div>
             <h4 className="text-sm font-bold text-red-900">
-              {isActive ? "Deactivate Workspace" : "Reactivate Workspace"}
+              {hasAccess ? "Deactivate Workspace" : "Reactivate Workspace"}
             </h4>
             <p className="text-xs text-red-600/70">
-              {isActive
+              {hasAccess
                 ? "Suspend this organization's access to the Inventory app"
                 : "Restore this organization's access to the Inventory app"}
             </p>
           </div>
           <AlertDialog onOpenChange={(open) => !open && setAccessReason("")}>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" disabled={setAccess.isPending}>
-                {isActive ? "Deactivate" : "Reactivate"}
+              <Button
+                variant={hasAccess ? "destructive" : "default"}
+                size="sm"
+                disabled={setAccess.isPending}
+              >
+                {hasAccess ? "Deactivate" : "Reactivate"}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  {isActive ? "Deactivate" : "Reactivate"} {workspace.organizationName}?
+                  {hasAccess ? "Deactivate" : "Reactivate"}{" "}
+                  {workspace.organizationName}?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   {isActive
@@ -654,7 +869,8 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
               </AlertDialogHeader>
               <div className="space-y-2 px-1">
                 <Label className="text-xs text-slate-500">
-                  Reason for {isActive ? "deactivation" : "reactivation"} <span className="text-red-500">*</span>
+                  Reason for {isActive ? "deactivation" : "reactivation"}{" "}
+                  <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   value={accessReason}
@@ -667,7 +883,12 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                 <AlertDialogAction
                   className="bg-red-600 hover:bg-red-700"
                   disabled={!accessReason.trim()}
-                  onClick={() => setAccess.mutate({ active: !isActive, reason: accessReason })}
+                  onClick={() =>
+                    setAccess.mutate({
+                      active: !isActive,
+                      reason: accessReason,
+                    })
+                  }
                 >
                   {isActive ? "Deactivate" : "Reactivate"}
                 </AlertDialogAction>
@@ -680,30 +901,51 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
           <div>
             <h4 className="text-sm font-bold text-red-900">Delete Workspace</h4>
             <p className="text-xs text-red-600/70">
-              Permanently remove this organization across all Zikoro apps. This cannot be undone.
+              Permanently remove this organization across all Zikoro apps. This
+              cannot be undone.
             </p>
           </div>
-          <AlertDialog onOpenChange={(open) => { if (!open) { setDeleteConfirm(""); setDeleteReason(""); } }}>
+          <AlertDialog
+            onOpenChange={(open) => {
+              if (!open) {
+                setDeleteConfirm("");
+                setDeleteReason("");
+              }
+            }}
+          >
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" disabled={deleteWorkspace.isPending}>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={deleteWorkspace.isPending}
+              >
                 Delete
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete {workspace.organizationName}?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  Delete {workspace.organizationName}?
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This permanently deletes the organization and all of its data across every Zikoro
-                  app (Inventory, Events, CRM, Forms, etc.) — not just Inventory. This action cannot
-                  be undone.
+                  This permanently deletes the organization and all of its data
+                  across every Zikoro app (Inventory, Events, CRM, Forms, etc.)
+                  — not just Inventory. This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="space-y-4 px-1">
                 <div className="space-y-2">
                   <Label className="text-xs text-slate-500">
-                    Type <span className="font-bold">{workspace.organizationAlias}</span> to confirm
+                    Type{" "}
+                    <span className="font-bold">
+                      {workspace.organizationAlias}
+                    </span>{" "}
+                    to confirm
                   </Label>
-                  <Input value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} />
+                  <Input
+                    value={deleteConfirm}
+                    onChange={(e) => setDeleteConfirm(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs text-slate-500">
@@ -720,8 +962,13 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-red-600 hover:bg-red-700"
-                  disabled={deleteConfirm !== workspace.organizationAlias || !deleteReason.trim()}
-                  onClick={() => deleteWorkspace.mutate({ reason: deleteReason })}
+                  disabled={
+                    deleteConfirm !== workspace.organizationAlias ||
+                    !deleteReason.trim()
+                  }
+                  onClick={() =>
+                    deleteWorkspace.mutate({ reason: deleteReason })
+                  }
                 >
                   Delete Permanently
                 </AlertDialogAction>
@@ -742,16 +989,31 @@ export default function InventoryWorkspaceDetailsPage() {
   const searchParams = useSearchParams();
   const { user } = useUserStore();
   const [activeTab, setActiveTab] = useState(
-    searchParams.get("pa") ? "inventory-data" : searchParams.get("tab") || "overview",
+    searchParams.get("pa")
+      ? "inventory-data"
+      : searchParams.get("tab") || "overview",
   );
-
-  const { data: workspacesData, isFetching } = useFetchWorkspaces(
+const { data: workspacesData, isFetching } = useFetchWorkspaces(
     user?.id || "",
     { page: 1, limit: 1 },
     workspaceAlias as string,
   );
 
+  const { data: subData } = useFetchWorkspaceSubscription(
+    workspaceAlias as string,
+    { page: 1, limit: 1 },
+  );
+
   const workspace = workspacesData.data?.[0];
+  console.log(subData?.subscription);
+  const currentPlan = subData?.subscription?.subscriptionPlanAlias || "Basic";
+
+  let isActive = false;
+  if (workspace?.activeApps?.lastLogInInventory) {
+    const lastLogin = new Date(workspace.activeApps.lastLogInInventory).getTime();
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    isActive = lastLogin >= sevenDaysAgo;
+  }
 
   if (isFetching && !workspace) {
     return (
@@ -763,7 +1025,11 @@ export default function InventoryWorkspaceDetailsPage() {
   }
 
   if (!workspace) {
-    return <div className="p-20 text-center text-slate-500">Workspace not found or no access.</div>;
+    return (
+      <div className="p-20 text-center text-slate-500">
+        Workspace not found or no access.
+      </div>
+    );
   }
 
   const initials = workspace.organizationName
@@ -786,25 +1052,39 @@ export default function InventoryWorkspaceDetailsPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-5">
             <Avatar className="h-16 w-16 rounded-2xl border-2 border-white shadow-sm ring-1 ring-slate-100">
-              <AvatarFallback className="bg-indigo-600 text-white text-xl font-bold rounded-2xl">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-indigo-600 text-white text-xl font-bold rounded-2xl">
+                {initials}
+              </AvatarFallback>
             </Avatar>
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-slate-900">{workspace.organizationName}</h1>
+                <h1 className="text-2xl font-bold text-slate-900">
+                  {workspace.organizationName}
+                </h1>
                 <Badge
                   variant="outline"
                   className={cn(
                     "font-bold uppercase text-[10px]",
-                    workspace.activeApps?.inventory !== false
+                    isActive
                       ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                       : "bg-red-50 text-red-700 border-red-100",
                   )}
                 >
-                  {workspace.activeApps?.inventory !== false ? "Active" : "Inactive"}
+                  {isActive
+                    ? "Active"
+                    : "Inactive"}
                 </Badge>
               </div>
               <p className="text-slate-500 text-sm font-medium flex items-center gap-2">
-                {workspace.organizationType || "General Business"} • {workspace.organizationAlias}
+                <span className="capitalize">{currentPlan} Plan</span>{"|"}
+                {subData.subscription?.subscriptionEndDate ? (
+                  <span className="capitalize">
+                    Expires{" "}
+                    {new Date(
+                      subData.subscription?.subscriptionEndDate,
+                    ).toLocaleDateString()}
+                  </span>
+                ) : null}
               </p>
             </div>
           </div>
@@ -812,16 +1092,46 @@ export default function InventoryWorkspaceDetailsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Products" value={workspace.productsCount?.toLocaleString()} icon={BriefcaseIcon} colorClass="bg-indigo-50 text-indigo-600" />
-        <StatCard label="Total Orders" value={workspace.ordersCount?.toLocaleString()} icon={LightningIcon} colorClass="bg-amber-50 text-amber-600" />
-        <StatCard label="Total Customers" value={workspace.customersCount?.toLocaleString()} icon={UsersIcon} colorClass="bg-sky-50 text-sky-600" />
-        <StatCard label="Total Purchase Orders" value={workspace.purchaseOrdersCount?.toLocaleString() ?? "0"} icon={PackageIcon} colorClass="bg-emerald-50 text-emerald-600" />
+        <StatCard
+          label="Total Products"
+          value={workspace.productsCount?.toLocaleString()}
+          icon={BriefcaseIcon}
+          colorClass="bg-indigo-50 text-indigo-600"
+        />
+        <StatCard
+          label="Total Orders"
+          value={workspace.ordersCount?.toLocaleString()}
+          icon={LightningIcon}
+          colorClass="bg-amber-50 text-amber-600"
+        />
+        <StatCard
+          label="Total Customers"
+          value={workspace.customersCount?.toLocaleString()}
+          icon={UsersIcon}
+          colorClass="bg-sky-50 text-sky-600"
+        />
+        <StatCard
+          label="Total Purchase Orders"
+          value={workspace.purchaseOrdersCount?.toLocaleString() ?? "0"}
+          icon={PackageIcon}
+          colorClass="bg-emerald-50 text-emerald-600"
+        />
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <div className="border-b border-slate-200">
           <TabsList className="bg-transparent h-auto p-0 gap-8">
-            {["Overview", "Team", "Inventory Data", "Subscription", "Settings"].map((tab) => (
+            {[
+              "Overview",
+              "Team",
+              "Inventory Data",
+              "Subscription",
+              "Settings",
+            ].map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab.toLowerCase().replace(/\s+/g, "-")}
@@ -833,7 +1143,10 @@ export default function InventoryWorkspaceDetailsPage() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="focus-visible:outline-none m-0">
+        <TabsContent
+          value="overview"
+          className="focus-visible:outline-none m-0"
+        >
           <OverviewTab workspace={workspace} />
         </TabsContent>
 
@@ -841,15 +1154,24 @@ export default function InventoryWorkspaceDetailsPage() {
           <TeamTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
-        <TabsContent value="inventory-data" className="focus-visible:outline-none m-0">
+        <TabsContent
+          value="inventory-data"
+          className="focus-visible:outline-none m-0"
+        >
           <InventoryDataTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
-        <TabsContent value="subscription" className="focus-visible:outline-none m-0">
+        <TabsContent
+          value="subscription"
+          className="focus-visible:outline-none m-0"
+        >
           <SubscriptionTab workspaceAlias={workspaceAlias as string} />
         </TabsContent>
 
-        <TabsContent value="settings" className="focus-visible:outline-none m-0">
+        <TabsContent
+          value="settings"
+          className="focus-visible:outline-none m-0"
+        >
           <SettingsTab workspace={workspace} />
         </TabsContent>
       </Tabs>

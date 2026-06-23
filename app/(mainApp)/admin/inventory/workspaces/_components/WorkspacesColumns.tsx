@@ -125,8 +125,14 @@ export const workspacesColumnsFn: (
     meta: { width: "1fr" },
     header: () => <span className="font-semibold text-gray-600 text-base uppercase">Status</span>,
     cell: ({ row }: { row: any }) => {
-      const status = row.original.status;
-      const isActive = status === "active" || status === true;
+      const activeApps = row.original.activeApps;
+      let isActive = false;
+      if (activeApps?.lastLogInInventory) {
+        const lastLogin = new Date(activeApps.lastLogInInventory).getTime();
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        isActive = lastLogin >= sevenDaysAgo;
+      }
+      
       const currentStatus = isActive ? "active" : "inactive";
 
       const styles: Record<string, string> = {

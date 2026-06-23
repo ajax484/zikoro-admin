@@ -1,5 +1,5 @@
 import React from "react";
-import Verify from "@/app/(mainApp)/(dashboard)/verify/_components/Verify";
+import Verify from "@/app/(mainApp)/admin/credentials/_components/Verify";
 
 const AdminVerifyPage = () => {
   return <Verify />;

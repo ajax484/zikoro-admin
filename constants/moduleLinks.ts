@@ -5,9 +5,7 @@ import {
   IdentificationCardIcon,
   CalendarIcon,
   SquaresFourIcon,
-  ArchiveBoxIcon,
   TagIcon,
-  MagnifyingGlassIcon,
   ClipboardTextIcon,
 } from "@phosphor-icons/react/dist/ssr";
 
@@ -39,11 +37,7 @@ export const inventoryLinks: ModuleNavLink[] = [
     Icon: IdentificationCardIcon,
     href: "admin/inventory/verify",
   },
-  {
-    name: "Search",
-    Icon: MagnifyingGlassIcon,
-    href: "admin/inventory/search",
-  },
+
   {
     name: "Audit Log",
     Icon: ClipboardTextIcon,
@@ -51,12 +45,12 @@ export const inventoryLinks: ModuleNavLink[] = [
   },
 ];
 
-// ─── Workspace Module ─────────────────────────────────────────────────────────
-export const workspaceModuleLinks: ModuleNavLink[] = [
+// ─── Credentials Module ─────────────────────────────────────────────────────────
+export const credentialsModuleLinks: ModuleNavLink[] = [
   {
     name: "Overview",
     Icon: SquaresFourIcon,
-    href: "admin/workspace",
+    href: "admin/credentials",
   },
 ];
 

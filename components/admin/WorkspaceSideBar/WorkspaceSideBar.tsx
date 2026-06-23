@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
-import { workspaceModuleLinks, ModuleNavLink } from "@/constants/moduleLinks";
+import { credentialsModuleLinks, ModuleNavLink } from "@/constants/moduleLinks";
 import { ArrowLeftIcon, HouseLineIcon } from "@phosphor-icons/react";
 
 export function WorkspaceSideBar() {
@@ -44,7 +44,7 @@ function SideNav() {
           </div>
 
           <ul className="flex flex-col gap-y-1 items-start w-full px-2 overflow-y-auto no-scrollbar h-[calc(100vh-180px)]">
-            {workspaceModuleLinks.map(({ href, name, Icon }: ModuleNavLink) => {
+            {credentialsModuleLinks.map(({ href, name, Icon }: ModuleNavLink) => {
               const isActive = pathname.startsWith(`/${href}`);
               return (
                 <li key={name} className="w-full">

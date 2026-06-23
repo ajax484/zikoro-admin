@@ -29,7 +29,6 @@ export interface TOrganization {
   subscriptionExpiryDate: string;
 }
 
-
 export interface IPayoutAccountDetails {
   bankCountry: string;
   currency: string;
@@ -82,4 +81,23 @@ export interface OrganizationVerification {
   };
   status?: string | null;
   workspace: TOrganization;
+}
+
+export interface TWorkspaceSubscription {
+  id: number;
+  created_at: string;
+  organizationAlias: string;
+  subscriptionPlanAlias: string | null;
+  billingCycle: string | null;
+  currency: string | null;
+  trialExpiryDate: string | null;
+  subscriptionStartDate: string | null;
+  subscriptionEndDate: string | null;
+  subscribedBy: string | null;
+  cancelAtSubscriptionEnd: boolean | null;
+  cancelledAt: string | null;
+  updatedAt: string | null;
+  amountPaid: number | null;
+  discountCode: string | null;
+  discountValue: number | null;
 }
