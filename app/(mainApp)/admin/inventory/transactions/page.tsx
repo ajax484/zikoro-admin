@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/shared/DataTable";
@@ -14,6 +14,7 @@ import { useFetchSubscriptionPricing } from "@/queries/SubscriptionPricing.queri
 import { PlanBadge, InitialsAvatar } from "../workspaces/_components/WorkspacesCommon";
 import { GlobalFilterSidebar } from "@/components/shared/filters/GlobalFilterSidebar";
 import { FilterConfig } from "@/types/filters";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusStyles: Record<string, string> = {
   success: "bg-emerald-50 text-emerald-700 border-emerald-100",
@@ -122,7 +123,7 @@ const columns: ColumnDef<InventoryTransaction>[] = [
   },
 ];
 
-export default function InventoryTransactionsPage() {
+function InventoryTransactionsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -224,5 +225,20 @@ export default function InventoryTransactionsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InventoryTransactionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-10 space-y-8">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      }
+    >
+      <InventoryTransactionsContent />
+    </Suspense>
   );
 }
