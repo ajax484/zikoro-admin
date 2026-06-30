@@ -35,6 +35,7 @@ export function useFetchInventoryTransactions(
     search?: string;
     status?: string;
     plan?: string;
+    currency?: string;
     startDate?: string;
     endDate?: string;
   } = { page: 1, limit: 10 },
@@ -73,6 +74,52 @@ export function useFetchInventoryTransactions(
       totalPages: data?.totalPages || 0,
       page: data?.page || pagination.page || 1,
     } as PaginatedResult<InventoryTransaction>,
+    isFetching,
+    status,
+    error,
+    refetch,
+  };
+}
+
+export function useFetchInventoryTransactionsStats(filters: {
+  search?: string;
+  status?: string;
+  plan?: string;
+  currency?: string;
+  startDate?: string;
+  endDate?: string;
+}) {
+  const { data, isFetching, status, error, refetch } = useQuery({
+    queryKey: ["inventoryTransactionsStats", filters],
+    queryFn: async () => {
+      const searchParams = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          searchParams.set(key, String(value));
+        }
+      });
+
+      const { data, status } = await getRequest<any>({
+        endpoint: `/inventory/transactions/stats`,
+        searchParams,
+      });
+
+      if (status !== 200) {
+        throw new Error(data?.error ?? "Unknown error");
+      }
+
+      return data.data;
+    },
+  });
+
+  return {
+    data: data as {
+      totalTransactions: number;
+      successfulTransactions: number;
+      failedTransactions: number;
+      pendingTransactions: number;
+      totalRevenue: number | null;
+    } | undefined,
     isFetching,
     status,
     error,

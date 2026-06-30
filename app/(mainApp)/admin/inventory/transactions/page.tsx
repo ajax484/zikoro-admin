@@ -9,12 +9,20 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/hooks/services/request";
-import { useFetchInventoryTransactions, InventoryTransaction } from "@/queries/InventoryTransactions.queries";
+import { useFetchInventoryTransactions, useFetchInventoryTransactionsStats, InventoryTransaction } from "@/queries/InventoryTransactions.queries";
 import { useFetchSubscriptionPricing } from "@/queries/SubscriptionPricing.queries";
 import { PlanBadge, InitialsAvatar } from "../workspaces/_components/WorkspacesCommon";
 import { GlobalFilterSidebar } from "@/components/shared/filters/GlobalFilterSidebar";
 import { FilterConfig } from "@/types/filters";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Receipt,
+  CheckCircle,
+  XCircle,
+  Clock,
+  CurrencyDollar,
+} from "@phosphor-icons/react";
 
 const statusStyles: Record<string, string> = {
   success: "bg-emerald-50 text-emerald-700 border-emerald-100",
@@ -130,6 +138,7 @@ function InventoryTransactionsContent() {
   const search = searchParams.get("search") || "";
   const status = searchParams.get("status") || "all";
   const plan = searchParams.get("plan") || "all";
+  const currency = searchParams.get("currency") || "all";
   const startDate = searchParams.get("date_start") || "";
   const endDate = searchParams.get("date_end") || "";
 
@@ -137,16 +146,23 @@ function InventoryTransactionsContent() {
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
-  }, [search, status, plan, startDate, endDate]);
+  }, [search, status, plan, currency, startDate, endDate]);
 
-  const { data, isFetching } = useFetchInventoryTransactions({
-    ...pagination,
+  const queryFilters = {
     search,
     status: status === "all" ? undefined : status,
     plan: plan === "all" ? undefined : plan,
+    currency: currency === "all" ? undefined : currency,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
+  };
+
+  const { data, isFetching } = useFetchInventoryTransactions({
+    ...pagination,
+    ...queryFilters,
   });
+
+  const { data: stats, isFetching: isFetchingStats } = useFetchInventoryTransactionsStats(queryFilters);
 
   const { data: pricingPlans } = useFetchSubscriptionPricing("Inventory");
   const planOptions = Array.from(new Set(pricingPlans.map((p) => p.plan).filter((p): p is string => !!p)));
@@ -179,14 +195,91 @@ function InventoryTransactionsContent() {
       ],
     },
     {
+      id: "currency",
+      label: "Currency",
+      type: "select",
+      options: [
+        { value: "all", label: "All Currencies" },
+        { value: "NGN", label: "NGN (₦)" },
+        { value: "USD", label: "USD ($)" },
+        { value: "GBP", label: "GBP (£)" },
+        { value: "EUR", label: "EUR (€)" },
+      ],
+    },
+    {
       id: "date",
       label: "Date Range",
       type: "date-range",
     },
   ];
 
+  const kpis = [
+    {
+      label: "Total Transactions",
+      value: stats?.totalTransactions ?? 0,
+      icon: Receipt,
+    },
+    {
+      label: "Successful",
+      value: stats?.successfulTransactions ?? 0,
+      icon: CheckCircle,
+    },
+    {
+      label: "Failed",
+      value: stats?.failedTransactions ?? 0,
+      icon: XCircle,
+    },
+    ...(currency !== "all"
+      ? [
+          {
+            label: `Total Revenue (${currency})`,
+            value: (stats?.totalRevenue ?? 0).toLocaleString(),
+            icon: CurrencyDollar,
+          },
+        ]
+      : [
+          {
+            label: "Pending",
+            value: stats?.pendingTransactions ?? 0,
+            icon: Clock,
+          },
+        ]),
+  ];
+
   return (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <Card
+            key={i}
+            className="border-none shadow-sm bg-white/50 backdrop-blur-sm"
+          >
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {kpi.label}
+                  </p>
+                  <h3 className="text-2xl font-bold mt-1">
+                    {isFetchingStats ? (
+                      <Skeleton className="h-8 w-20" />
+                    ) : (
+                      kpi.value
+                    )}
+                  </h3>
+                </div>
+                <div className="p-3 bg-white rounded-xl shadow-sm">
+                  <kpi.icon
+                    weight="bold"
+                    className="w-5 h-5 text-indigo-600"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

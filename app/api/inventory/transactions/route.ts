@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   const search = (searchParams.get("search") || "").trim();
   const status = searchParams.get("status");
   const plan = searchParams.get("plan");
+  const currency = searchParams.get("currency");
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
   const from = (page - 1) * limit;
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
       .select("*", { count: "exact" });
 
     if (status) query = query.eq("status", status);
+    if (currency) query = query.eq("currency", currency);
     if (startDate) query = query.gte("paidAt", startDate);
     if (endDate) query = query.lte("paidAt", endDate);
 
