@@ -9,7 +9,9 @@ import {
   LightningIcon,
 } from "@phosphor-icons/react";
 import useUserStore from "@/store/globalUserStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { GlobalFilterSidebar } from "@/components/shared/filters/GlobalFilterSidebar";
+import { FilterConfig } from "@/types/filters";
 import {
   useFetchWorkspacesStats,
   useFetchInventoryWorkspaces,
@@ -54,6 +56,41 @@ export default function InventoryWorkspacesPage() {
     limit: 10,
   });
 
+  const searchParams = useSearchParams();
+  const filterStatus = searchParams.get("status") || "";
+  const filterPlan = searchParams.get("subscriptionPlan") || "";
+  const dateStart = searchParams.get("created_at_start") || "";
+  const dateEnd = searchParams.get("created_at_end") || "";
+
+  const filterConfigs: FilterConfig[] = [
+    {
+      id: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Inactive", value: "inactive" },
+      ],
+    },
+    {
+      id: "subscriptionPlan",
+      label: "Subscription Plan",
+      type: "select",
+      options: [
+        { label: "Free", value: "Free" },
+        { label: "Standard", value: "Standard" },
+        { label: "Pro", value: "Pro" },
+        { label: "Plus", value: "Plus" },
+        { label: "Enterprise", value: "Enterprise" },
+      ],
+    },
+    {
+      id: "created_at",
+      label: "Created Date",
+      type: "date-range",
+    },
+  ];
+
   const { data: statsData, status: statsStatus } = useFetchWorkspacesStats();
 
   const {
@@ -63,26 +100,19 @@ export default function InventoryWorkspacesPage() {
   } = useFetchInventoryWorkspaces(user?.id!, {
     ...pagination,
     search: searchTerm,
+    status: filterStatus,
+    plan: filterPlan,
+    dateStart,
+    dateEnd,
+    sortBy: sorting.length > 0 ? sorting[0].id : undefined,
+    order: sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : undefined,
   });
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
   }, [searchTerm]);
 
-  const sortedWorkspaces = useMemo(() => {
-    const list = [...(workspacesData?.data || [])];
-    if (sorting.length === 0) return list;
-    const { id: sortBy, desc } = sorting[0];
-    return list.sort((a: any, b: any) => {
-      let valA = a[sortBy] ?? "";
-      let valB = b[sortBy] ?? "";
-      if (typeof valA === "string" && typeof valB === "string")
-        return desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
-      if (valA < valB) return desc ? 1 : -1;
-      if (valA > valB) return desc ? -1 : 1;
-      return 0;
-    });
-  }, [workspacesData?.data, sorting]);
+  const sortedWorkspaces = workspacesData?.data || [];
 
   const columns = useMemo(
     () => workspacesColumnsFn(workspacesData?.total || 0),
@@ -93,9 +123,10 @@ export default function InventoryWorkspacesPage() {
 
   const stats = [
     {
-      label: "Total Workspaces",
+      label: "Active Workspaces",
       value: statsData?.totalWorkspaces,
       icon: BriefcaseIcon,
+      tooltip: "*accessed in the last 7 days.",
     },
     {
       label: "Active Users",
@@ -126,12 +157,17 @@ export default function InventoryWorkspacesPage() {
             className="border-none shadow-sm bg-white/50 backdrop-blur-sm"
           >
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">
                     {stat.label}
                   </p>
                   <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
+                  {stat.tooltip && (
+                    <p className="text-[11px] text-slate-400 mt-2 max-w-[200px]">
+                      {stat.tooltip}
+                    </p>
+                  )}
                 </div>
                 <div className="p-3 bg-white rounded-xl shadow-sm">
                   <stat.icon
@@ -153,14 +189,15 @@ export default function InventoryWorkspacesPage() {
               Monitor usage and engagement across the entire platform
             </p>
           </div>
-          <div className="w-full md:w-80">
+          <div className="flex w-full md:w-auto items-center gap-2">
             <input
               type="text"
               placeholder="Search workspaces..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+              className="w-full md:w-80 px-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
             />
+            <GlobalFilterSidebar configs={filterConfigs} />
           </div>
         </div>
 

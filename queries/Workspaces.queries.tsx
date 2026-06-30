@@ -56,7 +56,7 @@ export function useFetchWorkspaces(
 
 export function useFetchInventoryWorkspaces(
   userId?: string,
-  pagination: Pagination = { page: 1, limit: 10 },
+  pagination: any = { page: 1, limit: 10 },
   workspaceAlias?: string,
 ) {
   const { data, isFetching, status, error, refetch } = useQuery({
@@ -68,8 +68,26 @@ export function useFetchInventoryWorkspaces(
       if (pagination.search) {
         searchParams.set("search", pagination.search);
       }
+      if (pagination.status) {
+        searchParams.set("status", pagination.status);
+      }
+      if (pagination.plan) {
+        searchParams.set("subscriptionPlan", pagination.plan);
+      }
+      if (pagination.dateStart) {
+        searchParams.set("created_at_start", pagination.dateStart);
+      }
+      if (pagination.dateEnd) {
+        searchParams.set("created_at_end", pagination.dateEnd);
+      }
       if (workspaceAlias) {
         searchParams.set("workspaceAlias", workspaceAlias);
+      }
+      if (pagination.sortBy) {
+        searchParams.set("sortBy", pagination.sortBy);
+      }
+      if (pagination.order) {
+        searchParams.set("order", pagination.order);
       }
 
       const { data, status } = await getRequest<any>({

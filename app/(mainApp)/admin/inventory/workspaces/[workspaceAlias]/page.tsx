@@ -246,7 +246,7 @@ const OverviewTab = ({ workspace }: { workspace: any }) => {
 };
 
 const TeamTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
-  const [pagination, setPagination] = useState({ page: 1, limit: 10 });
+  const [pagination, setPagination] = useState({ page: 1, limit: 100 });
   const { data: teamData, isFetching } = useFetchWorkspaceTeamMembers(
     workspaceAlias,
     pagination,
@@ -808,7 +808,11 @@ const SubscriptionTab = ({ workspaceAlias }: { workspaceAlias: string }) => {
   );
 };
 
-const SettingsTab = ({ workspace }: { workspace: any }) => {
+const SettingsTab = ({
+  workspace,
+}: {
+  workspace: any;
+}) => {
   const workspaceAlias = workspace.organizationAlias as string;
   const hasAccess = workspace.activeApps?.inventory !== false;
 
@@ -862,14 +866,14 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                   {workspace.organizationName}?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  {isActive
+                  {hasAccess
                     ? "This will immediately revoke this organization's access to the Inventory app. They can be reactivated at any time."
                     : "This will restore this organization's access to the Inventory app."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="space-y-2 px-1">
                 <Label className="text-xs text-slate-500">
-                  Reason for {isActive ? "deactivation" : "reactivation"}{" "}
+                  Reason for {hasAccess ? "deactivation" : "reactivation"}{" "}
                   <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -885,12 +889,12 @@ const SettingsTab = ({ workspace }: { workspace: any }) => {
                   disabled={!accessReason.trim()}
                   onClick={() =>
                     setAccess.mutate({
-                      active: !isActive,
+                      active: !hasAccess,
                       reason: accessReason,
                     })
                   }
                 >
-                  {isActive ? "Deactivate" : "Reactivate"}
+                  {hasAccess ? "Deactivate" : "Reactivate"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -993,7 +997,7 @@ export default function InventoryWorkspaceDetailsPage() {
       ? "inventory-data"
       : searchParams.get("tab") || "overview",
   );
-const { data: workspacesData, isFetching } = useFetchWorkspaces(
+  const { data: workspacesData, isFetching } = useFetchWorkspaces(
     user?.id || "",
     { page: 1, limit: 1 },
     workspaceAlias as string,
@@ -1006,11 +1010,13 @@ const { data: workspacesData, isFetching } = useFetchWorkspaces(
 
   const workspace = workspacesData.data?.[0];
   console.log(subData?.subscription);
-  const currentPlan = subData?.subscription?.subscriptionPlanAlias || "Basic";
+  const currentPlan = subData?.subscription?.billingCycle || "Basic";
 
   let isActive = false;
   if (workspace?.activeApps?.lastLogInInventory) {
-    const lastLogin = new Date(workspace.activeApps.lastLogInInventory).getTime();
+    const lastLogin = new Date(
+      workspace.activeApps.lastLogInInventory,
+    ).getTime();
     const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     isActive = lastLogin >= sevenDaysAgo;
   }
@@ -1070,13 +1076,12 @@ const { data: workspacesData, isFetching } = useFetchWorkspaces(
                       : "bg-red-50 text-red-700 border-red-100",
                   )}
                 >
-                  {isActive
-                    ? "Active"
-                    : "Inactive"}
+                  {isActive ? "Active" : "Inactive"}
                 </Badge>
               </div>
               <p className="text-slate-500 text-sm font-medium flex items-center gap-2">
-                <span className="capitalize">{currentPlan} Plan</span>{"|"}
+                <span className="capitalize">{currentPlan} Plan</span>
+                {"|"}
                 {subData.subscription?.subscriptionEndDate ? (
                   <span className="capitalize">
                     Expires{" "}

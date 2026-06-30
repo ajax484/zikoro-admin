@@ -344,7 +344,7 @@ const MultiSelectFilter = ({
 
   return (
     <div className="space-y-2">
-      <Popover>
+      <Popover modal={true}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
             <span className="text-sm text-gray-600 truncate mr-2">

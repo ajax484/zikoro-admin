@@ -33,12 +33,6 @@ export const inventoryLinks: ModuleNavLink[] = [
     href: "admin/inventory/transactions",
   },
   {
-    name: "Verify",
-    Icon: IdentificationCardIcon,
-    href: "admin/inventory/verify",
-  },
-
-  {
     name: "Audit Log",
     Icon: ClipboardTextIcon,
     href: "admin/inventory/audit-log",

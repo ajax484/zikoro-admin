@@ -13,6 +13,10 @@ export async function GET(req: NextRequest) {
       const search = searchParams.get("search") || "";
       const sortBy = searchParams.get("sortBy") || "created_at";
       const order = searchParams.get("order") || "desc";
+      const filterStatus = searchParams.get("status") || "";
+      const filterPlan = searchParams.get("subscriptionPlan") || "";
+      const dateStart = searchParams.get("created_at_start") || "";
+      const dateEnd = searchParams.get("created_at_end") || "";
 
       if (isNaN(page) || isNaN(limit)) {
         return NextResponse.json(
@@ -45,6 +49,33 @@ export async function GET(req: NextRequest) {
         query.or(
           `organizationName.ilike.${term},organizationAlias.ilike.${term},organizationOwner.ilike.${term},eventContactEmail.ilike.${term}`,
         );
+      }
+
+      if (filterPlan) {
+        query.eq("subscriptionPlan", filterPlan);
+      }
+
+      if (dateStart) {
+        query.gte("created_at", dateStart);
+      }
+
+      if (dateEnd) {
+        const endDate = new Date(dateEnd);
+        endDate.setUTCHours(23, 59, 59, 999);
+        query.lte("created_at", endDate.toISOString());
+      }
+
+      if (filterStatus) {
+        const sevenDaysAgo = new Date(
+          Date.now() - 7 * 24 * 60 * 60 * 1000,
+        ).toISOString();
+        if (filterStatus === "active") {
+          query.gte("activeApps->>lastLogInInventory", sevenDaysAgo);
+        } else if (filterStatus === "inactive") {
+          query.or(
+            `activeApps->>lastLogInInventory.lt.${sevenDaysAgo},activeApps->>lastLogInInventory.is.null`,
+          );
+        }
       }
 
       const { data, error, count } = await query;

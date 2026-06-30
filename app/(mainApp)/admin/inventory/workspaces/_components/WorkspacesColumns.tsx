@@ -133,22 +133,17 @@ export const workspacesColumnsFn: (
         isActive = lastLogin >= sevenDaysAgo;
       }
       
-      const currentStatus = isActive ? "active" : "inactive";
-
-      const styles: Record<string, string> = {
-        active: "bg-emerald-50 text-emerald-700 border-emerald-100",
-        inactive: "bg-red-50 text-red-700 border-red-100",
-      };
-
-      const icons: Record<string, React.ReactNode> = {
-        active: <CheckCircleIcon weight="bold" className="w-3 h-3 mr-1" />,
-        inactive: <BellIcon weight="bold" className="w-3 h-3 mr-1" />,
-      };
-
       return (
-        <Badge variant="outline" className={cn("font-medium capitalize", styles[currentStatus])}>
-          {icons[currentStatus]}
-          {currentStatus}
+        <Badge
+          variant="outline"
+          className={cn(
+            "font-bold uppercase text-[10px]",
+            isActive
+              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+              : "bg-red-50 text-red-700 border-red-100",
+          )}
+        >
+          {isActive ? "Active" : "Inactive"}
         </Badge>
       );
     },
