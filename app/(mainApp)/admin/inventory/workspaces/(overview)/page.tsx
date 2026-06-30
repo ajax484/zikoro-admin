@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   UsersIcon,
@@ -45,7 +45,7 @@ const UsageSkeleton = () => (
   </div>
 );
 
-export default function InventoryWorkspacesPage() {
+function InventoryWorkspacesContent() {
   const { user } = useUserStore();
   const router = useRouter();
 
@@ -235,5 +235,13 @@ export default function InventoryWorkspacesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InventoryWorkspacesPage() {
+  return (
+    <Suspense fallback={<UsageSkeleton />}>
+      <InventoryWorkspacesContent />
+    </Suspense>
   );
 }
